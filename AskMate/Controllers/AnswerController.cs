@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AskMate.Models.Repos;
+using Microsoft.AspNetCore.Mvc;
 
 namespace AskMate.Controllers
 {
@@ -6,6 +7,12 @@ namespace AskMate.Controllers
     [Route("[controller]")]
     public class AnswerController : ControllerBase
     {
+        private readonly IAskMateDatabase _database;
+        public AnswerController(IAskMateDatabase database)
+        {
+            _database = database;
+        }
+
         [HttpGet("{id}")]
         public IActionResult GetAnswers(string id)
         {
