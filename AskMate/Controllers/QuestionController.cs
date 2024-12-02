@@ -19,41 +19,34 @@ public class QuestionController : ControllerBase
     }
 
 
-    [HttpGet]
+    [HttpGet("all")]
     public IActionResult GetAllQuestion()
     {
-        var repository = new AskMateDatabase(new NpgsqlConnection(_connectionString);
-        return Ok(repository.GetAllQuestion());
+        return Ok(_database.GetAllQuestions());
     }
 
-    [HttpGet("id")]
+    [HttpGet("{id}")]
     public IActionResult GetQuestion(string id)
     {
-        var repository = new AskMateDatabase(new NpgsqlConnection(_connectionString));
-        return Ok(repository.GetQuestion(id));
+        return Ok(_database.GetQuestion(id));
     }
 
     [HttpPost()]
     public IActionResult CreateQuestion(Question question)
     {
-        var repository = new AskMateDatabase(new NpgsqlConnection(_connectionString));
-        return Ok(repository.CreateNewQuestion(question));
+        return Ok(_database.CreateNewQuestion(question));
     }
 
-    [HttpPost]
-    public IActionResult GetAnswers(string id)
+    [HttpPut("{id}")]
+    public IActionResult UpdateQuestion(Question question)
     {
-        var repository = new AskMateDatabase(new NpgsqlConnection(_connectionString));
-        return Ok(repository.GetAnswer(id));
-        
+        return Ok(_database.UpdateAnswer(question);
     }
 
-
-
-    [HttpGet]
-    public IActionResult GetSingleBook(int id)
+    [HttpDelete("{id}")]
+    public IActionResult DeleteQuestion(string id)
     {
-
+        return Ok(_database.DeleteQuestion(id));
     }
 
 
