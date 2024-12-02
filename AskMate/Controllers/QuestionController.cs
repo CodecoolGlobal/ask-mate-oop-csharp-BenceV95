@@ -24,7 +24,11 @@ public class QuestionController : ControllerBase
     }
 
 
+    [HttpGet]
+    public IActionResult GetSingleBook(int id)
+    {
 
+    }
 
 
 

@@ -1,9 +1,14 @@
-﻿namespace AskMate.Models.Repos
+﻿using AskMate.Models.QuestionModel;
+
+
+
+namespace AskMate.Models.Repos
 {
     public interface IAskMateDatabase
     {
-        public void GetAllQuestions();
-        public void GetQuestion(int id);
+        public List<Question> GetAllQuestions();
+        public Question GetQuestion(int questionID);
+        public Question CreateNewQuestion(Question question);
     }
 }
 
