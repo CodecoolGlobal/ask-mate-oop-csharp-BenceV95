@@ -7,8 +7,9 @@ namespace AskMate.Models.Repos
     public interface IAskMateDatabase
     {
         public List<Question> GetAllQuestions();
-        public Question GetQuestion(int questionID);
+        public Task<Question> GetQuestion(int questionID);
         public Question CreateNewQuestion(Question question);
+        public void DeleteQuestion(string questionID);
     }
 }
 
