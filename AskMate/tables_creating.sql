@@ -9,7 +9,8 @@ CREATE TABLE users (
 CREATE TABLE questions (
     id VARCHAR(32) PRIMARY KEY,
     user_id VARCHAR(32) NOT NULL,
-	body TEXT NOT NULL,
+    body TEXT NOT NULL,
+    post_date TIMESTAMP NOT NULL,
     FOREIGN KEY (user_id) REFERENCES users(id)
 );
 
