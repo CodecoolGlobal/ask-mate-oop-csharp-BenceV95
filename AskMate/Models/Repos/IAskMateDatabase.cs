@@ -8,7 +8,7 @@
         public void DeleteQuestion(string questionID);
         object? GetAnswer(string id);
         object? CreateNewAnswer(Answer answer);
-        object? DeleteAnswer(string id);
+        void DeleteAnswer(string id);
         object? CreateUser(User user);
     }
 }

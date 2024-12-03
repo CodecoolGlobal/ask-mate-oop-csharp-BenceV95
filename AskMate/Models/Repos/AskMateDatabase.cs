@@ -8,7 +8,7 @@ namespace AskMate.Models.Repos
 {
     public class AskMateDatabase : IAskMateDatabase
     {
-        NpgsqlConnection _connectionString; //maybe this could use an interface
+        NpgsqlConnection _connectionString; 
         public AskMateDatabase(NpgsqlConnection connectionString)
         {
             _connectionString = connectionString;
@@ -119,12 +119,27 @@ namespace AskMate.Models.Repos
 
         public object? CreateNewAnswer(Answer answer)
         {
-            throw new NotImplementedException();
+            _connectionString.Open();
+
+            using var adapter = new NpgsqlDataAdapter("INSERT INTO answers (id, user_id,question_id, body) VALUES (:id, :user_id, :question_id, :body) RETURNING id", _connectionString);
+            adapter.SelectCommand?.Parameters.AddWithValue(":id", answer.id);
+            adapter.SelectCommand?.Parameters.AddWithValue(":user_id", answer.user_id);
+            adapter.SelectCommand?.Parameters.AddWithValue(":question_id", answer.question_id);
+            adapter.SelectCommand?.Parameters.AddWithValue(":body", answer.body);
+
+            var createdId = (string)adapter.SelectCommand?.ExecuteScalar();
+
+            return createdId;
         }
 
-        public object? DeleteAnswer(string id)
+        public void DeleteAnswer(string id)
         {
-            throw new NotImplementedException();
+            _connectionString.Open();
+
+            using var adapter = new NpgsqlDataAdapter("DELETE FROM ONLY answers WHERE answer.id = :id ", _connectionString);
+            adapter.SelectCommand?.Parameters.AddWithValue(":id", id);
+
+            adapter.SelectCommand?.ExecuteNonQuery();
         }
 
         public object? CreateUser(User user)
