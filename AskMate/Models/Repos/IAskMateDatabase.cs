@@ -1,14 +1,15 @@
-﻿using AskMate.Models.QuestionModel;
-
-
-
-namespace AskMate.Models.Repos
+﻿namespace AskMate.Models.Repos
 {
     public interface IAskMateDatabase
     {
         public List<Question> GetAllQuestions();
-        public Question GetQuestion(int questionID);
-        public Question CreateNewQuestion(Question question);
+        public Task<Question> GetQuestion(string questionID);
+        public string CreateNewQuestion(Question question);
+        public void DeleteQuestion(string questionID);
+        object? GetAnswer(string id);
+        object? CreateNewAnswer(Answer answer);
+        object? DeleteAnswer(string id);
+        object? CreateUser(User user);
     }
 }
 

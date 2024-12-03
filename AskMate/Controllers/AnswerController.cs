@@ -1,4 +1,5 @@
-﻿using AskMate.Models.Repos;
+﻿using AskMate.Models;
+using AskMate.Models.Repos;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AskMate.Controllers

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Globalization;
 using AskMate.Models.Repos;
 using Npgsql;
+using AskMate.Models;
 
 namespace AskMate.Controllers;
 
@@ -34,13 +35,21 @@ public class QuestionController : ControllerBase
     [HttpPost()]
     public IActionResult CreateQuestion(Question question)
     {
+        //returns the id
         return Ok(_database.CreateNewQuestion(question));
     }
+
+    //[HttpPut("{id}")]
+    //public IActionResult UpdateQuestion(Question question)
+    //{
+    //    return Ok(_database.UpdateAnswer(question);
+    //}
 
     [HttpDelete("{id}")]
     public IActionResult DeleteQuestion(string id)
     {
-        return Ok(_database.DeleteQuestion(id));
+        _database.DeleteQuestion(id);
+        return Ok();
     }
 
 
