@@ -30,7 +30,8 @@ namespace AskMate.Controllers
         [HttpDelete("{id}")]
         public IActionResult DeleteAnswer(string id)
         {
-            return Ok(_database.DeleteAnswer(id));
+            _database.DeleteAnswer(id);
+            return Ok();
         }
 
     //    [HttpPatch("/Accept/{id}")]
