@@ -19,7 +19,7 @@ public class QuestionController : ControllerBase
     }
 
 
-    [HttpGet("all")]
+    [HttpGet()]
     public IActionResult GetAllQuestion()
     {
         return Ok(_database.GetAllQuestions());
@@ -35,12 +35,6 @@ public class QuestionController : ControllerBase
     public IActionResult CreateQuestion(Question question)
     {
         return Ok(_database.CreateNewQuestion(question));
-    }
-
-    [HttpPut("{id}")]
-    public IActionResult UpdateQuestion(Question question)
-    {
-        return Ok(_database.UpdateAnswer(question);
     }
 
     [HttpDelete("{id}")]
