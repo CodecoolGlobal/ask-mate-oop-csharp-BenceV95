@@ -29,11 +29,12 @@ namespace AskMate.Models.Repos
         {
             _connectionString.Open();
 
-            using var adapter = new NpgsqlDataAdapter("INSERT INTO questions (id, user_id, body) VALUES (:id, :user_id, :body) RETURNING id", _connectionString);
+            using var adapter = new NpgsqlDataAdapter("INSERT INTO questions (id, user_id, body, post_date) VALUES (:id, :user_id, :body, :post_date) RETURNING id", _connectionString);
+            adapter.SelectCommand?.Parameters.AddWithValue(":post_date", question.PostDate);
             adapter.SelectCommand?.Parameters.AddWithValue(":id", question.ID);
             adapter.SelectCommand?.Parameters.AddWithValue(":user_id", question.UserID);
             adapter.SelectCommand?.Parameters.AddWithValue(":body", question.Body);
-            ,
+
             var createdId = (string)adapter.SelectCommand?.ExecuteScalar();
 
             return createdId;
@@ -55,7 +56,8 @@ namespace AskMate.Models.Repos
                 queryResult.Add(new Question(
                     (string)row["id"],
                     (string)row["user_id"],
-                    (string)row["body"]
+                    (string)row["body"],
+                    (DateTime)row["postDate"]
                     ));
             }
             _connectionString.Close();
@@ -93,7 +95,8 @@ namespace AskMate.Models.Repos
                 question = new Question(
                     reader.GetString(reader.GetOrdinal("id")),
                     reader.GetString(reader.GetOrdinal("user_id")),
-                    reader.GetString(reader.GetOrdinal("body"))
+                    reader.GetString(reader.GetOrdinal("body")),
+                    reader.GetDateTime("post_date")
                 );
             }
 
