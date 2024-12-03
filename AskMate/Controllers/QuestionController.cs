@@ -20,7 +20,7 @@ public class QuestionController : ControllerBase
     }
 
 
-    [HttpGet("all")]
+    [HttpGet()]
     public IActionResult GetAllQuestion()
     {
         return Ok(_database.GetAllQuestions());
