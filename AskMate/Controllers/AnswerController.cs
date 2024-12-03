@@ -1,4 +1,5 @@
-﻿using AskMate.Models.Repos;
+﻿using AskMate.Models;
+using AskMate.Models.Repos;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AskMate.Controllers
@@ -26,16 +27,16 @@ namespace AskMate.Controllers
             return Ok(_database.CreateNewAnswer(answer));
         }
 
-        [HttpPut("{id}")]
-        public IActionResult UpdateAnswer(Answer answer)
-        {
-            return Ok(_database.UpdateAnswer(answer);
-        }
+        //[HttpPut("{id}")]
+        //public IActionResult UpdateAnswer(Answer answer)
+        //{
+        //    return Ok(_database.UpdateAnswer(answer);
+        //}
 
         [HttpDelete("{id}")]
         public IActionResult DeleteAnswer(string id)
         {
-            return Ok(_databaseDeleteAnswer(id));
+            return Ok(_database.DeleteAnswer(id));
         }
     }
 }

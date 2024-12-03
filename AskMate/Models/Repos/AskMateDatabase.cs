@@ -1,5 +1,4 @@
-﻿using AskMate.Models.QuestionModel;
-using Npgsql;
+﻿using Npgsql;
 using System.Data.Common;
 using System.Data;
 using System.Collections.Generic;
@@ -65,7 +64,7 @@ namespace AskMate.Models.Repos
         }
 
 
-        public async Task<Question> GetQuestion(int questionID) //not sure how the related answers should be given  back, atm the question has a property which stores the related answer ids
+        public async Task<Question> GetQuestion(string questionID) //not sure how the related answers should be given  back, atm the question has a property which stores the related answer ids
         {
             await _connectionString.OpenAsync();
 
@@ -111,7 +110,27 @@ namespace AskMate.Models.Repos
 
             return question;
         }
+
+
+        public object? GetAnswer(string id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public object? CreateNewAnswer(Answer answer)
+        {
+            throw new NotImplementedException();
+        }
+
+        public object? DeleteAnswer(string id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public object? CreateUser(User user)
+        {
+            throw new NotImplementedException();
+        }
     }
 
 }
-

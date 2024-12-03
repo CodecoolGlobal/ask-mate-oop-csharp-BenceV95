@@ -1,4 +1,4 @@
-﻿namespace AskMate.Models.QuestionModel
+﻿namespace AskMate.Models
 {
     public class Question
     {
