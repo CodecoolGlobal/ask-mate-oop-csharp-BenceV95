@@ -57,7 +57,7 @@ namespace AskMate.Models.Repos
                     (string)row["id"],
                     (string)row["user_id"],
                     (string)row["body"],
-                    (DateTime)row["postDate"]
+                    (DateTime)row["post_date"]
                     ));
             }
             _connectionString.Close();
