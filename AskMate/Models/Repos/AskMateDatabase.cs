@@ -29,11 +29,11 @@ namespace AskMate.Models.Repos
         {
             _connectionString.Open();
 
-            using var adapter = new NpgsqlDataAdapter("INSERT INTO questions (id, answer_id, body) VALUES (:id, :user_id, :body) RETURNING id", _connectionString);
+            using var adapter = new NpgsqlDataAdapter("INSERT INTO questions (id, user_id, body) VALUES (:id, :user_id, :body) RETURNING id", _connectionString);
             adapter.SelectCommand?.Parameters.AddWithValue(":id", question.ID);
-            adapter.SelectCommand?.Parameters.AddWithValue(":answer_id", question.UserID);
-            adapter.SelectCommand?.Parameters.AddWithValue(":id", question.ID);
-
+            adapter.SelectCommand?.Parameters.AddWithValue(":user_id", question.UserID);
+            adapter.SelectCommand?.Parameters.AddWithValue(":body", question.Body);
+            ,
             var createdId = (string)adapter.SelectCommand?.ExecuteScalar();
 
             return createdId;

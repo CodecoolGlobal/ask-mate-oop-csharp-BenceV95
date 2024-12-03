@@ -20,22 +20,22 @@ namespace AskMate.Controllers
             return Ok(_database.CreateUser(user));
         }
 
-        [HttpPost("Login")]
-        public IActionResult Login()
-        {
+        //[HttpPost("Login")]
+        //public IActionResult Login()
+        //{
 
-        }
+        //}
 
-        [HttpPost("/logout")]
-        public IActionResult Logout()
-        {
+        //[HttpPost("/logout")]
+        //public IActionResult Logout()
+        //{
 
-        }
+        //}
 
-        [HttpGet("/{id}/Points")]
-        public IActionResult PointSystem()
-        {
+        //[HttpGet("/{id}/Points")]
+        //public IActionResult PointSystem()
+        //{
 
-        }
+        //}
     }
 }
