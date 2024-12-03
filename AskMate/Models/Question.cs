@@ -6,12 +6,14 @@
         public string UserID { get; init; }
         public string Body { get; init; }
         public List<int> RelatedAnswersIDs { get; set; }
+        public DateTime PostDate { get; init; }
 
-        public Question(string id, string userID, string body)
+        public Question(string id, string userID, string body, DateTime postDate)
         {
             ID = id;
             UserID = userID;
             Body = body;
+            PostDate = postDate;
         }
 
     }

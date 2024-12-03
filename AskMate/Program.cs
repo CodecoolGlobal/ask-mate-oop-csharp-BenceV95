@@ -1,6 +1,12 @@
 using AskMate.Middleware;
+using AskMate.Models.Repos;
+using Npgsql;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddScoped<IAskMateDatabase>(provider =>
+new AskMateDatabase(new NpgsqlConnection("Server=localhost;Port=5432;User Id=postgres;Password=Vonat2024;Database=ask_mate"))); // enter pw
+
 
 // Add services to the container.
 
