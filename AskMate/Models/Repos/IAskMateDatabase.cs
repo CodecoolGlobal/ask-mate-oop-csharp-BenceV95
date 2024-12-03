@@ -1,4 +1,6 @@
-﻿namespace AskMate.Models.Repos
+﻿using System.Diagnostics.Eventing.Reader;
+
+namespace AskMate.Models.Repos
 {
     public interface IAskMateDatabase
     {
@@ -16,6 +18,9 @@
 
         // user
         object? CreateUser(User user);
+
+        //authenticate user
+        bool AuthUser(User user);
     }
 }
 

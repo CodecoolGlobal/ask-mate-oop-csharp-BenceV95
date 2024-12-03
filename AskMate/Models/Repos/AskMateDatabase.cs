@@ -8,7 +8,7 @@ namespace AskMate.Models.Repos
 {
     public class AskMateDatabase : IAskMateDatabase
     {
-        NpgsqlConnection _connectionString; 
+        NpgsqlConnection _connectionString;
         public AskMateDatabase(NpgsqlConnection connectionString)
         {
             _connectionString = connectionString;
@@ -190,6 +190,22 @@ namespace AskMate.Models.Repos
         public object? CreateUser(User user)
         {
             throw new NotImplementedException();
+        }
+
+
+
+        //authenticate
+        public bool AuthUser(User user)
+        {
+            _connectionString.Open();
+
+
+            var adapter = new NpgsqlDataAdapter("SELECT * FROM users WHERE user_id = :id ", _connectionString);
+
+            adapter.SelectCommand?.Parameters.AddWithValue(":id", user.ID);
+
+
+            return false;
         }
     }
 
