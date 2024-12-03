@@ -14,7 +14,7 @@ namespace AskMate.Models.Repos
             _connectionString = connectionString;
         }
 
-
+        // questions
         public void DeleteQuestion(string questionID)
         {
             _connectionString.Open();
@@ -65,7 +65,6 @@ namespace AskMate.Models.Repos
             return queryResult;
         }
 
-
         public async Task<Question> GetQuestion(string questionID) //not sure how the related answers should be given  back, atm the question has a property which stores the related answer ids
         {
             await _connectionString.OpenAsync();
@@ -114,7 +113,7 @@ namespace AskMate.Models.Repos
             return question;
         }
 
-
+        // answers
         public object? GetAnswer(string id)
         {
             _connectionString.Open();
@@ -168,6 +167,26 @@ namespace AskMate.Models.Repos
             _connectionString.Close();
         }
 
+        public void UpdateAnswer(Answer answer)
+        {
+            _connectionString.Open();
+
+            var adapter = new NpgsqlDataAdapter(
+                "UPDATE answers SET body = :body WHERE id = :id",
+                _connectionString
+            );
+
+            adapter.SelectCommand?.Parameters.AddWithValue(":id", answer.id);
+            adapter.SelectCommand?.Parameters.AddWithValue(":user_id", answer.user_id);
+            adapter.SelectCommand?.Parameters.AddWithValue(":question_id", answer.question_id);
+            adapter.SelectCommand?.Parameters.AddWithValue(":body", answer.body);
+
+            adapter.SelectCommand?.ExecuteNonQuery();
+
+            _connectionString.Close();
+        }
+
+        // users
         public object? CreateUser(User user)
         {
             throw new NotImplementedException();

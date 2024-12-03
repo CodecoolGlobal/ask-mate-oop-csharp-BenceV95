@@ -2,13 +2,19 @@
 {
     public interface IAskMateDatabase
     {
+        // questions
         public List<Question> GetAllQuestions();
         public Task<Question> GetQuestion(string questionID);
         public string CreateNewQuestion(Question question);
         public void DeleteQuestion(string questionID);
-        object? GetAnswer(string id);
-        object? CreateNewAnswer(Answer answer);
+
+        // answers
+        public object? GetAnswer(string id);
+        public object? CreateNewAnswer(Answer answer);
         public void DeleteAnswer(string id);
+        public void UpdateAnswer(Answer answer);
+
+        // user
         object? CreateUser(User user);
     }
 }

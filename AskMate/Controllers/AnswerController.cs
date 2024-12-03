@@ -34,10 +34,11 @@ namespace AskMate.Controllers
             return Ok();
         }
 
-    //    [HttpPatch("/Accept/{id}")]
-    //    public IActionResult AcceptAnswer(string id)
-    //    {
-    //        return Ok(_database.AcceptAnswer(id));
-    //    }
+        [HttpPatch("{id}")]
+        public IActionResult AcceptAnswer(Answer answer)
+        {
+            _database.UpdateAnswer(answer);
+            return Ok();
+        }
     }
 }
