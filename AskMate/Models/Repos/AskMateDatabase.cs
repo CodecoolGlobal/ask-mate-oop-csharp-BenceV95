@@ -117,7 +117,29 @@ namespace AskMate.Models.Repos
 
         public object? GetAnswer(string id)
         {
-            throw new NotImplementedException();
+            _connectionString.Open();
+            var adapter = new NpgsqlDataAdapter("SELECT * FROM answers WHERE id = :id", _connectionString);
+            adapter.SelectCommand?.Parameters.AddWithValue(":id", id);
+
+            var dataSet = new DataSet();
+            adapter.Fill(dataSet);
+            var table = dataSet.Tables[0];
+
+            if (table.Rows.Count > 0)
+            {
+                DataRow row = table.Rows[0];
+                return new Answer()
+                {
+                    id = (string)row["id"],
+                    user_id = (string)row["user_id"],
+                    question_id = (string)row["question_id"],
+                    body = (string)row["body"]
+                };
+            }
+
+            _connectionString.Close();
+
+            return null;
         }
 
         public object? CreateNewAnswer(Answer answer)
@@ -131,7 +153,7 @@ namespace AskMate.Models.Repos
             adapter.SelectCommand?.Parameters.AddWithValue(":body", answer.body);
 
             var createdId = (string)adapter.SelectCommand?.ExecuteScalar();
-
+            _connectionString.Close();
             return createdId;
         }
 
@@ -139,10 +161,11 @@ namespace AskMate.Models.Repos
         {
             _connectionString.Open();
 
-            using var adapter = new NpgsqlDataAdapter("DELETE FROM ONLY answers WHERE answer.id = :id ", _connectionString);
+            using var adapter = new NpgsqlDataAdapter("DELETE FROM ONLY answers WHERE id = :id ", _connectionString);
             adapter.SelectCommand?.Parameters.AddWithValue(":id", id);
 
             adapter.SelectCommand?.ExecuteNonQuery();
+            _connectionString.Close();
         }
 
         public object? CreateUser(User user)
