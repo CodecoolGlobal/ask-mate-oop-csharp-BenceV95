@@ -27,9 +27,10 @@ public class QuestionController : ControllerBase
     }
 
     [HttpGet("{id}")]
-    public IActionResult GetQuestion(string id)
+    public async Task<IActionResult> GetQuestion(string id)
     {
-        return Ok(_database.GetQuestion(id));
+        var question = await _database.GetQuestion(id);
+        return Ok(question);
     }
 
     [HttpPost()]

@@ -5,7 +5,7 @@
         public string ID { get; init; }
         public string UserID { get; init; }
         public string Body { get; init; }
-        public List<int> RelatedAnswersIDs { get; set; }
+        public List<string> RelatedAnswersIDs { get; set; } = new List<string>();
         public DateTime PostDate { get; init; }
 
         public Question(string id, string userID, string body, DateTime postDate)

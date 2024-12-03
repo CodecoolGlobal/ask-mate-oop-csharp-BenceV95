@@ -104,7 +104,7 @@ namespace AskMate.Models.Repos
             {
                 while (await reader.ReadAsync())
                 {
-                    var answerID = reader.GetInt32(reader.GetOrdinal("id"));
+                    var answerID = reader.GetString(reader.GetOrdinal("id"));
 
                     question.RelatedAnswersIDs.Add(answerID);
                 }
