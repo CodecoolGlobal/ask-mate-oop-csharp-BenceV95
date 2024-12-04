@@ -35,7 +35,7 @@ namespace AskMate.Controllers
         }
 
         [HttpPatch("{id}")]
-        public IActionResult AcceptAnswer(Answer answer)
+        public IActionResult UpdateAnswer(Answer answer)
         {
             _database.UpdateAnswer(answer);
             return Ok();

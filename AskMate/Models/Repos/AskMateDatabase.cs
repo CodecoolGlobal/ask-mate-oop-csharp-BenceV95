@@ -189,7 +189,23 @@ namespace AskMate.Models.Repos
         // users
         public object? CreateUser(User user)
         {
-            throw new NotImplementedException();
+            using var connection = _connectionString;
+            connection.Open();
+
+            using var command = new NpgsqlCommand(
+                "INSERT INTO users (id, username, email_address, reg_time, password) VALUES (:id, :username, :email_address, :reg_time, :password) RETURNING id",
+                connection
+            );
+
+            command.Parameters.AddWithValue(":id", user.Id);
+            command.Parameters.AddWithValue(":username", user.Username);
+            command.Parameters.AddWithValue(":email_address", user.Email);
+            command.Parameters.AddWithValue(":reg_time", DateTime.UtcNow);
+            command.Parameters.AddWithValue(":password", user.PasswordHash);
+
+            var createdId = command.ExecuteScalar()?.ToString();
+
+            return createdId;
         }
 
 
