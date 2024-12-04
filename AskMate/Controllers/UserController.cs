@@ -14,10 +14,12 @@ namespace AskMate.Controllers
             _database = database;
         }
 
+
+        //this sendsa  post request to the server, to make a new user in the database, and from the request body it extracts the required data
         [HttpPost()]
-        public IActionResult CreateUser(User user)
+        public IActionResult CreateUser([FromBody] UserRequest request)
         {
-            return Ok(_database.CreateUser(user));
+            return Ok(_database.CreateUser(request.Username, request.Email, request.Password));
         }
 
         //[HttpPost("Login")]

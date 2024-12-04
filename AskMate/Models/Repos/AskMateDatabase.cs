@@ -2,12 +2,20 @@
 using System.Data.Common;
 using System.Data;
 using System.Collections.Generic;
+using System.Reflection.Metadata.Ecma335;
+using System.Security.Cryptography;
+using System.Text;
 
 
 namespace AskMate.Models.Repos
 {
     public class AskMateDatabase : IAskMateDatabase
     {
+        const int keySize = 16; //it was 64 by default, but to make the output only 32 digits long it now reduced to 16
+        const int iterations = 350000;
+        HashAlgorithmName hashAlgorithm = HashAlgorithmName.SHA512;
+
+
         NpgsqlConnection _connectionString;
         public AskMateDatabase(NpgsqlConnection connectionString)
         {
@@ -186,22 +194,29 @@ namespace AskMate.Models.Repos
             _connectionString.Close();
         }
 
-        // users
-        public object? CreateUser(User user)
+        // this creates a new user in the database with given username, email and password. The pw is hashed, salted
+        public object? CreateUser(string username, string email, string password)
         {
             using var connection = _connectionString;
             connection.Open();
 
+
+            var generatedID = Guid.NewGuid().ToString();
+
+
+            var hashedPW = HashPasword(password, out byte[] salt);
+
             using var command = new NpgsqlCommand(
-                "INSERT INTO users (id, username, email_address, reg_time, password) VALUES (:id, :username, :email_address, :reg_time, :password) RETURNING id",
+                "INSERT INTO users (id, username, email_address, reg_time, password, salt) VALUES (:id, :username, :email_address, :reg_time, :password, :salt) RETURNING id",
                 connection
             );
 
-            command.Parameters.AddWithValue(":id", user.Id);
-            command.Parameters.AddWithValue(":username", user.Username);
-            command.Parameters.AddWithValue(":email_address", user.Email);
+            command.Parameters.AddWithValue(":id", generatedID);
+            command.Parameters.AddWithValue(":username", username);
+            command.Parameters.AddWithValue(":email_address", email);
             command.Parameters.AddWithValue(":reg_time", DateTime.UtcNow);
-            command.Parameters.AddWithValue(":password", user.PasswordHash);
+            command.Parameters.AddWithValue(":password", hashedPW);
+            command.Parameters.AddWithValue(":salt", salt);
 
             var createdId = command.ExecuteScalar()?.ToString();
 
@@ -211,17 +226,58 @@ namespace AskMate.Models.Repos
 
 
         //authenticate
-        public bool AuthUser(User user)
+        public bool AuthUser(string usernameOrEmail, string password)
         {
             _connectionString.Open();
 
 
-            var adapter = new NpgsqlDataAdapter("SELECT * FROM users WHERE user_id = :id ", _connectionString);
+            var adapter = new NpgsqlDataAdapter("SELECT * FROM users WHERE username = :usernameOrEmail OR email_address = :usernameOrEmail ", _connectionString);
 
-            adapter.SelectCommand?.Parameters.AddWithValue(":id", user.ID);
+            adapter.SelectCommand?.Parameters.AddWithValue(":usernameOrEmail", usernameOrEmail);
+
+            var dataSet = new DataSet();
+            adapter.Fill(dataSet);
+            var table = dataSet.Tables[0];
+
+            if (table.Rows.Count > 0)
+            {
+                DataRow row = table.Rows[0];
 
 
+                var storedHash = (string)row["password"];
+                var storedSalt = (byte[])row["salt"];
+
+                Console.WriteLine($"HASH: {storedHash}");
+                Console.WriteLine($"SAlt: {string.Join(", ", storedSalt)}");
+
+                var converted = Convert.ToHexString(storedSalt);
+
+
+                Console.WriteLine(converted);
+
+                return VerifyPassword(password, storedHash, storedSalt);
+            }
+
+            _connectionString.Close();
+
+            //if no such user found
             return false;
+        }
+
+        private bool VerifyPassword(string password, string hash, byte[] salt)
+        {
+            var hashToCompare = Rfc2898DeriveBytes.Pbkdf2(Encoding.UTF8.GetBytes(password), salt, iterations, hashAlgorithm, keySize);
+
+
+            return CryptographicOperations.FixedTimeEquals(hashToCompare, Convert.FromHexString(hash));
+        }
+
+
+        private string HashPasword(string password, out byte[] salt)
+        {
+            salt = RandomNumberGenerator.GetBytes(keySize);
+            var hash = Rfc2898DeriveBytes.Pbkdf2(Encoding.UTF8.GetBytes(password), salt, iterations, hashAlgorithm, keySize);
+            return Convert.ToHexString(hash);
         }
     }
 

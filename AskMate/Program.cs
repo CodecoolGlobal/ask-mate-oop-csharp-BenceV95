@@ -16,8 +16,8 @@ builder.Services.AddSwaggerGen();
 
 
 // use cookies
-builder.Services.AddAuthentication("CookieAuth")
-    .AddCookie("CookieAuth", options =>
+builder.Services.AddAuthentication("Cookies")
+    .AddCookie("Cookies", options =>
     {
         options.Cookie.Name = "UserAuthCookie"; // Name of the cookie
         options.LoginPath = "/auth/login";     // Redirect to login if unauthorized

@@ -4,6 +4,7 @@ using System.Globalization;
 using AskMate.Models.Repos;
 using Npgsql;
 using AskMate.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace AskMate.Controllers;
 
@@ -19,7 +20,7 @@ public class QuestionController : ControllerBase
         _database = database;
     }
 
-
+    [Authorize]
     [HttpGet()]
     public IActionResult GetAllQuestion()
     {

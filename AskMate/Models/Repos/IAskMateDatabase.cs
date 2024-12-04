@@ -17,10 +17,10 @@ namespace AskMate.Models.Repos
         public void UpdateAnswer(Answer answer);
 
         // user
-        object? CreateUser(User user);
+        object? CreateUser(string username, string email, string password);
 
         //authenticate user
-        bool AuthUser(User user);
+        bool AuthUser(string usernameOrEmail, string password);
     }
 }
 

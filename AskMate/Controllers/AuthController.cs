@@ -22,8 +22,9 @@ namespace AskMate.Controllers
         public async Task<IActionResult> Login(string username, string password)
         {
             // Validate credentials (replace with actual validation)
-            if (username == "testuser" && password == "password123")
+            if (_database.AuthUser(username, password))
             {
+                Console.WriteLine("login");
                 // Create user claims
                 var claims = new List<Claim>
             {
