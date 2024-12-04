@@ -226,7 +226,7 @@ namespace AskMate.Models.Repos
 
 
         //authenticate
-        public bool AuthUser(string usernameOrEmail, string password)
+        public bool AuthUser(string usernameOrEmail, string password, out string? userID) // maybe later change it to not use the out keyword, but for now it ok
         {
             _connectionString.Open();
 
@@ -246,14 +246,11 @@ namespace AskMate.Models.Repos
 
                 var storedHash = (string)row["password"];
                 var storedSalt = (byte[])row["salt"];
+                userID = (string)row["id"];
 
-                Console.WriteLine($"HASH: {storedHash}");
-                Console.WriteLine($"SAlt: {string.Join(", ", storedSalt)}");
+                //Console.WriteLine($"HASH: {storedHash}");
+                //Console.WriteLine($"SAlt: {string.Join(", ", storedSalt)}");
 
-                var converted = Convert.ToHexString(storedSalt);
-
-
-                Console.WriteLine(converted);
 
                 return VerifyPassword(password, storedHash, storedSalt);
             }
@@ -261,6 +258,7 @@ namespace AskMate.Models.Repos
             _connectionString.Close();
 
             //if no such user found
+            userID = null;
             return false;
         }
 
@@ -279,6 +277,65 @@ namespace AskMate.Models.Repos
             var hash = Rfc2898DeriveBytes.Pbkdf2(Encoding.UTF8.GetBytes(password), salt, iterations, hashAlgorithm, keySize);
             return Convert.ToHexString(hash);
         }
-    }
 
+        public bool IsAnswerBelongToLoggedInUsersQuestion(string loggedInUserID, string answerId)
+        {
+
+            //megkeresni a választ id alapján
+
+            // ha a válaszhoz tartozó question_id megszerezése
+
+            // kérdésekből a question_id alpján megnézni, hogy a kérdésnél a user_id == a jelenleg belépett userID-val
+
+
+            //user id the current logged in user
+
+            //answer id is the answer which we want to accept
+            Console.WriteLine("userID" + loggedInUserID);
+            Console.WriteLine("answerID" + answerId);
+            _connectionString.Open();
+
+            var adapter = new NpgsqlDataAdapter(" SELECT answers.user_id AS answerer, questions.user_id AS asker, answers.is_accepted FROM answers JOIN questions ON questions.id = answers.question_id WHERE answers.id = :answerID ", _connectionString);
+
+
+            adapter.SelectCommand?.Parameters.AddWithValue(":answerID", answerId);
+
+            var dataSet = new DataSet();
+            adapter.Fill(dataSet);
+            var table = dataSet.Tables[0];
+
+            Console.WriteLine(table.Rows.Count);
+
+
+            if (table.Rows.Count > 0)
+            {
+                DataRow row = table.Rows[0];
+
+                var storedUserId = (string)row["asker"];
+
+                if (storedUserId == loggedInUserID)
+                {
+                    _connectionString.Close();
+                    return true;
+                }
+
+            }
+            _connectionString.Close();
+            return false;
+
+        }
+
+
+
+        public void AcceptAnswer(string answerId)
+        {
+            _connectionString.Open();
+
+            var adapter = new NpgsqlDataAdapter("UPDATE answers SET is_accepted = true WHERE id = :answerID;", _connectionString);
+            adapter.SelectCommand?.Parameters.AddWithValue(":answerID", answerId);
+
+            adapter.SelectCommand.ExecuteNonQuery();
+
+        }
+    }
 }

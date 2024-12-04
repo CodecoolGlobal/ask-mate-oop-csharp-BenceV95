@@ -15,12 +15,14 @@ namespace AskMate.Models.Repos
         public object? CreateNewAnswer(Answer answer);
         public void DeleteAnswer(string id);
         public void UpdateAnswer(Answer answer);
+        public void AcceptAnswer(string answerId);
+        public bool IsAnswerBelongToLoggedInUsersQuestion(string loggedInUserID, string answerId);
 
         // user
         object? CreateUser(string username, string email, string password);
 
         //authenticate user
-        bool AuthUser(string usernameOrEmail, string password);
+        bool AuthUser(string usernameOrEmail, string password, out string? userID);
     }
 }
 

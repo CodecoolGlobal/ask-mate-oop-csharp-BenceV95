@@ -1,6 +1,8 @@
 ﻿using AskMate.Models;
 using AskMate.Models.Repos;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace AskMate.Controllers
 {
@@ -39,6 +41,21 @@ namespace AskMate.Controllers
         {
             _database.UpdateAnswer(answer);
             return Ok();
+        }
+
+        [Authorize]
+        [HttpPatch("Accept/{id}")]
+        public IActionResult AcceptAnswer(string id)
+        {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (_database.IsAnswerBelongToLoggedInUsersQuestion(userId, id))
+            {
+                _database.AcceptAnswer(id);
+                return Ok();
+            }
+
+            return Unauthorized();
         }
     }
 }

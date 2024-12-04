@@ -22,14 +22,15 @@ namespace AskMate.Controllers
         public async Task<IActionResult> Login(string username, string password)
         {
             // Validate credentials (replace with actual validation)
-            if (_database.AuthUser(username, password))
+            if (_database.AuthUser(username, password, out string userID))
             {
                 Console.WriteLine("login");
                 // Create user claims
                 var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.Name, username),
-                new Claim(ClaimTypes.Role, "User")
+                new Claim(ClaimTypes.Role, "User"),
+                new Claim(ClaimTypes.NameIdentifier, userID)
             };
 
                 // Create identity and principal
