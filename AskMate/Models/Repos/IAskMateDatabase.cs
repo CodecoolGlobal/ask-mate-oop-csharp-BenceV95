@@ -1,4 +1,6 @@
-﻿namespace AskMate.Models.Repos
+﻿using System.Diagnostics.Eventing.Reader;
+
+namespace AskMate.Models.Repos
 {
     public interface IAskMateDatabase
     {
@@ -15,7 +17,10 @@
         public void UpdateAnswer(Answer answer);
 
         // user
-        object? CreateUser(User user);
+        object? CreateUser(string username, string email, string password);
+
+        //authenticate user
+        bool AuthUser(string usernameOrEmail, string password);
     }
 }
 
