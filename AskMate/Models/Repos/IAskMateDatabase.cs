@@ -17,6 +17,9 @@ namespace AskMate.Models.Repos
         public void UpdateAnswer(Answer answer);
         public void AcceptAnswer(string answerId);
         public bool IsAnswerBelongToLoggedInUsersQuestion(string loggedInUserID, string answerId);
+        public int CalculateUserPoints(string userID);
+        public bool ValidUser(string userID);
+
 
         // user
         object? CreateUser(string username, string email, string password);

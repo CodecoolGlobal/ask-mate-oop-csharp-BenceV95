@@ -347,5 +347,63 @@ namespace AskMate.Models.Repos
         {
             return Guid.NewGuid().ToString();
         }
+
+        //Create an endpoint where you can query the total points of a user, based on their contribution to the community.
+        //Asking a question awards 5 points. Each answer to that question awards 1 point to the question's asker (because it was an engaging question).
+        //Each answer the user creates is worth 10 points. However, any answer the user posts on their own question is worth 0 points (instead of effectively 11).
+        public int CalculateUserPoints(string userID)
+        {
+
+
+            _connectionString.Open();
+            var adapter = new NpgsqlDataAdapter(@"SELECT 
+                users.id, users.username, users.email_address,
+                (SELECT COUNT(*) * 5
+                FROM questions
+                WHERE user_id = users.id) +
+                (SELECT COUNT(*) * 10
+                FROM answers
+                INNER JOIN questions ON answers.question_id = questions.id
+                WHERE answers.user_id = users.id AND questions.user_id != users.id) +
+                (SELECT COUNT(*) * 1 
+                FROM answers
+                INNER JOIN questions ON answers.question_id = questions.id
+                WHERE questions.user_id = users.id AND answers.user_id != users.id) AS total_points
+                FROM users", _connectionString);
+
+            var dataSet = new DataSet();
+            adapter.Fill(dataSet);
+            var table = dataSet.Tables[0];
+
+            if (table.Rows.Count > 0)
+            {
+                DataRow row = table.Rows[0];
+
+
+                var totalPoints = Convert.ToInt32(row["total_points"]);
+
+                _connectionString.Close();
+
+                return totalPoints;
+            }
+
+            _connectionString.Close();
+            return 0;
+        }
+
+        public bool ValidUser(string userID)
+        {
+            _connectionString.Open();
+            var adapter = new NpgsqlDataAdapter("SELECT * from users WHERE id = :userID;", _connectionString);
+            adapter.SelectCommand?.Parameters.AddWithValue(":userID", userID);
+            if (adapter.SelectCommand.ExecuteScalar() != null)
+            {
+                _connectionString.Close();
+
+                return true;
+            }
+            _connectionString.Close();
+            return false;
+        }
     }
 }

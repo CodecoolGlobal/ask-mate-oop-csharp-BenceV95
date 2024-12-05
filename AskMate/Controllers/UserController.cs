@@ -34,10 +34,14 @@ namespace AskMate.Controllers
 
         //}
 
-        //[HttpGet("/{id}/Points")]
-        //public IActionResult PointSystem()
-        //{
-
-        //}
+        [HttpGet("/{id}/Points")]
+        public IActionResult PointSystem(string id)
+        {
+            if (_database.ValidUser(id))
+            {
+               return Ok(_database.CalculateUserPoints(id));
+            }
+            return NotFound("This user does not exist.");
+        }
     }
 }
