@@ -11,7 +11,7 @@ namespace AskMate.Models.Repos
 {
     public class AskMateDatabase : IAskMateDatabase
     {
-        const int keySize = 16; //it was 64 by default, but to make the output only 32 digits long it now reduced to 16
+        const int keySize = 64;
         const int iterations = 350000;
         HashAlgorithmName hashAlgorithm = HashAlgorithmName.SHA512;
 
@@ -33,15 +33,16 @@ namespace AskMate.Models.Repos
             adapter.SelectCommand?.ExecuteNonQuery();
         }
 
-        public string CreateNewQuestion(Question question)
+        public string CreateNewQuestion(Question question, string loggedInUserID)
         {
             _connectionString.Open();
 
-            using var adapter = new NpgsqlDataAdapter("INSERT INTO questions (id, user_id, body, post_date) VALUES (:id, :user_id, :body, :post_date) RETURNING id", _connectionString);
-            adapter.SelectCommand?.Parameters.AddWithValue(":post_date", question.PostDate);
-            adapter.SelectCommand?.Parameters.AddWithValue(":id", question.ID);
-            adapter.SelectCommand?.Parameters.AddWithValue(":user_id", question.UserID);
+            using var adapter = new NpgsqlDataAdapter("INSERT INTO questions (id, user_id, body, post_date, title) VALUES (:id, :user_id, :body, :post_date, :title) RETURNING id", _connectionString);
+            adapter.SelectCommand?.Parameters.AddWithValue(":post_date", DateTime.UtcNow);
+            adapter.SelectCommand?.Parameters.AddWithValue(":id", GenerateID());
+            adapter.SelectCommand?.Parameters.AddWithValue(":user_id", loggedInUserID);
             adapter.SelectCommand?.Parameters.AddWithValue(":body", question.Body);
+            adapter.SelectCommand?.Parameters.AddWithValue(":title", question.Title);
 
             var createdId = (string)adapter.SelectCommand?.ExecuteScalar();
 
@@ -52,7 +53,7 @@ namespace AskMate.Models.Repos
         public List<Question> GetAllQuestions()
         {
             _connectionString.Open();
-            using var adapter = new NpgsqlDataAdapter("SELECT * FROM questions ORDER BY post_date", _connectionString);
+            using var adapter = new NpgsqlDataAdapter("SELECT * FROM questions ORDER BY post_date DESC", _connectionString);
 
             var dataSet = new DataSet();
             adapter.Fill(dataSet);
@@ -61,12 +62,15 @@ namespace AskMate.Models.Repos
             var queryResult = new List<Question>();
             foreach (DataRow row in table.Rows)
             {
-                queryResult.Add(new Question(
-                    (string)row["id"],
-                    (string)row["user_id"],
-                    (string)row["body"],
-                    (DateTime)row["post_date"]
-                    ));
+                queryResult.Add(new Question()
+                {
+                    ID = (string)row["id"],
+                    UserId = (string)row["user_id"],
+                    Title = row["title"] == DBNull.Value ? null : (string?)row["title"], // this is temporary, in my db some titles are null
+                    Body = (string)row["body"],
+                    PostDate = (DateTime)row["post_date"]
+                }
+                    );
             }
             _connectionString.Close();
 
@@ -99,12 +103,15 @@ namespace AskMate.Models.Repos
             // Read the first query result (the question)
             if (await reader.ReadAsync())
             {
-                question = new Question(
-                    reader.GetString(reader.GetOrdinal("id")),
-                    reader.GetString(reader.GetOrdinal("user_id")),
-                    reader.GetString(reader.GetOrdinal("body")),
-                    reader.GetDateTime("post_date")
-                );
+                question = new Question()
+                {
+
+                    ID = reader.GetString(reader.GetOrdinal("id")),
+                    UserId = reader.GetString(reader.GetOrdinal("user_id")),
+                    Body = reader.GetString(reader.GetOrdinal("body")),
+                    PostDate = reader.GetDateTime("post_date"),
+                    Title = reader.GetString("title")
+                };
             }
 
             // Move to the next result set (the answers)
@@ -149,15 +156,16 @@ namespace AskMate.Models.Repos
             return null;
         }
 
-        public object? CreateNewAnswer(Answer answer)
+        public object? CreateNewAnswer(Answer answer, string loggedInUserID)
         {
             _connectionString.Open();
 
-            using var adapter = new NpgsqlDataAdapter("INSERT INTO answers (id, user_id,question_id, body) VALUES (:id, :user_id, :question_id, :body) RETURNING id", _connectionString);
-            adapter.SelectCommand?.Parameters.AddWithValue(":id", answer.id);
-            adapter.SelectCommand?.Parameters.AddWithValue(":user_id", answer.user_id);
+            using var adapter = new NpgsqlDataAdapter("INSERT INTO answers (id, user_id,question_id, body, post_date) VALUES (:id, :user_id, :question_id, :body, :post_date) RETURNING id", _connectionString);
+            adapter.SelectCommand?.Parameters.AddWithValue(":id", GenerateID());
+            adapter.SelectCommand?.Parameters.AddWithValue(":user_id", loggedInUserID);
             adapter.SelectCommand?.Parameters.AddWithValue(":question_id", answer.question_id);
             adapter.SelectCommand?.Parameters.AddWithValue(":body", answer.body);
+            adapter.SelectCommand?.Parameters.AddWithValue(":post_date", DateTime.UtcNow);
 
             var createdId = (string)adapter.SelectCommand?.ExecuteScalar();
             _connectionString.Close();
@@ -201,7 +209,7 @@ namespace AskMate.Models.Repos
             connection.Open();
 
 
-            var generatedID = Guid.NewGuid().ToString();
+            var generatedID = GenerateID();
 
 
             var hashedPW = HashPasword(password, out byte[] salt);
@@ -266,7 +274,6 @@ namespace AskMate.Models.Repos
         {
             var hashToCompare = Rfc2898DeriveBytes.Pbkdf2(Encoding.UTF8.GetBytes(password), salt, iterations, hashAlgorithm, keySize);
 
-
             return CryptographicOperations.FixedTimeEquals(hashToCompare, Convert.FromHexString(hash));
         }
 
@@ -278,33 +285,24 @@ namespace AskMate.Models.Repos
             return Convert.ToHexString(hash);
         }
 
+
+        /// <summary>
+        /// Returns true, if the given answer was posted for the currently logged in user's question.
+        /// </summary>
+        /// <param name="loggedInUserID"></param>
+        /// <param name="answerId"></param>
+        /// <returns></returns>
         public bool IsAnswerBelongToLoggedInUsersQuestion(string loggedInUserID, string answerId)
         {
-
-            //megkeresni a választ id alapján
-
-            // ha a válaszhoz tartozó question_id megszerezése
-
-            // kérdésekből a question_id alpján megnézni, hogy a kérdésnél a user_id == a jelenleg belépett userID-val
-
-
-            //user id the current logged in user
-
-            //answer id is the answer which we want to accept
-            Console.WriteLine("userID" + loggedInUserID);
-            Console.WriteLine("answerID" + answerId);
             _connectionString.Open();
 
             var adapter = new NpgsqlDataAdapter(" SELECT answers.user_id AS answerer, questions.user_id AS asker, answers.is_accepted FROM answers JOIN questions ON questions.id = answers.question_id WHERE answers.id = :answerID ", _connectionString);
-
 
             adapter.SelectCommand?.Parameters.AddWithValue(":answerID", answerId);
 
             var dataSet = new DataSet();
             adapter.Fill(dataSet);
             var table = dataSet.Tables[0];
-
-            Console.WriteLine(table.Rows.Count);
 
 
             if (table.Rows.Count > 0)
@@ -326,7 +324,10 @@ namespace AskMate.Models.Repos
         }
 
 
-
+        /// <summary>
+        /// Sets the given answer's 'is_accepted' field to true
+        /// </summary>
+        /// <param name="answerId"></param>
         public void AcceptAnswer(string answerId)
         {
             _connectionString.Open();
@@ -336,6 +337,15 @@ namespace AskMate.Models.Repos
 
             adapter.SelectCommand.ExecuteNonQuery();
 
+        }
+
+        /// <summary>
+        /// Generates random IDs.
+        /// </summary>
+        /// <returns></returns>
+        private string GenerateID()
+        {
+            return Guid.NewGuid().ToString();
         }
     }
 }

@@ -5,6 +5,7 @@ using AskMate.Models.Repos;
 using Npgsql;
 using AskMate.Models;
 using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace AskMate.Controllers;
 
@@ -13,7 +14,7 @@ namespace AskMate.Controllers;
 public class QuestionController : ControllerBase
 {
     private readonly IAskMateDatabase _database;
-    private readonly string _connectionString;
+
 
     public QuestionController(IAskMateDatabase database)
     {
@@ -34,11 +35,14 @@ public class QuestionController : ControllerBase
         return Ok(question);
     }
 
+    [Authorize]
     [HttpPost()]
-    public IActionResult CreateQuestion(Question question)
+    public IActionResult CreateQuestion([FromBody] Question question)
     {
+        var loggedInUserID = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
         //returns the id
-        return Ok(_database.CreateNewQuestion(question));
+        return Ok(_database.CreateNewQuestion(question, loggedInUserID));
     }
 
     //[HttpPut("{id}")]

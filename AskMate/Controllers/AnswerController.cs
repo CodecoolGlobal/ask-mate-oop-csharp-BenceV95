@@ -23,10 +23,13 @@ namespace AskMate.Controllers
 
         }
 
+        [Authorize]
         [HttpPost()]
         public IActionResult CreateAnswer(Answer answer)
         {
-            return Ok(_database.CreateNewAnswer(answer));
+            var loggedInUserID = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            return Ok(_database.CreateNewAnswer(answer, loggedInUserID));
         }
 
         [HttpDelete("{id}")]

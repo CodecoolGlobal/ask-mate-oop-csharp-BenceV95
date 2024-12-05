@@ -7,12 +7,12 @@ namespace AskMate.Models.Repos
         // questions
         public List<Question> GetAllQuestions();
         public Task<Question> GetQuestion(string questionID);
-        public string CreateNewQuestion(Question question);
+        public string CreateNewQuestion(Question question, string loggedInUserID);
         public void DeleteQuestion(string questionID);
 
         // answers
         public object? GetAnswer(string id);
-        public object? CreateNewAnswer(Answer answer);
+        public object? CreateNewAnswer(Answer answer, string loggedInUserID);
         public void DeleteAnswer(string id);
         public void UpdateAnswer(Answer answer);
         public void AcceptAnswer(string answerId);
