@@ -13,10 +13,10 @@ namespace AskMate.Controllers;
 [Route("[controller]")]
 public class QuestionController : ControllerBase
 {
-    private readonly IAskMateDatabase _database;
+    private readonly IQuestionsRepo _database;
 
 
-    public QuestionController(IAskMateDatabase database)
+    public QuestionController(IQuestionsRepo database)
     {
         _database = database;
     }
@@ -27,7 +27,7 @@ public class QuestionController : ControllerBase
     {
         return Ok(_database.GetAllQuestions());
     }
-
+    [Authorize]
     [HttpGet("{id}")]
     public async Task<IActionResult> GetQuestion(string id)
     {
@@ -45,38 +45,12 @@ public class QuestionController : ControllerBase
         return Ok(_database.CreateNewQuestion(question, loggedInUserID));
     }
 
-    //[HttpPut("{id}")]
-    //public IActionResult UpdateQuestion(Question question)
-    //{
-    //    return Ok(_database.UpdateAnswer(question);
-    //}
-
+    [Authorize]
     [HttpDelete("{id}")]
     public IActionResult DeleteQuestion(string id)
     {
         _database.DeleteQuestion(id);
         return Ok();
     }
-
-
-
-    //    Create an endpoint to retrieve all the questions.
-
-    //An endpoint called /Question exists.
-
-    //The endpoint uses the GET request method.
-
-    //The data is sorted by starting with the most recent one.
-
-
-
-
-
-
-
-
-
-
-
 
 }

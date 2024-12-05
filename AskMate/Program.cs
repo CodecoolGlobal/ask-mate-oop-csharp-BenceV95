@@ -5,8 +5,23 @@ using Npgsql;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddScoped<IAskMateDatabase>(provider =>
-new AskMateDatabase(new NpgsqlConnection("Server=localhost;Port=5432;User Id=molnarimi0211;Password=admin;Database=ask_mate"))); // enter pw
+string CONNECTIONSTRING = "Server=localhost;Port=5432;User Id=postgres;Password=Vonat2024;Database=ask_mate"; // make this to get from the env
+
+var connection = new NpgsqlConnection(CONNECTIONSTRING);
+
+//questions
+builder.Services.AddScoped<IQuestionsRepo>(provider =>
+new QuestionsRepo(connection));
+
+//answers
+builder.Services.AddScoped<IAnswersRepo>(provider =>
+new AnswersRepo(connection));
+
+//users
+builder.Services.AddScoped<IUserRepo>(provider =>
+new UserRepo(connection));
+
+
 
 
 // Add services to the container.
@@ -20,8 +35,8 @@ builder.Services.AddAuthentication("Cookies")
     .AddCookie("Cookies", options =>
     {
         options.Cookie.Name = "UserAuthCookie"; // Name of the cookie
-        options.LoginPath = "/auth/login";     // Redirect to login if unauthorized
-        options.AccessDeniedPath = "/auth/denied"; // Redirect if access is denied
+        options.LoginPath = "/User/login";     // Redirect to login if unauthorized
+        options.AccessDeniedPath = "/User/denied"; // Redirect if access is denied
         options.ExpireTimeSpan = TimeSpan.FromHours(1); // Expiration
     });
 
@@ -35,7 +50,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-//add authetication%
+//add authetication
 app.UseAuthentication();
 
 

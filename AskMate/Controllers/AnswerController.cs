@@ -10,12 +10,13 @@ namespace AskMate.Controllers
     [Route("[controller]")]
     public class AnswerController : ControllerBase
     {
-        private readonly IAskMateDatabase _database;
-        public AnswerController(IAskMateDatabase database)
+        private readonly IAnswersRepo _database;
+        public AnswerController(IAnswersRepo database)
         {
             _database = database;
         }
 
+        [Authorize]
         [HttpGet("{id}")]
         public IActionResult GetAnswers(string id)
         {
@@ -31,7 +32,7 @@ namespace AskMate.Controllers
 
             return Ok(_database.CreateNewAnswer(answer, loggedInUserID));
         }
-
+        [Authorize]
         [HttpDelete("{id}")]
         public IActionResult DeleteAnswer(string id)
         {
@@ -39,6 +40,7 @@ namespace AskMate.Controllers
             return Ok();
         }
 
+        [Authorize]
         [HttpPatch("{id}")]
         public IActionResult UpdateAnswer(Answer answer)
         {
