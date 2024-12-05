@@ -1,4 +1,11 @@
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using System.Globalization;
+using AskMate.Models.Repos;
+using Npgsql;
+using AskMate.Models;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace AskMate.Controllers;
 
@@ -6,9 +13,44 @@ namespace AskMate.Controllers;
 [Route("[controller]")]
 public class QuestionController : ControllerBase
 {
-    [HttpGet]
-    public IActionResult GetAll()
+    private readonly IQuestionsRepo _database;
+
+
+    public QuestionController(IQuestionsRepo database)
     {
-        return Ok("No questions were asked yet.");
+        _database = database;
     }
+
+    [Authorize]
+    [HttpGet()]
+    public IActionResult GetAllQuestion()
+    {
+        return Ok(_database.GetAllQuestions());
+    }
+    [Authorize]
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetQuestion(string id)
+    {
+        var question = await _database.GetQuestion(id);
+        return Ok(question);
+    }
+
+    [Authorize]
+    [HttpPost()]
+    public IActionResult CreateQuestion([FromBody] Question question)
+    {
+        var loggedInUserID = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+        //returns the id
+        return Ok(_database.CreateNewQuestion(question, loggedInUserID));
+    }
+
+    [Authorize]
+    [HttpDelete("{id}")]
+    public IActionResult DeleteQuestion(string id)
+    {
+        _database.DeleteQuestion(id);
+        return Ok();
+    }
+
 }
