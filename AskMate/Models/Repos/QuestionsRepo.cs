@@ -7,10 +7,10 @@ namespace AskMate.Models.Repos
     public class QuestionsRepo : IQuestionsRepo
     {
 
-        private NpgsqlConnection _connectionString;
+        private string _connectionString;
 
 
-        public QuestionsRepo(NpgsqlConnection connectionString)
+        public QuestionsRepo(string connectionString)
         {
             _connectionString = connectionString;
         }
@@ -18,22 +18,23 @@ namespace AskMate.Models.Repos
         //delete
         public void DeleteQuestion(string questionID)
         {
-            _connectionString.Open();
+            using var connection = new NpgsqlConnection(_connectionString);
+            connection.Open();
 
-            using var adapter = new NpgsqlDataAdapter("DELETE FROM ONLY questions WHERE questions.id = :questionID ", _connectionString);
+            using var adapter = new NpgsqlDataAdapter("DELETE FROM ONLY questions WHERE questions.id = :questionID ", connection);
             adapter.SelectCommand?.Parameters.AddWithValue(":questionID", questionID);
 
             adapter.SelectCommand?.ExecuteNonQuery();
 
-            _connectionString.Close();
         }
 
         //create
         public string CreateNewQuestion(Question question, string loggedInUserID)
         {
-            _connectionString.Open();
+            using var connection = new NpgsqlConnection(_connectionString);
+            connection.Open();
 
-            using var adapter = new NpgsqlDataAdapter("INSERT INTO questions (id, user_id, body, post_date, title) VALUES (:id, :user_id, :body, :post_date, :title) RETURNING id", _connectionString);
+            using var adapter = new NpgsqlDataAdapter("INSERT INTO questions (id, user_id, body, post_date, title) VALUES (:id, :user_id, :body, :post_date, :title) RETURNING id", connection);
             adapter.SelectCommand?.Parameters.AddWithValue(":post_date", DateTime.UtcNow);
             adapter.SelectCommand?.Parameters.AddWithValue(":id", Guid.NewGuid().ToString());
             adapter.SelectCommand?.Parameters.AddWithValue(":user_id", loggedInUserID);
@@ -42,7 +43,6 @@ namespace AskMate.Models.Repos
 
             var createdId = (string)adapter.SelectCommand?.ExecuteScalar();
 
-            _connectionString.Close();
             return createdId;
 
         }
@@ -50,8 +50,9 @@ namespace AskMate.Models.Repos
         //getAll
         public List<Question> GetAllQuestions()
         {
-            _connectionString.Open();
-            using var adapter = new NpgsqlDataAdapter("SELECT * FROM questions ORDER BY post_date DESC", _connectionString);
+            using var connection = new NpgsqlConnection(_connectionString);
+            connection.Open();
+            using var adapter = new NpgsqlDataAdapter("SELECT * FROM questions ORDER BY post_date DESC", connection);
 
             var dataSet = new DataSet();
             adapter.Fill(dataSet);
@@ -70,17 +71,17 @@ namespace AskMate.Models.Repos
                 }
                     );
             }
-            _connectionString.Close();
-
             return queryResult;
         }
 
         //getOne
         public async Task<Question> GetQuestion(string questionID)
         {
-            await _connectionString.OpenAsync();
+            using var connection = new NpgsqlConnection(_connectionString);
 
-            await using var batch = new NpgsqlBatch(_connectionString)
+            await connection.OpenAsync();
+
+            await using var batch = new NpgsqlBatch(connection)
             {
                 BatchCommands =
                 {
@@ -124,7 +125,6 @@ namespace AskMate.Models.Repos
                 }
             }
 
-            _connectionString.Close();
             return question;
         }
 

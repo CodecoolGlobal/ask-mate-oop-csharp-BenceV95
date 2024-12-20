@@ -30,6 +30,22 @@ namespace AskMate.Controllers
             return Ok(_database.CreateUser(request.Username, request.Email, request.Password));
         }
 
+        [HttpGet("allUsers")]
+        public IActionResult GetUsers()
+        {
+            return Ok(_database.GetAllUsers());
+        }
+
+        //session check
+        [HttpGet("session")]
+        [Authorize] // Requires the user to be authenticated
+        public IActionResult ValidateSession()
+        {
+            var username = User.Identity.Name; // Get the logged-in user's name
+            return Ok(new { IsLoggedIn = true, Username = username });
+        }
+
+
         [Authorize]
         [HttpGet("/{id}/Points")]
         public IActionResult PointSystem(string id)
@@ -43,16 +59,16 @@ namespace AskMate.Controllers
 
 
         [HttpPost("login")]
-        public async Task<IActionResult> Login(string username, string password)
+        public async Task<IActionResult> Login([FromBody] LoginRequest user)
         {
             // Validate credentials (replace with actual validation)
-            if (_database.AuthUser(username, password, out string userID))
+            if (_database.AuthUser(user.Username, user.Password, out string userID))
             {
                 Console.WriteLine("login");
                 // Create user claims
                 var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.Name, username),
+                new Claim(ClaimTypes.Name, user.Username),
                 new Claim(ClaimTypes.Role, "User"), //to be implemented
                 new Claim(ClaimTypes.NameIdentifier, userID)
             };

@@ -7,5 +7,6 @@
         public bool ValidUser(string userID);
         object? CreateUser(string username, string email, string password);
         bool AuthUser(string usernameOrEmail, string password, out string? userID);
+        List<User> GetAllUsers();
     }
 }
