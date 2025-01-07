@@ -98,46 +98,24 @@ function App() {
     }
   }
 
-  //fetch questions
+  //fetch all necessary data
   useEffect(() => {
-    const loadQuestions = async () => {
+    const loadData = async () => {
       try {
-        const data = await fetchData("http://localhost:5166/Question");
-        setQuestions(data);
+        const questions = await fetchData("http://localhost:5166/Question");
+        const users = await fetchData("http://localhost:5166/User/allUsers");
+        const categories = await fetchData("http://localhost:5166/categories");
+        setCategories(categories);
+        setUsers(users);
+        setQuestions(questions);
       } catch (err) {
         console.log(err.message);
       }
     };
-    loadQuestions();
+    loadData();
     console.log("questions:1", questions)
   }, []);
 
-  //fetch all users TODO: make this in one useEffect with fetchQuestions!
-  useEffect(() => {
-    const loadUsers = async () => {
-      try {
-        const data = await fetchData("http://localhost:5166/User/allUsers");
-        setUsers(data);
-      } catch (err) {
-        console.log(err.message);
-      }
-    };
-    loadUsers();
-  }, []);
-
-  //fetching the categories
-  useEffect(() => {
-    const loadCategories = async () => {
-      try {
-        const data = await fetchData("http://localhost:5166/categories");
-        setCategories(data);
-      } catch (err) {
-        console.log(err.message);
-      }
-    };
-    console.log("categories:", categories)
-    loadCategories();
-  }, []);
 
   async function registerNewUser(e, username, email, password) {
     try {
