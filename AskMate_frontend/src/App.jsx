@@ -118,8 +118,8 @@ function App() {
 
 
   async function registerNewUser(e, username, email, password) {
-    try {
-      e.preventDefault();
+    e.preventDefault();
+    try {      
       const response = await fetch('http://localhost:5166/User', {
         method: 'POST',
         headers: {
@@ -132,12 +132,11 @@ function App() {
         }),
       });
 
-      const result = await response.json();
+      //const result = await response.json();
+      //console.log(result);
       if (response.ok) {
         setResponseMessage('Registration successful!');
         navigate("/")
-      } else {
-        setResponseMessage(`Error: ${result.message}`);
       }
     } catch (error) {
       console.error('Error:', error);

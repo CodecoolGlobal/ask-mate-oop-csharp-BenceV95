@@ -1,0 +1,10 @@
+.register {
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+}
+
+input {
+    border-radius: 5px;
+    text-align: center;
+}

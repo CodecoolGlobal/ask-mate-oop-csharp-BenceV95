@@ -27,7 +27,9 @@ namespace AskMate.Controllers
         [HttpPost()]
         public IActionResult CreateUser([FromBody] UserRequest request)
         {
-            return Ok(_database.CreateUser(request.Username, request.Email, request.Password));
+            var result = _database.CreateUser(request.Username, request.Email, request.Password);
+
+            return Ok();
         }
 
         [HttpGet("allUsers")]

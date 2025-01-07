@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-
+import './LoginForm.css';
 
 
 export default function LoginForm({ navigate, loginUser }) {
@@ -16,13 +16,13 @@ export default function LoginForm({ navigate, loginUser }) {
 
     return (
         <div>
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit} className='login'>
                 <input value={username} onChange={(e) => setUsername(e.target.value)} placeholder="username/email" /> <br />
                 <input value={password} onChange={(e) => setPassword(e.target.value)} placeholder="password" type="password" /> <br />
-                <button type='submit' >Login</button>
+                <button type='submit' className='btn btn-success'>Login</button>
             </form>
+            <br></br>
             <a href="/register">Don't have an account?</a> <br />
-            <button onClick={() => navigate(-1)}>Back</button>
         </div >
     )
 }

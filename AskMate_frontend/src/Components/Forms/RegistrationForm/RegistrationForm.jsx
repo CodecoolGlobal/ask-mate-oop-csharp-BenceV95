@@ -1,4 +1,5 @@
-import { useState } from "react"
+import { useState } from "react";
+import './RegistrationForm.css';
 
 export default function RegistrationForm({ registerNewUser }) {
 
@@ -8,14 +9,14 @@ export default function RegistrationForm({ registerNewUser }) {
 
     return (
         <div>
-            <form onSubmit={(e) => { registerNewUser(e, username, email,password) }}>
-                <label htmlFor="username">Username: </label>
-                <input onChange={(e) => { setUsername(e.target.value) }} type='text' id="username" name="username" /> <br />
-                <label htmlFor="email">Email: </label>
-                <input onChange={(e) => { setEmail(e.target.value) }} type="email" id="email" name="email" /> <br />
-                <label htmlFor="pw">Password: </label>
-                <input onChange={(e) => { setPassword(e.target.value) }} type="password" id="pw" name="pw" /> <br />
-                <button type="submit">Register</button>
+            <form onSubmit={(e) => { registerNewUser(e, username, email,password) }} className="register">
+
+                <input onChange={(e) => { setUsername(e.target.value) }} type='text' id="username" name="username" placeholder="Username"/>
+
+                <input onChange={(e) => { setEmail(e.target.value) }} type="email" id="email" name="email" placeholder="Email"/>
+
+                <input onChange={(e) => { setPassword(e.target.value) }} type="password" id="pw" name="pw" placeholder="Password"/> <br />
+                <button type="submit" className="btn btn-success">Register</button>
             </form>
         </div>
     )

@@ -12,8 +12,8 @@ const Navbar = ({ handleLogOut }) => {
 
 
   return (
-    <div>
-      <nav className="navbar fixed-top navbar-expand-lg bg-body-tertiary">
+    <>
+      <nav className="navbar fixed-top navbar-expand-lg bg-primary text-white">
         <div className="container-fluid">
           <a className="navbar-brand" href="/">AskApe</a>
           <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -27,32 +27,20 @@ const Navbar = ({ handleLogOut }) => {
               <li className="nav-item">
                 <a className="nav-link" href="/users">Users</a>
               </li>
-              <li className="nav-item dropdown">
-                <a className="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                  {loggedInUsername}
-                </a>
-                <ul className="dropdown-menu">
-                  <li><a className="dropdown-item" href="#">My questions</a></li>
-                  <li><a className="dropdown-item" href="#">My answers</a></li>
-                  <li><hr className="dropdown-divider" /></li>
-                  <li><a className="dropdown-item" href="#">Profile</a></li>
-                </ul>
-              </li>
               <li className="nav-item">
-                <a className="nav-link disabled" aria-disabled="true">Disabled</a>
-              </li>
-              <li className="nav-item align-self-center"> {/*align self center doesnt work here for some reason, todo: make it centered*/}
-                <form className="d-flex" role="search">
-                  <input className="form-control me-2" type="search" placeholder="Search" aria-label="Search" />
-                  <button className="btn btn-outline-success" type="submit">Search</button>
-                </form>
+                <p>
+                  {loggedInUsername}
+                </p>
               </li>
             </ul>
           </div>
-          {isLoggedIn ? <button className="btn btn-outline-success" onClick={(e) => handleLogOut(e)} >Log Out</button> : <Link className="nav-link" to={"/login"} href="#">Login</Link>}
+          {
+          isLoggedIn ? 
+          <button className="btn btn-danger" onClick={(e) => handleLogOut(e)} >Log Out</button>
+           : <Link className="btn btn-success" to={"/login"} href="#">Login</Link>}
         </div>
       </nav>
-    </div>
+    </>
   )
 }
 
