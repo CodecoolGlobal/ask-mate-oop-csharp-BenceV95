@@ -5,9 +5,9 @@ using Npgsql;
 
 var builder = WebApplication.CreateBuilder(args);
 
-string CONNECTIONSTRING = Environment.GetEnvironmentVariable("ASK_MATE_DB_CONNECTION_STRING");
+string CONNECTIONSTRING = Environment.GetEnvironmentVariable("CONNECTION_STRING");
 
-builder.Services.AddSingleton<string>(sp => CONNECTIONSTRING);
+builder.Services.AddSingleton<string>(sp => CONNECTIONSTRING+"ask_mate");
 
 //questions
 builder.Services.AddScoped<IQuestionsRepo, QuestionsRepo>();
@@ -17,6 +17,9 @@ builder.Services.AddScoped<IAnswersRepo, AnswersRepo>();
 
 //users
 builder.Services.AddScoped<IUserRepo, UserRepo>();
+
+//categories
+builder.Services.AddScoped<ICategoriesRepo, CategoriesRepo>();
 
 
 // Add services to the container.

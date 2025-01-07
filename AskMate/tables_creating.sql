@@ -1,7 +1,12 @@
 DROP TABLE IF EXISTS answers;
 DROP TABLE IF EXISTS questions;
 DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS categories;
 
+CREATE TABLE categories (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255) UNIQUE NOT NULL
+);
 
 CREATE TABLE users (
     id VARCHAR(255) PRIMARY KEY,
@@ -11,14 +16,18 @@ CREATE TABLE users (
     password VARCHAR(255) NOT NULL,
     salt BYTEA NOT NULL
 );
+
 CREATE TABLE questions (
     id VARCHAR(255) PRIMARY KEY,
     user_id VARCHAR(255) NOT NULL,
     body TEXT NOT NULL,
     title VARCHAR(255) NOT NULL,
     post_date TIMESTAMP NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES users(id)
+    categories INT NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES users(id),
+    FOREIGN KEY (categories) REFERENCES categories(id)
 );
+
 CREATE TABLE answers (
     id VARCHAR(255) PRIMARY KEY,
     user_id VARCHAR(255) NOT NULL,
@@ -29,3 +38,5 @@ CREATE TABLE answers (
     FOREIGN KEY (user_id) REFERENCES users(id),
     FOREIGN KEY (question_id) REFERENCES questions(id)
 );
+
+
