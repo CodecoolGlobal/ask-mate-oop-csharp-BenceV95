@@ -5,11 +5,14 @@ import Tags from "./Tags"
 
 export default function QuestionsPage({ questions, categories }) {
     const { isLoggedIn } = useContext(AuthContext)
-    console.log("categories in questionPage:", categories)
+
     return (
         <>
             {isLoggedIn ?
                 <>
+                <div>
+                    <a className="btn btn-warning" href="/ask">Ask a Question</a>
+                </div>
                     {questions.map(question => {
                         return <div key={question.id} className="card" style={{ width: `${24}rem` }}>
                             <div className="card-body">

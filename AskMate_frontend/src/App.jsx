@@ -11,6 +11,7 @@ import QuestionsPage from './Components/Pages/QuestionsPage/QuestionsPage';
 import UsersPage from './Components/Pages/UsersPage/UsersPage';
 import { AuthContext } from './Components/AuthContext/AuthContext';
 import { useContext } from 'react';
+import AskQuestionForm from './Components/Forms/AskQuestionForm/AskQuestionForm';
 
 
 function App() {
@@ -163,6 +164,7 @@ function App() {
         <Route path="/questions" element={<QuestionsPage questions={questions} categories={categories} />} />
         <Route path="/users" element={<UsersPage users={users} />} />
         <Route path="/error" element={<ErrorPage />} />
+        <Route path="/ask" element={<AskQuestionForm categories={categories}/>} />
       </Routes>
     </>
   );

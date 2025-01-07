@@ -7,7 +7,7 @@ export default function Tags({ categories }) {
         <>
             <div>
                 {categories.map(category => {
-                    return <div>{category.name}</div>
+                    return <div key={category.id}>{category.name}</div>
                 })}
             </div>
         </>
