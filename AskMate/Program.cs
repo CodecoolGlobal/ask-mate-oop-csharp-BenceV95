@@ -7,10 +7,9 @@ using Npgsql;
 
 var builder = WebApplication.CreateBuilder(args);
 
-//string CONNECTIONSTRING = Environment.GetEnvironmentVariable("CONNECTION_STRING");
-string CONNECTIONSTRING = "Server = localhost; Port = 5432; User Id = postgres; Password = Vonat2024; Database = ask_mate";
+string CONNECTIONSTRING = Environment.GetEnvironmentVariable("CONNECTION_STRING");
 
-builder.Services.AddSingleton<string>(sp => CONNECTIONSTRING);
+builder.Services.AddSingleton<string>(sp => CONNECTIONSTRING + "ask_mate");
 
 //questions
 builder.Services.AddScoped<IQuestionsRepo, QuestionsRepo>();
