@@ -25,5 +25,17 @@ namespace AskMate.Controllers
 
             return BadRequest(); // is it though ?
         }
+
+        [HttpGet()]
+        public IActionResult GetAllCategories()
+        {
+            var result = _database.GetAllCategories();
+            if (result.Count > 0)
+            {
+                return Ok(result);
+            }
+
+            return BadRequest(); // is it though ?
+        }
     }
 }
