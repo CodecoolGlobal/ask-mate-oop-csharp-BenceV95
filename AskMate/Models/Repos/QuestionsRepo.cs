@@ -34,12 +34,13 @@ namespace AskMate.Models.Repos
             using var connection = new NpgsqlConnection(_connectionString);
             connection.Open();
 
-            using var adapter = new NpgsqlDataAdapter("INSERT INTO questions (id, user_id, body, post_date, title) VALUES (:id, :user_id, :body, :post_date, :title) RETURNING id", connection);
+            using var adapter = new NpgsqlDataAdapter("INSERT INTO questions (id, user_id, body, post_date, title, categories) VALUES (:id, :user_id, :body, :post_date, :title, :categories) RETURNING id", connection);
             adapter.SelectCommand?.Parameters.AddWithValue(":post_date", DateTime.UtcNow);
             adapter.SelectCommand?.Parameters.AddWithValue(":id", Guid.NewGuid().ToString());
             adapter.SelectCommand?.Parameters.AddWithValue(":user_id", loggedInUserID);
             adapter.SelectCommand?.Parameters.AddWithValue(":body", question.Body);
             adapter.SelectCommand?.Parameters.AddWithValue(":title", question.Title);
+            adapter.SelectCommand?.Parameters.AddWithValue(":categories", question.Categories);
 
             var createdId = (string)adapter.SelectCommand?.ExecuteScalar();
 

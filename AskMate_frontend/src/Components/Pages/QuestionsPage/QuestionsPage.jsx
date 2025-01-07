@@ -1,9 +1,11 @@
 import { useContext } from "react"
 import { AuthContext } from "../../AuthContext/AuthContext"
 import { Navigate } from "react-router-dom"
+import Tags from "./Tags"
 
-export default function QuestionsPage({ questions }) {
+export default function QuestionsPage({ questions, categories }) {
     const { isLoggedIn } = useContext(AuthContext)
+    console.log("categories in questionPage:", categories)
     return (
         <>
             {isLoggedIn ?
@@ -17,6 +19,7 @@ export default function QuestionsPage({ questions }) {
                             </div>
                         </div>
                     })}
+                    <Tags categories={categories} />
                 </> : <Navigate to={"/error"} />}
         </>
     )

@@ -109,7 +109,7 @@ function App() {
       }
     };
     loadQuestions();
-    console.log(questions)
+    console.log("questions:1", questions)
   }, []);
 
   //fetch all users TODO: make this in one useEffect with fetchQuestions!
@@ -123,12 +123,11 @@ function App() {
       }
     };
     loadUsers();
-    console.log(questions)
   }, []);
 
   //fetching the categories
   useEffect(() => {
-    const loadQuestions = async () => {
+    const loadCategories = async () => {
       try {
         const data = await fetchData("http://localhost:5166/categories");
         setCategories(data);
@@ -136,7 +135,8 @@ function App() {
         console.log(err.message);
       }
     };
-    loadQuestions();
+    console.log("categories:", categories)
+    loadCategories();
   }, []);
 
   async function registerNewUser(e, username, email, password) {
@@ -183,8 +183,8 @@ function App() {
         <Route path="/" element={<MainPage />} />
         <Route path="/login" element={<LoginForm navigate={navigate} loginUser={loginUser} />} />
         <Route path="/register" element={<RegistrationForm registerNewUser={registerNewUser} />} />
-        <Route path="/questions" element={<QuestionsPage questions={questions} />} />
-        <Route path="/users" element={<UsersPage users={users} categories={categories} />} />
+        <Route path="/questions" element={<QuestionsPage questions={questions} categories={categories} />} />
+        <Route path="/users" element={<UsersPage users={users} />} />
         <Route path="/error" element={<ErrorPage />} />
       </Routes>
     </>
