@@ -12,7 +12,6 @@ string CONNECTIONSTRING = Environment.GetEnvironmentVariable("CONNECTION_STRING"
 
 builder.Services.AddSingleton<string>(sp => CONNECTIONSTRING + "ask_mate");
 
-builder.Services.AddSingleton<string>(sp => CONNECTIONSTRING);
 
 //questions
 builder.Services.AddScoped<IQuestionsRepo, QuestionsRepo>();

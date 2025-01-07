@@ -37,5 +37,29 @@ namespace AskMate.Controllers
 
             return BadRequest(); // is it though ?
         }
+
+        [HttpDelete()]
+        public IActionResult DeleteCategory(int id)
+        {
+            var result = _database.DeleteCategory(id);
+            if (result)
+            {
+                return Ok();
+            }
+
+            return BadRequest(); // is it though ?
+        }
+
+        [HttpPatch()]
+        public IActionResult UpdateCategory(int id, string name)
+        {
+            var result = _database.UpdateCategory(id,name);
+            if (result)
+            {
+                return Ok();
+            }
+
+            return BadRequest(); // is it though ?
+        }
     }
 }
