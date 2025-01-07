@@ -57,12 +57,39 @@ namespace AskMate.Models.Repos
 
         public bool UpdateCategory(int id, string name)
         {
-            throw new NotImplementedException();
+            using var connection = new NpgsqlConnection(_connectionString);
+            connection.Open();
+
+            using (var command = new NpgsqlCommand(
+                       @"UPDATE categories
+                                SET name = :name
+                                WHERE categories.id = :id ",
+                       connection))
+            {
+                command.Parameters.AddWithValue(":id", id);
+                command.Parameters.AddWithValue(":name", name);
+                var status = command.ExecuteNonQuery();
+
+                return status != -1;
+
+            };
         }
 
         public bool DeleteCategory(int id)
         {
-            throw new NotImplementedException();
+            using var connection = new NpgsqlConnection(_connectionString);
+            connection.Open();
+
+            using (var command = new NpgsqlCommand(
+                       "DELETE FROM ONLY categories WHERE categories.id = :id ",
+                       connection))
+            {
+                command.Parameters.AddWithValue(":id", id);
+                var status = command.ExecuteNonQuery();
+
+                return status != -1;
+
+            };
         }
     }
 }
