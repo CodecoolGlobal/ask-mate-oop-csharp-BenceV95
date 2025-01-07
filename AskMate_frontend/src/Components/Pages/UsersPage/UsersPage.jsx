@@ -3,7 +3,7 @@ import { AuthContext } from "../../AuthContext/AuthContext"
 import { Navigate } from "react-router-dom"
 
 
-export default function UsersPage({ users }) {
+export default function UsersPage({ users,categories }) {
     const { isLoggedIn } = React.useContext(AuthContext)
 
     return (
@@ -19,6 +19,7 @@ export default function UsersPage({ users }) {
                             </div>
                         </div>
                     })}
+                    <Tags categories={categories} />
                 </> : <Navigate to={"/error"} />}
         </>
     )

@@ -19,6 +19,7 @@ function App() {
 
   const [questions, setQuestions] = useState([]);
   const [users, setUsers] = useState([]);
+  const [categories, setCategories] = useState([]);
 
   const navigate = useNavigate();
 
@@ -113,7 +114,7 @@ function App() {
 
   //fetch all users TODO: make this in one useEffect with fetchQuestions!
   useEffect(() => {
-    const loadQuestions = async () => {
+    const loadUsers = async () => {
       try {
         const data = await fetchData("http://localhost:5166/User/allUsers");
         setUsers(data);
@@ -121,11 +122,22 @@ function App() {
         console.log(err.message);
       }
     };
-    loadQuestions();
+    loadUsers();
     console.log(questions)
   }, []);
 
-
+  //fetching the categories
+  useEffect(() => {
+    const loadQuestions = async () => {
+      try {
+        const data = await fetchData("http://localhost:5166/categories");
+        setCategories(data);
+      } catch (err) {
+        console.log(err.message);
+      }
+    };
+    loadQuestions();
+  }, []);
 
   async function registerNewUser(e, username, email, password) {
     try {
@@ -172,7 +184,7 @@ function App() {
         <Route path="/login" element={<LoginForm navigate={navigate} loginUser={loginUser} />} />
         <Route path="/register" element={<RegistrationForm registerNewUser={registerNewUser} />} />
         <Route path="/questions" element={<QuestionsPage questions={questions} />} />
-        <Route path="/users" element={<UsersPage users={users} />} />
+        <Route path="/users" element={<UsersPage users={users} categories={categories} />} />
         <Route path="/error" element={<ErrorPage />} />
       </Routes>
     </>
