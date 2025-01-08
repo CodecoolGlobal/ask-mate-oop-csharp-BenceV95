@@ -40,6 +40,7 @@ public class QuestionController : ControllerBase
     public IActionResult CreateQuestion([FromBody] Question question)
     {
         var loggedInUserID = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        Console.WriteLine(loggedInUserID);
 
         //returns the id
         return Ok(_database.CreateNewQuestion(question, loggedInUserID));

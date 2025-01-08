@@ -13,7 +13,7 @@ const Navbar = ({ handleLogOut }) => {
 
   return (
     <>
-      <nav className="navbar fixed-top navbar-expand-lg bg-primary text-white">
+      <nav className="navbar mb-5 navbar-expand-lg bg-primary text-white">
         <div className="container-fluid">
           <a className="navbar-brand" href="/">AskApe</a>
           <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">

@@ -44,7 +44,8 @@ namespace AskMate.Controllers
         public IActionResult ValidateSession()
         {
             var username = User.Identity.Name; // Get the logged-in user's name
-            return Ok(new { IsLoggedIn = true, Username = username });
+            var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+            return Ok(new { IsLoggedIn = true, Username = username, Id = userId });
         }
 
 

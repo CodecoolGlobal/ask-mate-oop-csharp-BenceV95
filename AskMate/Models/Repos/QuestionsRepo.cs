@@ -38,6 +38,7 @@ namespace AskMate.Models.Repos
             adapter.SelectCommand?.Parameters.AddWithValue(":post_date", DateTime.UtcNow);
             adapter.SelectCommand?.Parameters.AddWithValue(":id", Guid.NewGuid().ToString());
             adapter.SelectCommand?.Parameters.AddWithValue(":user_id", loggedInUserID);
+            //adapter.SelectCommand?.Parameters.AddWithValue(":user_id", question.UserId);
             adapter.SelectCommand?.Parameters.AddWithValue(":body", question.Body);
             adapter.SelectCommand?.Parameters.AddWithValue(":title", question.Title);
             adapter.SelectCommand?.Parameters.AddWithValue(":categories", question.Categories);
