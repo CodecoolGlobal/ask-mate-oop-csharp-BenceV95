@@ -24,7 +24,7 @@ export function AuthProvider({ children }) {
     useEffect(() => {
         async function fetchLoginStatus() {
             const status = await checkSession();
-            await delay(1000) //for testing
+            await delay(10000) //for testing
             console.log("status:", status)
             setIsLoggedIn(status.isLoggedIn)
             setLoggedInUsername(status.username)

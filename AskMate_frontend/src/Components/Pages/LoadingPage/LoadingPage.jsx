@@ -4,7 +4,7 @@ import "./LoadingPage.css"
 
 export default function LoadingPage() {
     return (
-        <div >
+        <div className='loading'>
             <div className="loading-spinner">
                 <div className="loading-dot"></div>
                 <div className="loading-dot"></div>

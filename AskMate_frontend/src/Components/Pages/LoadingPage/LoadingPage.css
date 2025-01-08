@@ -1,38 +1,46 @@
 /* LoadingPage.css */
 
-  .loading-spinner {
-    display: flex;
-    justify-content: space-between;
-    width: 70px;
-    margin-bottom: 20px;
+.loading {
+  margin-top: calc(50vh);
+  align-self: center;
+  justify-self: center;
+}
+
+.loading-spinner {
+  display: flex;
+  justify-content: space-between;
+  width: 70px;
+  margin-bottom: 20px;
+}
+
+.loading-dot {
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  background-color: #007bff;
+  animation: bounce 1.5s infinite ease-in-out;
+}
+
+.loading-dot:nth-child(1) {
+  animation-delay: 0s;
+}
+
+.loading-dot:nth-child(2) {
+  animation-delay: 0.3s;
+}
+
+.loading-dot:nth-child(3) {
+  animation-delay: 0.6s;
+}
+
+@keyframes bounce {
+
+  0%,
+  100% {
+    transform: translateY(0);
   }
-  
-  .loading-dot {
-    width: 15px;
-    height: 15px;
-    border-radius: 50%;
-    background-color: #007bff;
-    animation: bounce 1.5s infinite ease-in-out;
+
+  50% {
+    transform: translateY(-10px);
   }
-  
-  .loading-dot:nth-child(1) {
-    animation-delay: 0s;
-  }
-  
-  .loading-dot:nth-child(2) {
-    animation-delay: 0.3s;
-  }
-  
-  .loading-dot:nth-child(3) {
-    animation-delay: 0.6s;
-  }
-  
-  @keyframes bounce {
-    0%, 100% {
-      transform: translateY(0);
-    }
-    50% {
-      transform: translateY(-10px);
-    }
-  }
-  
+}
