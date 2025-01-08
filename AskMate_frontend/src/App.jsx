@@ -104,10 +104,10 @@ function App() {
     const loadData = async () => {
       try {
         const questions = await fetchData("http://localhost:5166/Question");
-        const users = await fetchData("http://localhost:5166/User/allUsers");
+        //const users = await fetchData("http://localhost:5166/User/allUsers");
         const categories = await fetchData("http://localhost:5166/categories");
         setCategories(categories);
-        setUsers(users);
+        //setUsers(users);
         setQuestions(questions);
       } catch (err) {
         console.log(err.message);

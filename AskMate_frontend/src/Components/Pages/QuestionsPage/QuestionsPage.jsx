@@ -1,28 +1,50 @@
-import { useContext, useState } from "react"
+import { useContext, useEffect, useState } from "react"
 import { AuthContext } from "../../AuthContext/AuthContext"
 import { Navigate } from "react-router-dom"
 import Tags from "./Tags"
 import './QuestionsPage.css';
 
 export default function QuestionsPage({ questions, categories }) {
+
     const { isLoggedIn } = useContext(AuthContext)
     const [selectedCategory, setSelectedCategory] = useState(0);
+    const [filteredQuestions, setFilteredQuestions] = useState([]);
 
-    console.log(questions);
-
+    useEffect(() => {
+        setFilteredQuestions(questions);
+    }, [questions]);
+    
     const findCategoryNameById = (id) => {
-        const res = categories.find(x=>x.id == id);
+        const res = categories.find(x => x.id == id);
         return res.name;
     }
 
     const filterQuestionsByTag = (id) => {
-        const res = questions.filter(x=>x.categories == id);
-        console.log(res);
-        
+        const filtered = questions.filter((x) => x.categories === id);
+        console.log(filtered);
+        setFilteredQuestions(filtered);
     }
 
-    const deleteQuestion = (id) => {
-            // fetch delete here
+    // filtering does not work well yet
+    const deleteQuestion = async (id) => {
+        const updatedData = questions.filter((x) => x.id !== id);
+        setFilteredQuestions(updatedData);
+        try {
+            const response = await fetch(`http://localhost:5166/Question/${id}`, {
+                method: 'DELETE',            
+                credentials: "include"
+            });
+
+            if (!response.ok) {
+                const errorText = await response.text();
+                console.error(`Error: ${response.status} - ${errorText}`);
+                throw new Error("Network response was not ok!");
+            }
+            console.log("delete successful");
+        }
+        catch (error) {
+            console.log("delete failed:",error);            
+        }
     }
 
     /* 
@@ -37,14 +59,14 @@ export default function QuestionsPage({ questions, categories }) {
 
                     <div className="categoriesDiv">
                         <Tags
-                         categories={categories}
-                         selector={setSelectedCategory}
-                         filter={filterQuestionsByTag}
+                            categories={categories}
+                            selector={setSelectedCategory}
+                            filter={filterQuestionsByTag}
                         />
                     </div>
 
                     <div className="questionsDiv">
-                        {questions.map(question => {
+                        {filteredQuestions.map(question => {
                             return <div key={question.id} className="card">
                                 <div className="card-body">
                                     <h5 className="card-title">{question.title}</h5>
@@ -60,7 +82,10 @@ export default function QuestionsPage({ questions, categories }) {
                     <div className="askAQuestionDiv">
                         <a className="btn btn-warning" href="/ask">Ask a Question</a>
                     </div>
-                </div> : <Navigate to={"/error"} />}
+                </div>
+                :
+                <Navigate to={"/error"} />
+            }
         </>
     )
 }
