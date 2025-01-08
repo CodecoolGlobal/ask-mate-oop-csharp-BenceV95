@@ -16,7 +16,7 @@ import AskQuestionForm from './Components/Forms/AskQuestionForm/AskQuestionForm'
 
 function App() {
 
-  const { setIsLoggedIn, setLoggedInUser, refreshSession } = useContext(AuthContext);
+  const { isLoggedIn, setIsLoggedIn, setLoggedInUser, refreshSession } = useContext(AuthContext);
 
   const [questions, setQuestions] = useState([]);
   const [users, setUsers] = useState([]);
@@ -113,37 +113,16 @@ function App() {
         console.log(err.message);
       }
     };
-    loadData();
-    console.log("questions:1", questions)
+
+    if(isLoggedIn) {
+      loadData();
+    }
+    
+    //console.log("questions:1", questions)
   }, []);
 
 
-  async function registerNewUser(e, username, email, password) {
-    e.preventDefault();
-    try {      
-      const response = await fetch('http://localhost:5166/User', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          username: username,
-          email: email,
-          password: password,
-        }),
-      });
-
-      //const result = await response.json();
-      //console.log(result);
-      if (response.ok) {
-        setResponseMessage('Registration successful!');
-        navigate("/")
-      }
-    } catch (error) {
-      console.error('Error:', error);
-      setResponseMessage('An error occurred while registering.');
-    };
-  }
+  
 
 
 
@@ -160,7 +139,7 @@ function App() {
       <Routes>
         <Route path="/" element={<MainPage />} />
         <Route path="/login" element={<LoginForm navigate={navigate} loginUser={loginUser} />} />
-        <Route path="/register" element={<RegistrationForm registerNewUser={registerNewUser} />} />
+        <Route path="/register" element={<RegistrationForm navigate={navigate}/>} />
         <Route path="/questions" element={<QuestionsPage questions={questions} categories={categories} />} />
         <Route path="/users" element={<UsersPage users={users} />} />
         <Route path="/error" element={<ErrorPage />} />

@@ -113,6 +113,8 @@ namespace AskMate.Models.Repos
         // this creates a new user in the database with given username, email and password. The pw is hashed, salted
         public object? CreateUser(string username, string email, string password)
         {
+            // TODO: if user registers with the same details then need to return info that user with that username/email is already registered !
+
             using var connection = new NpgsqlConnection(_connectionString);
 
             connection.Open();
