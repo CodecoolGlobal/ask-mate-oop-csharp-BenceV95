@@ -2,13 +2,14 @@ import React, {useState} from "react"
 import { AuthContext } from "../../AuthContext/AuthContext"
 import { Navigate } from "react-router-dom"
 
-export default function Tags({ categories, selector }) {
+export default function Tags({ categories, selector, filter }) {
 
     const [activeButton, setActiveButton] = useState(null);
 
     const handleButtonClick = (id) => {
         setActiveButton(id); // Set the clicked button as active
         selector(id);
+        filter(id);
     };
 
     return (

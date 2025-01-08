@@ -22,7 +22,7 @@ export default function LoginForm({ navigate, loginUser }) {
                 <button type='submit' className='btn btn-success'>Login</button>
             </form>
             <br></br>
-            <a href="/register">Don't have an account?</a> <br />
+            <a href="/register" className='btn btn-warning'>Don't have an account?</a> <br />
         </div >
     )
 }

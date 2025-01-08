@@ -8,12 +8,23 @@ export default function QuestionsPage({ questions, categories }) {
     const { isLoggedIn } = useContext(AuthContext)
     const [selectedCategory, setSelectedCategory] = useState(0);
 
-    console.log(categories);
+    console.log(questions);
 
     const findCategoryNameById = (id) => {
         const res = categories.find(x=>x.id == id);
         return res.name;
     }
+
+    const filterQuestionsByTag = (id) => {
+        const res = questions.filter(x=>x.categories == id);
+        console.log(res);
+        
+    }
+
+    const deleteQuestion = (id) => {
+            // fetch delete here
+    }
+
     /* 
     The plan is to use media query breakpoints
     so that the website looks appealing and has great ratios
@@ -25,7 +36,11 @@ export default function QuestionsPage({ questions, categories }) {
                 <div className="mainDiv">
 
                     <div className="categoriesDiv">
-                        <Tags categories={categories} selector={setSelectedCategory}/>
+                        <Tags
+                         categories={categories}
+                         selector={setSelectedCategory}
+                         filter={filterQuestionsByTag}
+                        />
                     </div>
 
                     <div className="questionsDiv">
@@ -34,8 +49,9 @@ export default function QuestionsPage({ questions, categories }) {
                                 <div className="card-body">
                                     <h5 className="card-title">{question.title}</h5>
                                     <p className="card-text">{question.body}</p>
-                                    <p>Tag: {findCategoryNameById(question.categories)}</p>
+                                    <i>Tag: {findCategoryNameById(question.categories)}</i><br></br>
                                     <a href="#" className="btn btn-primary">Answer</a>
+                                    <button className="btn btn-danger" id={question.id} onClick={(e) => deleteQuestion(e.target.id)}>Delete</button>
                                 </div>
                             </div>
                         })}
