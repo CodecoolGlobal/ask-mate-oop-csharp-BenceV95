@@ -1,3 +1,11 @@
+.askQuestionFormDiv {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
 .ask {
     display: flex;
     flex-direction: column;
@@ -5,7 +13,7 @@
     border: white solid 1px;
     padding: 1rem;
     border-radius: 10px;
-
+    max-width: 30%;
 }
 
 textarea {

@@ -69,9 +69,10 @@ namespace AskMate.Models.Repos
                     UserId = (string)row["user_id"],
                     Title = (string)row["title"],
                     Body = (string)row["body"],
-                    PostDate = (DateTime)row["post_date"]
+                    PostDate = (DateTime)row["post_date"],
+                    Categories = (int)row["categories"]
                 }
-                    );
+                );
             }
             return queryResult;
         }
@@ -112,7 +113,8 @@ namespace AskMate.Models.Repos
                     UserId = reader.GetString(reader.GetOrdinal("user_id")),
                     Body = reader.GetString(reader.GetOrdinal("body")),
                     PostDate = reader.GetDateTime("post_date"),
-                    Title = reader.GetString("title")
+                    Title = reader.GetString("title"),
+                    Categories = reader.GetInt32("categories")
                 };
             }
 

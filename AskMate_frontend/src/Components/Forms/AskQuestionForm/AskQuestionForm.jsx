@@ -15,9 +15,11 @@ const AskQuestionForm = ({ categories }) => {
     const [responseMessage, setResponseMessage] = useState("");
     const { userId } = useContext(AuthContext);
 
+    console.log(selectedCategory);
+    
     async function SubmitQuestion(e) {
         e.preventDefault();
-    
+        // validate entries !!!!
         try {
             const response = await fetch('http://localhost:5166/Question', {
             method: 'POST',
@@ -35,7 +37,9 @@ const AskQuestionForm = ({ categories }) => {
           });
 
           setResponseMessage("Question Posted");
-          
+          setTitle("");
+          setBody("");
+          setSelectedCategory(0);
 
         } catch (error) {
             console.log(error);
@@ -44,10 +48,10 @@ const AskQuestionForm = ({ categories }) => {
     }
     
     return (
-        <>
+        <div className='askQuestionFormDiv'>
             <form className='ask' onSubmit={SubmitQuestion}>
-                <input type='text' placeholder='Title' name='title' className='title' onChange={(e) => setTitle(e.target.value)}></input><br />
-                <textarea placeholder='body' name='body' onChange={(e) => setBody(e.target.value)}></textarea><br />
+                <input type='text' placeholder='Title' name='title' className='title' onChange={(e) => setTitle(e.target.value)} value={title}></input><br />
+                <textarea placeholder='body' name='body' onChange={(e) => setBody(e.target.value)} value={body}></textarea><br />
 
                 <select className="form-select" name='categories' value={selectedCategory} onChange={(e) => setSelectedCategory(e.target.value)}>
                     <option value={0} disabled>Set category</option>
@@ -61,7 +65,7 @@ const AskQuestionForm = ({ categories }) => {
                 <button className='btn btn-success' type='submit'>Ask</button>
             </form>
             <p>{responseMessage}</p>
-        </>
+        </div>
     )
 }
 

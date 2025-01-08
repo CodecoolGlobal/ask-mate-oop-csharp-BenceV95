@@ -8,8 +8,12 @@ export default function QuestionsPage({ questions, categories }) {
     const { isLoggedIn } = useContext(AuthContext)
     const [selectedCategory, setSelectedCategory] = useState(0);
 
-    console.log(selectedCategory);
+    console.log(categories);
 
+    const findCategoryNameById = (id) => {
+        const res = categories.find(x=>x.id == id);
+        return res.name;
+    }
     /* 
     The plan is to use media query breakpoints
     so that the website looks appealing and has great ratios
@@ -30,6 +34,7 @@ export default function QuestionsPage({ questions, categories }) {
                                 <div className="card-body">
                                     <h5 className="card-title">{question.title}</h5>
                                     <p className="card-text">{question.body}</p>
+                                    <p>Tag: {findCategoryNameById(question.categories)}</p>
                                     <a href="#" className="btn btn-primary">Answer</a>
                                 </div>
                             </div>
