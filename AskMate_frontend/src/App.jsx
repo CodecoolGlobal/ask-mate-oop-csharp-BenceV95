@@ -12,6 +12,7 @@ import UsersPage from './Components/Pages/UsersPage/UsersPage';
 import { AuthContext } from './Components/AuthContext/AuthContext';
 import { useContext } from 'react';
 import AskQuestionForm from './Components/Forms/AskQuestionForm/AskQuestionForm';
+import AnswerPage from './Components/Pages/AnswerPage/AnswerPage';
 
 
 function App() {
@@ -23,10 +24,6 @@ function App() {
   const [categories, setCategories] = useState([]);
 
   const navigate = useNavigate();
-
-  // useEffect(()=>{
-  // console.log(username)
-  // },[username])
 
   function setResponseMessage(message) {
     console.log(message);
@@ -114,15 +111,15 @@ function App() {
       }
     };
 
-    if(isLoggedIn) {
+    if (isLoggedIn) {
       loadData();
     }
-    
+
     //console.log("questions:1", questions)
   }, []);
 
 
-  
+
 
 
 
@@ -139,11 +136,12 @@ function App() {
       <Routes>
         <Route path="/" element={<MainPage />} />
         <Route path="/login" element={<LoginForm navigate={navigate} loginUser={loginUser} />} />
-        <Route path="/register" element={<RegistrationForm navigate={navigate}/>} />
-        <Route path="/questions" element={<QuestionsPage questions={questions} categories={categories} setQuestions ={setQuestions} />} />
+        <Route path="/register" element={<RegistrationForm navigate={navigate} />} />
+        <Route path="/questions" element={<QuestionsPage questions={questions} categories={categories} setQuestions={setQuestions} />} />
         <Route path="/users" element={<UsersPage users={users} />} />
         <Route path="/error" element={<ErrorPage />} />
-        <Route path="/ask" element={<AskQuestionForm categories={categories}/>} />
+        <Route path="/ask" element={<AskQuestionForm categories={categories} />} />
+        <Route path="/questions/:id" element={<AnswerPage fetchData={fetchData} categories={categories} />} />
       </Routes>
     </>
   );

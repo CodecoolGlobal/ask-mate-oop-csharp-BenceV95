@@ -95,7 +95,7 @@ export default function QuestionsPage({ questions, categories, setQuestions }) {
                                     <h5 className="card-title">{question.title}</h5>
                                     <p className="card-text">{question.body}</p>
                                     <i>Tag: {findCategoryNameById(question.categories)}</i><br></br>
-                                    <a href="#" className="btn btn-primary">Answer</a>
+                                    <a href={`/questions/${question.id}`} className="btn btn-primary">Answer</a>
                                     {question.userId === userId && <button className="btn btn-danger" id={question.id} onClick={(e) => deleteQuestion(e.target.id)}>Delete</button>}
 
                                 </div>
