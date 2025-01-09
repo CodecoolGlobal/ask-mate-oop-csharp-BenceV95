@@ -35,6 +35,9 @@
 }
 
 .askAQuestionDiv {
+    display:  flex;
+    flex-direction: column;
+    gap: 1rem;
     border: solid white 2px;
     border-radius: 10px;
     padding: 1rem;
