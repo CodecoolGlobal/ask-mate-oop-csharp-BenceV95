@@ -8,24 +8,32 @@ import SearchDiv from "./SearchDiv";
 export default function QuestionsPage({ questions, categories }) {
 
     const { isLoggedIn } = useContext(AuthContext)
-    // const [selectedCategory, setSelectedCategory] = useState(0); this is not used as well
+    const [selectedCategory, setSelectedCategory] = useState(0);
     const [filteredQuestions, setFilteredQuestions] = useState([]);
     const [searchedWords, setSearchedWords] = useState("");
 
     useEffect(() => {
-        const filteredByWords = filterByWords(filteredQuestions, searchedWords)
-        setFilteredQuestions(filteredByWords); //it was previously questions 
-    }, [questions, searchedWords]);
+        // setFilteredQuestions(questions);
+        if (selectedCategory === 0 && searchedWords === "") {
+            setFilteredQuestions(questions)
+        } else {
+            const filteredByTag = filterQuestionsByTag(selectedCategory);
+            console.log("filteredByTag:", filteredByTag)
+            const filteredByWords = filterByWords(filteredByTag, searchedWords);
+            console.log("filteredByWords:", filteredByWords)
+            setFilteredQuestions(filteredByWords)
+        }
+    }, [questions, searchedWords, selectedCategory]);
 
 
     //basic search algorithm
 
     //there is a bug, when u select a category, search by a word, then delete the word, all the questions are displayed, not just the one from the selected category
-    function filterByWords(questions, words) {
-        if (!words) {
-            return questions;
+    function filterByWords(halfFiltered, words) {
+        if (words) {
+            return halfFiltered.filter(question => question.body.toLowerCase().includes(words.toLowerCase()) || question.title.toLowerCase().includes(words.toLowerCase()));
         }
-        return questions.filter(question => question.body.toLowerCase().includes(words.toLowerCase()) || question.title.toLowerCase().includes(words.toLowerCase()));
+        return halfFiltered;
     }
 
 
@@ -35,13 +43,13 @@ export default function QuestionsPage({ questions, categories }) {
     }
 
     const filterQuestionsByTag = (id) => {
-        if (id === "any") {
-            setFilteredQuestions(questions);
-            return;
-        }
+         if (id === 0) {
+             return questions;
+         }
         const filtered = questions.filter((question) => question.categories === id);
         console.log(filtered);
-        setFilteredQuestions(filtered);
+        // setFilteredQuestions(filtered);
+        return filtered;
     }
 
     // filtering does not work well yet
@@ -80,7 +88,7 @@ export default function QuestionsPage({ questions, categories }) {
                     <div className="categoriesDiv">
                         <Tags
                             categories={categories}
-                            // selector={setSelectedCategory} unused
+                            selector={setSelectedCategory}
                             filter={filterQuestionsByTag}
                         />
                     </div>

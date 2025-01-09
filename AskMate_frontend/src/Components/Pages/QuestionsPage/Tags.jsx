@@ -9,12 +9,13 @@ export default function Tags({ categories, selector, filter }) {
     const handleButtonClick = (id) => {
         if (activeButton === id) {
             setActiveButton(null);
-            filter("any");
+            selector(0)
+            // filter(0);
             return;
         }
         setActiveButton(id); // Set the clicked button as active
-        //selector(id); // i think, this is not even being used
-        filter(id);
+        selector(id);
+        // filter(id);
     };
 
     return (
