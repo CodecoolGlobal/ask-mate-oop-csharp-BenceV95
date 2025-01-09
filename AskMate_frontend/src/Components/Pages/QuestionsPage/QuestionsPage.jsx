@@ -7,31 +7,35 @@ import './QuestionsPage.css';
 export default function QuestionsPage({ questions, categories }) {
 
     const { isLoggedIn } = useContext(AuthContext)
-    const [selectedCategory, setSelectedCategory] = useState(0);
+   // const [selectedCategory, setSelectedCategory] = useState(0); this is not used as well
     const [filteredQuestions, setFilteredQuestions] = useState([]);
 
     useEffect(() => {
         setFilteredQuestions(questions);
     }, [questions]);
-    
+
     const findCategoryNameById = (id) => {
-        const res = categories.find(x => x.id == id);
-        return res.name;
+        const result = categories.find(category => category.id == id);
+        return result.name;
     }
 
     const filterQuestionsByTag = (id) => {
-        const filtered = questions.filter((x) => x.categories === id);
+        if(id === "any"){
+            setFilteredQuestions(questions);
+            return;
+        }
+        const filtered = questions.filter((question) => question.categories === id);
         console.log(filtered);
         setFilteredQuestions(filtered);
     }
 
     // filtering does not work well yet
     const deleteQuestion = async (id) => {
-        const updatedData = questions.filter((x) => x.id !== id);
+        const updatedData = questions.filter((question) => question.id !== id);
         setFilteredQuestions(updatedData);
         try {
             const response = await fetch(`http://localhost:5166/Question/${id}`, {
-                method: 'DELETE',            
+                method: 'DELETE',
                 credentials: "include"
             });
 
@@ -43,7 +47,7 @@ export default function QuestionsPage({ questions, categories }) {
             console.log("delete successful");
         }
         catch (error) {
-            console.log("delete failed:",error);            
+            console.log("delete failed:", error);
         }
     }
 
@@ -60,7 +64,7 @@ export default function QuestionsPage({ questions, categories }) {
                     <div className="categoriesDiv">
                         <Tags
                             categories={categories}
-                            selector={setSelectedCategory}
+                            // selector={setSelectedCategory} unused
                             filter={filterQuestionsByTag}
                         />
                     </div>
@@ -73,7 +77,8 @@ export default function QuestionsPage({ questions, categories }) {
                                     <p className="card-text">{question.body}</p>
                                     <i>Tag: {findCategoryNameById(question.categories)}</i><br></br>
                                     <a href="#" className="btn btn-primary">Answer</a>
-                                    <button className="btn btn-danger" id={question.id} onClick={(e) => deleteQuestion(e.target.id)}>Delete</button>
+                                    {question.id === "userIdHere" && <button className="btn btn-danger" id={question.id} onClick={(e) => deleteQuestion(e.target.id)}>Delete</button>}
+
                                 </div>
                             </div>
                         })}
