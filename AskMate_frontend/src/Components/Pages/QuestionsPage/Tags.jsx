@@ -2,7 +2,7 @@ import React, { useState } from "react"
 import { AuthContext } from "../../AuthContext/AuthContext"
 import { Navigate } from "react-router-dom"
 
-export default function Tags({ categories, selector, filter }) {
+export default function Tags({ categories, selector, }) {
 
     const [activeButton, setActiveButton] = useState(null);
 
@@ -10,12 +10,10 @@ export default function Tags({ categories, selector, filter }) {
         if (activeButton === id) {
             setActiveButton(null);
             selector(0)
-            // filter(0);
             return;
         }
         setActiveButton(id); // Set the clicked button as active
         selector(id);
-        // filter(id);
     };
 
     return (

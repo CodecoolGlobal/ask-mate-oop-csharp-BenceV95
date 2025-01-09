@@ -5,30 +5,25 @@ import Tags from "./Tags"
 import './QuestionsPage.css';
 import SearchDiv from "./SearchDiv";
 
-export default function QuestionsPage({ questions, categories }) {
+export default function QuestionsPage({ questions, categories, setQuestions }) {
 
-    const { isLoggedIn } = useContext(AuthContext)
+    const { isLoggedIn, userId } = useContext(AuthContext)
     const [selectedCategory, setSelectedCategory] = useState(0);
     const [filteredQuestions, setFilteredQuestions] = useState([]);
     const [searchedWords, setSearchedWords] = useState("");
 
     useEffect(() => {
-        // setFilteredQuestions(questions);
         if (selectedCategory === 0 && searchedWords === "") {
             setFilteredQuestions(questions)
         } else {
             const filteredByTag = filterQuestionsByTag(selectedCategory);
-            console.log("filteredByTag:", filteredByTag)
             const filteredByWords = filterByWords(filteredByTag, searchedWords);
-            console.log("filteredByWords:", filteredByWords)
             setFilteredQuestions(filteredByWords)
         }
     }, [questions, searchedWords, selectedCategory]);
 
 
     //basic search algorithm
-
-    //there is a bug, when u select a category, search by a word, then delete the word, all the questions are displayed, not just the one from the selected category
     function filterByWords(halfFiltered, words) {
         if (words) {
             return halfFiltered.filter(question => question.body.toLowerCase().includes(words.toLowerCase()) || question.title.toLowerCase().includes(words.toLowerCase()));
@@ -43,18 +38,18 @@ export default function QuestionsPage({ questions, categories }) {
     }
 
     const filterQuestionsByTag = (id) => {
-         if (id === 0) {
-             return questions;
-         }
+        if (id === 0) {
+            return questions;
+        }
         const filtered = questions.filter((question) => question.categories === id);
         console.log(filtered);
-        // setFilteredQuestions(filtered);
         return filtered;
     }
 
     // filtering does not work well yet
     const deleteQuestion = async (id) => {
         const updatedData = questions.filter((question) => question.id !== id);
+        setQuestions(updatedData);
         setFilteredQuestions(updatedData);
         try {
             const response = await fetch(`http://localhost:5166/Question/${id}`, {
@@ -101,7 +96,7 @@ export default function QuestionsPage({ questions, categories }) {
                                     <p className="card-text">{question.body}</p>
                                     <i>Tag: {findCategoryNameById(question.categories)}</i><br></br>
                                     <a href="#" className="btn btn-primary">Answer</a>
-                                    {question.id === "userIdHere" && <button className="btn btn-danger" id={question.id} onClick={(e) => deleteQuestion(e.target.id)}>Delete</button>}
+                                    {question.userId === userId && <button className="btn btn-danger" id={question.id} onClick={(e) => deleteQuestion(e.target.id)}>Delete</button>}
 
                                 </div>
                             </div>
