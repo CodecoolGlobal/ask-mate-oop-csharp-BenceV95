@@ -39,5 +39,7 @@
     color: white;
     border: red solid 2px;
     width: 75%;
+    overflow-wrap: break-word;
     height: fit-content;
+    padding: 1rem;
 }
