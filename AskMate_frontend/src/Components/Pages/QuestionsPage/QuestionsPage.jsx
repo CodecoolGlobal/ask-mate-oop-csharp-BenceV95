@@ -11,8 +11,7 @@ export default function QuestionsPage({ questions, categories, setQuestions }) {
     const [selectedCategory, setSelectedCategory] = useState(0);
     const [filteredQuestions, setFilteredQuestions] = useState([]);
     const [searchedWords, setSearchedWords] = useState("");
-    console.log("user:", user)
-
+    
     useEffect(() => {
         if (selectedCategory === 0 && searchedWords === "") {
             setFilteredQuestions(questions)
@@ -77,7 +76,6 @@ export default function QuestionsPage({ questions, categories, setQuestions }) {
             console.log("delete failed:", error);
         }
     }
-console.log("questions", questions)
     /* 
     The plan is to use media query breakpoints
     so that the website looks appealing and has great ratios

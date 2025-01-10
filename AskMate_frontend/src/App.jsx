@@ -28,7 +28,7 @@ function App() {
   function setResponseMessage(message) {
     console.log(message);
   }
-
+console.log("users:", users)
 
   async function loginUser(username, password) {
     try {
@@ -101,10 +101,10 @@ function App() {
     const loadData = async () => {
       try {
         const questions = await fetchData("http://localhost:5166/Question");
-        //const users = await fetchData("http://localhost:5166/User/allUsers");
+        const fetchedUsers = await fetchData("http://localhost:5166/User/allUsers");
         const categories = await fetchData("http://localhost:5166/categories");
         setCategories(categories);
-        //setUsers(users);
+        setUsers(fetchedUsers);
         setQuestions(questions);
       } catch (err) {
         console.log(err.message);
@@ -128,7 +128,7 @@ function App() {
     logOutUser()
   }
 
-
+console.log("usersinApp", users)
 
   return (
     <>
@@ -141,7 +141,7 @@ function App() {
         <Route path="/users" element={<UsersPage users={users} />} />
         <Route path="/error" element={<ErrorPage />} />
         <Route path="/ask" element={<AskQuestionForm categories={categories} />} />
-        <Route path="/questions/:id" element={<AnswerPage fetchData={fetchData} categories={categories} />} />
+        <Route path="/questions/:id" element={<AnswerPage fetchData={fetchData} categories={categories} users={users} />} />
       </Routes>
     </>
   );

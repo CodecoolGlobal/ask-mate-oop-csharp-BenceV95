@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import ErrorPage from "../ErrorPage/UnauthorizedPage";
 import "./AnswerPage.css";
 
-const AnswerPage = ({ fetchData, categories }) => {
+const AnswerPage = ({ fetchData, categories, users }) => {
     const { id } = useParams(); // Destructure the `id` from the URL
     const [questionData, setQuestionData] = useState(null);
     const [answerBody, setAnswerBody] = useState("");
@@ -35,7 +35,6 @@ const AnswerPage = ({ fetchData, categories }) => {
 
     const findCategoryNameById = (id) => {
         const result = categories.find(category => category.id == id);
-        console.log("categories:", categories)
         return !result ? "not found" : result.name //for some reason, this solved the problem with category name not being displayed, but unsure why
     }
 
@@ -89,6 +88,11 @@ const AnswerPage = ({ fetchData, categories }) => {
         return (`${formattedDate} ${formattedTime}`);
     }
 
+    function getUsernameById(id) {
+        const user = users.find((user) => user.id === id);
+        return user ? user.username : "Anonym";
+    }
+
     console.log("answers", answers)
     return (
         <>
@@ -108,6 +112,7 @@ const AnswerPage = ({ fetchData, categories }) => {
                     <div className="answersDiv">
                         {answers.map(answer => {
                             return <div key={answer.id} className="answerCardDiv" >
+                                <div>{getUsernameById(answer.userId)}'s answer:</div>
                                 <pre>{answer.body}</pre>
                                 <i>{convertDate(answer.postDate)}</i>
                             </div>
