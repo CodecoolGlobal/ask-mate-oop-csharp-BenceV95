@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import ErrorPage from "../ErrorPage/UnauthorizedPage";
+import "./AnswerPage.css";
 
 const AnswerPage = ({ fetchData, categories }) => {
     const { id } = useParams(); // Destructure the `id` from the URL
     const [questionData, setQuestionData] = useState(null);
     const [answerBody, setAnswerBody] = useState("");
+    const [answers, setAnswers] = useState([]);
 
     useEffect(() => {
         const fetchQuestion = async () => {
@@ -17,6 +19,16 @@ const AnswerPage = ({ fetchData, categories }) => {
                 console.log(error);
             }
         }
+        const fetchAnswers = async () => {
+            try {
+                const data = await fetchData(`http://localhost:5166/Answer/all/${id}`)
+                setAnswers(data);
+                console.log(data)
+            } catch (error) {
+                console.log(error);
+            }
+        }
+        fetchAnswers();
         fetchQuestion();
     }, [id])
 
@@ -58,28 +70,36 @@ const AnswerPage = ({ fetchData, categories }) => {
         postAnswer()
     }
 
-
+console.log("answers", answers)
     return (
-        <div>
+        <>
             {questionData != null ?
-                <div className="main">
+                <div className="mainAnswerDiv">
                     <div className="questionDetailsDiv">
                         <h1>{questionData.title}</h1>
                         <h3>{questionData.body}</h3>
                         <h4>Category: {findCategoryNameById(questionData.categories)}</h4>
                     </div>
-                    <div className="answerDiv">
+                    <div className="answerForm">
                         <form onSubmit={(e) => handleSubmit(e)} action="">
-                            <textarea name="answerBody" id="answerBody" placeholder="Your answer" onChange={(e) => { setAnswerBody(e.target.value) }} ></textarea>
-                            <button type="submit">Send Answer</button>
+                            <textarea name="answerBody" id="answerBody" placeholder="Your answer" onChange={(e) => { setAnswerBody(e.target.value) }} ></textarea><br />
+                            <button className='btn btn-success' type="submit">Send Answer</button>
                         </form>
+                    </div>
+                    <div className="answersDiv">
+                        {answers.map(answer => {
+                         return   <div key={answer.id} className="answerCardDiv" >
+                                <h3>{answer.body}</h3>
+                                <i>{answer.postDate}</i>
+                            </div>
+                        })}
                     </div>
                 </div>
 
                 :
                 <ErrorPage />
             }
-        </div>
+        </>
     );
 };
 

@@ -32,6 +32,13 @@ namespace AskMate.Controllers
             return Ok();
         }
 
+        [Authorize]
+        [HttpGet("all/{id}")]
+        public IActionResult GetAllAnswersByQuestionId(string id)
+        {
+            var answers = _database.GetAllAnswersByQuestionId(id);
+            return Ok(answers);
+        }
 
         [Authorize]
         [HttpPost()]

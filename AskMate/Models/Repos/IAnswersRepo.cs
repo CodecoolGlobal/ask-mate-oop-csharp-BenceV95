@@ -9,5 +9,6 @@
         public void AcceptAnswer(string answerId);
         public bool IsAnswerBelongToLoggedInUsersQuestion(string loggedInUserID, string answerId);
         public void DeleteAnswerByQuestionId(string id);
+        public List<Answer>? GetAllAnswersByQuestionId(string id);
     }
 }

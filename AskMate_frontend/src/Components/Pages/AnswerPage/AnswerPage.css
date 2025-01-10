@@ -1,0 +1,43 @@
+.mainAnswerDiv {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+    gap: 3rem;
+    margin: 1rem;
+    border: blueviolet solid 2px;
+    padding: 0.5rem;
+}
+
+.questionDetailsDiv {
+    border: solid white 2px;
+    height: 20%;
+}
+
+.answerForm {
+    border: solid green 2px;
+    padding: 1rem;
+    width: fit-content;
+    align-self: center;
+    height: 20%;
+}
+
+
+.answersDiv {
+    display: flex;
+    flex-direction: column;
+    height: 50%;
+    border: solid yellow 2px;
+    overflow-y: scroll;
+    gap: 1rem;
+    padding: 1rem;
+    align-items: center;
+}
+
+.answerCardDiv{
+    background-color: #323232;
+    color: white;
+    border: red solid 2px;
+    width: 75%;
+    height: fit-content;
+}
