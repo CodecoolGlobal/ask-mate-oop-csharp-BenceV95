@@ -65,9 +65,9 @@ const AnswerPage = ({ fetchData, categories, users }) => {
         }
     }
 
-    function handleSubmit(e) {
+    async function handleSubmit(e) {
         e.preventDefault()
-        postAnswer()
+        await postAnswer()
         setFetchAgain(!fetchAgain)
         setAnswerBody("");
     }
