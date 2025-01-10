@@ -22,7 +22,7 @@ const AnswerPage = ({ fetchData, categories }) => {
         const fetchAnswers = async () => {
             try {
                 const data = await fetchData(`http://localhost:5166/Answer/all/${id}`)
-                setAnswers(data);
+                setAnswers(data.reverse());
                 console.log(data)
             } catch (error) {
                 console.log(error);
@@ -68,9 +68,27 @@ const AnswerPage = ({ fetchData, categories }) => {
     function handleSubmit(e) {
         e.preventDefault()
         postAnswer()
+        setAnswers([{ body: answerBody }, ...answers]); // make sure to do it properly!
+        setAnswerBody("");
     }
 
-console.log("answers", answers)
+
+    function convertDate(dateString) {
+        const date = new Date(dateString);
+
+        const formattedDate = date.toLocaleDateString("hu-HU", {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+        });
+        const formattedTime = date.toLocaleTimeString("hu-HU", {
+            hour: "2-digit",
+            minute: "2-digit",
+        });
+        return (`${formattedDate} ${formattedTime}`);
+    }
+
+    console.log("answers", answers)
     return (
         <>
             {questionData != null ?
@@ -82,20 +100,19 @@ console.log("answers", answers)
                     </div>
                     <div className="answerForm">
                         <form onSubmit={(e) => handleSubmit(e)} action="">
-                            <textarea name="answerBody" id="answerBody" placeholder="Your answer" onChange={(e) => { setAnswerBody(e.target.value) }} ></textarea><br />
+                            <textarea value={answerBody} name="answerBody" id="answerBody" placeholder="Your answer" onChange={(e) => { setAnswerBody(e.target.value) }} ></textarea><br />
                             <button className='btn btn-success' type="submit">Send Answer</button>
                         </form>
                     </div>
                     <div className="answersDiv">
                         {answers.map(answer => {
-                         return   <div key={answer.id} className="answerCardDiv" >
+                            return <div key={answer.id} className="answerCardDiv" >
                                 <h3>{answer.body}</h3>
-                                <i>{answer.postDate}</i>
+                                <i>{convertDate(answer.postDate)}</i>
                             </div>
                         })}
                     </div>
                 </div>
-
                 :
                 <ErrorPage />
             }
