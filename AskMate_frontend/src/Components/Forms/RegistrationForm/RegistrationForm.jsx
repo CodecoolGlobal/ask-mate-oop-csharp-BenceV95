@@ -1,7 +1,7 @@
 import { useState } from "react";
 import './RegistrationForm.css';
 
-export default function RegistrationForm({navigate}) {
+export default function RegistrationForm({ navigate }) {
 
     const [username, setUsername] = useState("");
     const [email, setEmail] = useState("");
@@ -9,7 +9,7 @@ export default function RegistrationForm({navigate}) {
     const [responseMessage, setResponseMessage] = useState("");
     const [reg, setReg] = useState(false);
 
-    async function registerNewUser(e, username, email, password) {
+    async function registerNewUser(e) {
 
         e.preventDefault();
 
@@ -28,9 +28,9 @@ export default function RegistrationForm({navigate}) {
 
             //const result = await response.json();
             //console.log(result);
-            if (response.ok) {                
+            if (response.ok) {
                 setResponseMessage('Registration successful!\nLog in below');
-                setReg(true);          
+                setReg(true);
             }
         } catch (error) {
             console.error('Error:', error);
@@ -51,10 +51,10 @@ export default function RegistrationForm({navigate}) {
             </form>
             <p>{responseMessage}</p>
             {
-            reg ? 
-            <button className="btn btn-success" onClick={() => navigate("/login")}>Log In Here</button>
-            :
-            <button className="btn btn-warning" onClick={() => navigate(-1)}>Back</button>
+                reg ?
+                    <button className="btn btn-success" onClick={() => navigate("/login")}>Log In Here</button>
+                    :
+                    <button className="btn btn-warning" onClick={() => navigate(-1)}>Back</button>
             }
         </div>
     )

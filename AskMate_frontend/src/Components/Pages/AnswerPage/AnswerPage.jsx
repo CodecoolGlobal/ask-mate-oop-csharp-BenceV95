@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import ErrorPage from "../ErrorPage/ErrorPage";
+import ErrorPage from "../ErrorPage/UnauthorizedPage";
 
 const AnswerPage = ({ fetchData, categories }) => {
     const { id } = useParams(); // Destructure the `id` from the URL
@@ -22,8 +22,8 @@ const AnswerPage = ({ fetchData, categories }) => {
 
     const findCategoryNameById = (id) => {
         const result = categories.find(category => category.id == id);
-        console.log("categoryName:", categories)
-        return !result ? "not found" : result.name //for some reason, this solved the problem with category name no being displayed, but unsure why
+        console.log("categories:", categories)
+        return !result ? "not found" : result.name //for some reason, this solved the problem with category name not being displayed, but unsure why
     }
 
     async function postAnswer() {
@@ -42,7 +42,7 @@ const AnswerPage = ({ fetchData, categories }) => {
                 }),
                 credentials: "include"
             })
-            // const result = await response.json();
+            // const result = await response.json(); response is not the right format, check the backend!
             if (response.ok) {
                 console.log("answer sent")
             } else {
@@ -52,12 +52,6 @@ const AnswerPage = ({ fetchData, categories }) => {
             console.log("error", error)
         }
     }
-
-
-
-    // "userId": "string",
-    // "questionID": "string",
-    // "body": "string",
 
     function handleSubmit(e) {
         e.preventDefault()

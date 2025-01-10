@@ -7,10 +7,11 @@ import SearchDiv from "./SearchDiv";
 
 export default function QuestionsPage({ questions, categories, setQuestions }) {
 
-    const { isLoggedIn, userId } = useContext(AuthContext)
+    const { user } = useContext(AuthContext)
     const [selectedCategory, setSelectedCategory] = useState(0);
     const [filteredQuestions, setFilteredQuestions] = useState([]);
     const [searchedWords, setSearchedWords] = useState("");
+    console.log("user:", user)
 
     useEffect(() => {
         if (selectedCategory === 0 && searchedWords === "") {
@@ -52,19 +53,27 @@ export default function QuestionsPage({ questions, categories, setQuestions }) {
         setQuestions(updatedData);
         setFilteredQuestions(updatedData);
         try {
-            const response = await fetch(`http://localhost:5166/Question/${id}`, {
+            const response = await fetch(`http://localhost:5166/Answer/all/${id}`, {
                 method: 'DELETE',
                 credentials: "include"
             });
 
-            if (!response.ok) {
-                const errorText = await response.text();
-                console.error(`Error: ${response.status} - ${errorText}`);
-                throw new Error("Network response was not ok!");
+            if (response.ok) {
+                try {
+
+                    const response = await fetch(`http://localhost:5166/Question/${id}`, {
+                        method: 'DELETE',
+                        credentials: "include"
+                    });
+
+                    if (!response.ok) {
+                        throw new Error("Network response was not ok!");
+                    }
+                } catch (e) { console.log(e) }
             }
             console.log("delete successful");
-        }
-        catch (error) {
+
+        } catch (error) {
             console.log("delete failed:", error);
         }
     }
@@ -77,7 +86,7 @@ export default function QuestionsPage({ questions, categories, setQuestions }) {
     console.log("Searched:", searchedWords)
     return (
         <>
-            {isLoggedIn ?
+            {user.isLoggedIn ?
                 <div className="mainDiv">
 
                     <div className="categoriesDiv">
@@ -96,8 +105,7 @@ export default function QuestionsPage({ questions, categories, setQuestions }) {
                                     <p className="card-text">{question.body}</p>
                                     <i>Tag: {findCategoryNameById(question.categories)}</i><br></br>
                                     <a href={`/questions/${question.id}`} className="btn btn-primary">Answer</a>
-                                    {question.userId === userId && <button className="btn btn-danger" id={question.id} onClick={(e) => deleteQuestion(e.target.id)}>Delete</button>}
-
+                                    {question.userId === user.id && <button className="btn btn-danger" id={question.id} onClick={(e) => deleteQuestion(e.target.id)}>Delete</button>}
                                 </div>
                             </div>
                         })}

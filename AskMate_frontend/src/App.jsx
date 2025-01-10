@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import './App.css'
-import ErrorPage from './Components/Pages/ErrorPage/ErrorPage'
+import ErrorPage from './Components/Pages/ErrorPage/UnauthorizedPage'
 import Navbar from './Components/Navbar/Navbar';
 import RegistrationForm from './Components/Forms/RegistrationForm/RegistrationForm';
 import LoginForm from './Components/Forms/LoginForm/LoginForm';
@@ -17,7 +17,7 @@ import AnswerPage from './Components/Pages/AnswerPage/AnswerPage';
 
 function App() {
 
-  const { isLoggedIn, setIsLoggedIn, setLoggedInUser, refreshSession } = useContext(AuthContext);
+  const { user, refreshSession } = useContext(AuthContext);
 
   const [questions, setQuestions] = useState([]);
   const [users, setUsers] = useState([]);
@@ -111,7 +111,7 @@ function App() {
       }
     };
 
-    if (isLoggedIn) {
+    if (user.isLoggedIn) {
       loadData();
     }
 

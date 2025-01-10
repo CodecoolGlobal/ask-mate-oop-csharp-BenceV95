@@ -8,5 +8,6 @@
         public void UpdateAnswer(Answer answer);
         public void AcceptAnswer(string answerId);
         public bool IsAnswerBelongToLoggedInUsersQuestion(string loggedInUserID, string answerId);
+        public void DeleteAnswerByQuestionId(string id);
     }
 }

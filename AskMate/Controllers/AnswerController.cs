@@ -25,6 +25,15 @@ namespace AskMate.Controllers
         }
 
         [Authorize]
+        [HttpDelete("all/{id}")]
+        public IActionResult DeleteAnswerByQuestionId(string id)
+        {
+            _database.DeleteAnswerByQuestionId(id);
+            return Ok();
+        }
+
+
+        [Authorize]
         [HttpPost()]
         public IActionResult CreateAnswer(Answer answer)
         {

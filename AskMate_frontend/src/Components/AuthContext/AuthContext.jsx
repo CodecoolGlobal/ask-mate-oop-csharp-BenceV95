@@ -10,6 +10,7 @@ export function AuthProvider({ children }) {
     const [isLoading, setIsLoading] = useState(true)
     const [loggedInUsername, setLoggedInUsername] = useState("");
     const [userId, setUserId] = useState("");
+    const [user, setUser] = useState({});
 
 
     // this is called when the user logs in or out...
@@ -19,6 +20,11 @@ export function AuthProvider({ children }) {
         setIsLoggedIn(status.isLoggedIn);
         setLoggedInUsername(status.username);
         setUserId(status.id)
+        setUser({
+            isLoggedIn: status.isLoggedIn,
+            username: status.username,
+            id: status.id
+        })
         setIsLoading(false);
     };
 
@@ -31,7 +37,12 @@ export function AuthProvider({ children }) {
             setIsLoggedIn(status.isLoggedIn)
             setLoggedInUsername(status.username)
             setUserId(status.id)
-            setIsLoading(false)
+            setUser({
+                isLoggedIn: status.isLoggedIn,
+                username: status.username,
+                id: status.id
+            });
+            setIsLoading(false);
         }
         fetchLoginStatus();
     }, []);
@@ -43,7 +54,7 @@ export function AuthProvider({ children }) {
     }
 
     return (
-        <AuthContext.Provider value={{ refreshSession, loggedInUsername, isLoggedIn, setIsLoggedIn, userId }}>
+        <AuthContext.Provider value={{ refreshSession, loggedInUsername, isLoggedIn, setIsLoggedIn, userId, user }}>
             {children}
         </AuthContext.Provider>
     )

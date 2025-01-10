@@ -57,6 +57,18 @@ namespace AskMate.Models.Repos
             return createdId;
         }
 
+        public void DeleteAnswerByQuestionId(string id)
+        {
+            using var connection = new NpgsqlConnection(_connectionString);
+            connection.Open();
+
+            using var adapter = new NpgsqlDataAdapter("DELETE FROM ONLY answers WHERE question_id = :id ", connection);
+            adapter.SelectCommand?.Parameters.AddWithValue(":id", id);
+
+            adapter.SelectCommand?.ExecuteNonQuery();
+        }
+
+
         public void DeleteAnswer(string id)
         {
             using var connection = new NpgsqlConnection(_connectionString);

@@ -4,11 +4,11 @@ import { Navigate } from "react-router-dom"
 
 
 export default function UsersPage({ users }) {
-    const { isLoggedIn } = React.useContext(AuthContext)
+    const { user } = React.useContext(AuthContext)
 
     return (
         <>
-            {isLoggedIn ?
+            {user.isLoggedIn ?
                 <>
                     {users.map(user => {
                         return <div key={user.id} class="card" style={{ width: `${24}rem` }}>
