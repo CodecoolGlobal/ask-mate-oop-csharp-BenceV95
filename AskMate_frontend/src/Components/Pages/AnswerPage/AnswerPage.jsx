@@ -8,6 +8,7 @@ const AnswerPage = ({ fetchData, categories }) => {
     const [questionData, setQuestionData] = useState(null);
     const [answerBody, setAnswerBody] = useState("");
     const [answers, setAnswers] = useState([]);
+    const [fetchAgain, setFetchAgain] = useState(false);
 
     useEffect(() => {
         const fetchQuestion = async () => {
@@ -30,7 +31,7 @@ const AnswerPage = ({ fetchData, categories }) => {
         }
         fetchAnswers();
         fetchQuestion();
-    }, [id])
+    }, [id, fetchAgain])
 
     const findCategoryNameById = (id) => {
         const result = categories.find(category => category.id == id);
@@ -68,7 +69,7 @@ const AnswerPage = ({ fetchData, categories }) => {
     function handleSubmit(e) {
         e.preventDefault()
         postAnswer()
-        setAnswers([{ body: answerBody }, ...answers]); // make sure to do it properly!
+        setFetchAgain(!fetchAgain)
         setAnswerBody("");
     }
 
@@ -100,14 +101,14 @@ const AnswerPage = ({ fetchData, categories }) => {
                     </div>
                     <div className="answerForm">
                         <form onSubmit={(e) => handleSubmit(e)} action="">
-                            <textarea value={answerBody} name="answerBody" id="answerBody" placeholder="Your answer" onChange={(e) => { setAnswerBody(e.target.value) }} ></textarea><br />
+                            <textarea value={answerBody} name="answerBody" className="answerBody" id="answerBody" placeholder="Your answer" onChange={(e) => { setAnswerBody(e.target.value) }} ></textarea><br />
                             <button className='btn btn-success' type="submit">Send Answer</button>
                         </form>
                     </div>
                     <div className="answersDiv">
                         {answers.map(answer => {
                             return <div key={answer.id} className="answerCardDiv" >
-                                <h3>{answer.body}</h3>
+                                <pre>{answer.body}</pre>
                                 <i>{convertDate(answer.postDate)}</i>
                             </div>
                         })}
