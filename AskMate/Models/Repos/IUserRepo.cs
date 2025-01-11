@@ -8,5 +8,6 @@
         object? CreateUser(string username, string email, string password);
         bool AuthUser(string usernameOrEmail, string password, out User user);
         List<User> GetAllUsers();
+        void DeleteUser(string id);
     }
 }

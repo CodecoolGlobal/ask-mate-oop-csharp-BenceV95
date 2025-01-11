@@ -15,7 +15,7 @@ export default function UsersPage({ users }) {
                             <div class="card-body">
                                 <h5 class="card-title">Username: {user.username}</h5>
                                 <p class="card-text">Email: {user.email}</p>
-                                <a href="#" class="btn btn-primary">Select</a>
+                                <a href={`/users/${user.username}`} class="btn btn-primary">Edit</a>
                             </div>
                         </div>
                     })}

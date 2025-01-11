@@ -15,7 +15,6 @@ const AnswerPage = ({ fetchData, categories, users }) => {
             try {
                 const data = await fetchData(`http://localhost:5166/Question/${id}`)
                 setQuestionData(data);
-                console.log(data)
             } catch (error) {
                 console.log(error);
             }
@@ -24,7 +23,6 @@ const AnswerPage = ({ fetchData, categories, users }) => {
             try {
                 const data = await fetchData(`http://localhost:5166/Answer/all/${id}`)
                 setAnswers(data.reverse());
-                console.log(data)
             } catch (error) {
                 console.log(error);
             }

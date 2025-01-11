@@ -61,6 +61,14 @@ namespace AskMate.Controllers
             return NotFound("This user does not exist.");
         }
 
+        [Authorize]
+        [HttpDelete("/users/{id}")]
+        public IActionResult DeleteUser(string id)
+        {
+            _database.DeleteUser(id);
+            return Ok();
+        }
+
 
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginRequest user)
@@ -73,7 +81,7 @@ namespace AskMate.Controllers
                 var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.Name, user.Username),
-                new Claim(ClaimTypes.Role, userFromDb.Role), //to be implemented
+                new Claim(ClaimTypes.Role, userFromDb.Role),
                 new Claim(ClaimTypes.NameIdentifier, userFromDb.Id)
             };
 

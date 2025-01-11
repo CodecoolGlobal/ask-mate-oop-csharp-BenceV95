@@ -24,7 +24,7 @@ namespace AskMate.Models.Repos
             using (var connection = new NpgsqlConnection(_connectionString))
             {
                 connection.Open();
-                using (var command = new NpgsqlCommand("SELECT id, username, email_address FROM users", connection))
+                using (var command = new NpgsqlCommand("SELECT id, username, email_address, isAdmin FROM users", connection))
                 {
                     using (var reader = command.ExecuteReader())
                     {
@@ -35,6 +35,7 @@ namespace AskMate.Models.Repos
                                 Id = reader.GetString(reader.GetOrdinal("id")),
                                 Username = reader.GetString(reader.GetOrdinal("username")),
                                 Email = reader.GetString(reader.GetOrdinal("email_address")),
+                                Role = reader.GetBoolean(reader.GetOrdinal("isAdmin")) ? "admin" : "user"
                             });
                         }
                     }
@@ -140,6 +141,17 @@ namespace AskMate.Models.Repos
             return createdId;
         }
 
+
+        public void DeleteUser(string id)
+        {
+            using var connection = new NpgsqlConnection(_connectionString);
+            connection.Open();
+
+            using var adapter = new NpgsqlDataAdapter("DELETE FROM ONLY users WHERE id = :id ", connection);
+            adapter.SelectCommand?.Parameters.AddWithValue(":id", id);
+
+            adapter.SelectCommand?.ExecuteNonQuery();
+        }
 
 
         //authenticate

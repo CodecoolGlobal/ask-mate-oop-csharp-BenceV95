@@ -1,0 +1,31 @@
+.userPageMainDiv{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.inputFieldsDiv{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items:center;
+    border: chartreuse solid 2px;
+    padding: 2rem;
+
+}
+
+.usernameDiv{
+    border: green solid 2px;
+    width: fit-content;
+}
+
+.emailDiv{
+    border: wheat solid 2px;
+    width: fit-content;
+}
+
+.isAdminDiv{
+    border:  salmon solid 2px;
+    width: fit-content;
+}

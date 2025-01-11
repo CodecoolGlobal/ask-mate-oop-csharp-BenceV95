@@ -13,6 +13,7 @@ import { AuthContext } from './Components/AuthContext/AuthContext';
 import { useContext } from 'react';
 import AskQuestionForm from './Components/Forms/AskQuestionForm/AskQuestionForm';
 import AnswerPage from './Components/Pages/AnswerPage/AnswerPage';
+import UserPage from './Components/Pages/UsersPage/UserPage';
 
 
 function App() {
@@ -28,7 +29,7 @@ function App() {
   function setResponseMessage(message) {
     console.log(message);
   }
-console.log("users:", users)
+  console.log("users:", users)
 
   async function loginUser(username, password) {
     try {
@@ -128,7 +129,7 @@ console.log("users:", users)
     logOutUser()
   }
 
-console.log("usersinApp", users)
+  console.log("usersinApp", users)
 
   return (
     <>
@@ -142,6 +143,7 @@ console.log("usersinApp", users)
         <Route path="/error" element={<ErrorPage />} />
         <Route path="/ask" element={<AskQuestionForm categories={categories} />} />
         <Route path="/questions/:id" element={<AnswerPage fetchData={fetchData} categories={categories} users={users} />} />
+        <Route path="/users/:username" element={<UserPage users={users} />} />
       </Routes>
     </>
   );
@@ -149,4 +151,3 @@ console.log("usersinApp", users)
 
 
 export default App
-
