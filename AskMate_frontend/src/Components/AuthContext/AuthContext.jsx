@@ -23,7 +23,8 @@ export function AuthProvider({ children }) {
         setUser({
             isLoggedIn: status.isLoggedIn,
             username: status.username,
-            id: status.id
+            id: status.id,
+            isAdmin: status.role === "admin" ? true : false
         })
         setIsLoading(false);
     };
@@ -40,11 +41,14 @@ export function AuthProvider({ children }) {
             setUser({
                 isLoggedIn: status.isLoggedIn,
                 username: status.username,
-                id: status.id
+                id: status.id,
+                isAdmin: status.role === "admin" ? true : false
             });
             setIsLoading(false);
+            console.log("user", user)
         }
         fetchLoginStatus();
+        console.log("useragain:", user)
     }, []);
 
     if (isLoading) {
@@ -76,7 +80,8 @@ async function checkSession() {
     } else {
         return {
             isLoggedIn: false,
-            username: "Guest"
+            username: "Guest",
+            isAdmin: false
         }
     }
 }

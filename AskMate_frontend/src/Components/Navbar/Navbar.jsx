@@ -6,10 +6,10 @@ import { Button } from "bootstrap";
 
 const Navbar = ({ handleLogOut }) => {
 
-  const { isLoggedIn, loggedInUsername } = React.useContext(AuthContext)
+  const { user } = React.useContext(AuthContext)
 
 
-
+  console.log("inNavbar", user)
 
   return (
     <>
@@ -24,34 +24,34 @@ const Navbar = ({ handleLogOut }) => {
               <li className="nav-item">
                 <a className="nav-link" href="/questions">Questions</a>
               </li>
-              <li className="nav-item">
+              {user.isAdmin && <li className="nav-item">
                 <a className="nav-link" href="/users">Users</a>
-              </li>
+              </li>}
               <li className="nav-item">
-                <a className="nav-link" href="/profile">{loggedInUsername}</a>
+                <a className="nav-link" href="/profile">{user.username}</a>
               </li>
             </ul>
           </div>
         </div>
         <div className="container-fluid justify-content-end">
           {
-            isLoggedIn ?
-              <button 
+            user.isLoggedIn ?
+              <button
                 className="btn btn-danger"
                 onClick={(e) => handleLogOut(e)}
               >
                 Log Out
               </button>
-              : 
+              :
               <Link
-               className="btn btn-success"
-               to={"/login"}
-               href="#"
+                className="btn btn-success"
+                to={"/login"}
+                href="#"
               >
                 Login
               </Link>
           }
-          </div>
+        </div>
       </nav>
     </>
   )

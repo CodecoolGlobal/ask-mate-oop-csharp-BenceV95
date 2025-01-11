@@ -1,7 +1,6 @@
 import React from 'react'
 import './AskQuestionForm.css';
-import { useState, useContext } from 'react';
-import { AuthContext } from "../../AuthContext/AuthContext"
+import { useState, } from 'react';
 
 
 
@@ -13,7 +12,6 @@ const AskQuestionForm = ({ categories }) => {
     const [title, setTitle] = useState("");
     const [body, setBody] = useState("");
     const [responseMessage, setResponseMessage] = useState("");
-    const { userId } = useContext(AuthContext);
 
     console.log(selectedCategory);
 

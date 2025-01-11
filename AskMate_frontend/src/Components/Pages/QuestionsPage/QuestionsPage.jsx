@@ -11,7 +11,7 @@ export default function QuestionsPage({ questions, categories, setQuestions }) {
     const [selectedCategory, setSelectedCategory] = useState(0);
     const [filteredQuestions, setFilteredQuestions] = useState([]);
     const [searchedWords, setSearchedWords] = useState("");
-    
+
     useEffect(() => {
         if (selectedCategory === 0 && searchedWords === "") {
             setFilteredQuestions(questions)
@@ -26,7 +26,8 @@ export default function QuestionsPage({ questions, categories, setQuestions }) {
     //basic search algorithm
     function filterByWords(halfFiltered, words) {
         if (words) {
-            return halfFiltered.filter(question => question.body.toLowerCase().includes(words.toLowerCase()) || question.title.toLowerCase().includes(words.toLowerCase()));
+            const fullyFiltered = halfFiltered.filter(question => question.body.toLowerCase().includes(words.toLowerCase()) || question.title.toLowerCase().includes(words.toLowerCase()));
+            return fullyFiltered;
         }
         return halfFiltered;
     }
@@ -81,7 +82,6 @@ export default function QuestionsPage({ questions, categories, setQuestions }) {
     so that the website looks appealing and has great ratios
     for all screens. ask a mentor for help.
     */
-    console.log("Searched:", searchedWords)
     return (
         <>
             {user.isLoggedIn ?
@@ -95,18 +95,18 @@ export default function QuestionsPage({ questions, categories, setQuestions }) {
                         />
                     </div>
                     <div className="questionsDiv">
-                        {filteredQuestions.map(question => {
+                        {filteredQuestions.length > 0 ? filteredQuestions.map(question => {
                             return <div key={question.id} className="card">
                                 <div className="card-body">
                                     <h5 className="card-title">{question.title}</h5>
                                     <p className="card-text">{question.body}</p>
-                                    <i>Tag: {findCategoryNameById(question.categories)}</i><br/>
+                                    <i>Tag: {findCategoryNameById(question.categories)}</i><br />
                                     <b>Answers:{question.relatedAnswerCount}</b> <br />
                                     <a href={`/questions/${question.id}`} className="btn btn-primary">Answer</a>
                                     {question.userId === user.id && <button className="btn btn-danger" id={question.id} onClick={(e) => deleteQuestion(e.target.id)}>Delete</button>}
                                 </div>
                             </div>
-                        })}
+                        }) : "No Question in this category yet!"}
                     </div>
 
                     <div className="askAQuestionDiv">

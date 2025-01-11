@@ -8,7 +8,7 @@ export default function UsersPage({ users }) {
 
     return (
         <>
-            {user.isLoggedIn ?
+            {user.isAdmin ?
                 <>
                     {users.map(user => {
                         return <div key={user.id} class="card" style={{ width: `${24}rem` }}>

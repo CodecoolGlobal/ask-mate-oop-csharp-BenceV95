@@ -17,7 +17,7 @@ export default function Tags({ categories, selector, }) {
     };
 
     return (
-        <>
+        <>Categories
             {
                 categories.map(category => {
                     return (
