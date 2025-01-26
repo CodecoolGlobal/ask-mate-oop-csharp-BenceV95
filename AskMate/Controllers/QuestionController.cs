@@ -27,6 +27,8 @@ public class QuestionController : ControllerBase
     {
         return Ok(_database.GetAllQuestions());
     }
+
+
     [Authorize]
     [HttpGet("{id}")]
     public async Task<IActionResult> GetQuestion(string id)

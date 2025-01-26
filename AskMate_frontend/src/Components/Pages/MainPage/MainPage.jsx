@@ -4,10 +4,10 @@ import React from "react"
 
 
 export default function MainPage() {
-    const { loggedInUsername, isLoggedIn } = React.useContext(AuthContext)
+    const { user } = React.useContext(AuthContext)
     return (
         <>
-            Hello, {loggedInUsername}.
+            Hello, {user.username}.
         </>
     )
 }

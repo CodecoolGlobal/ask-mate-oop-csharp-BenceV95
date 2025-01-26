@@ -45,7 +45,8 @@ namespace AskMate.Controllers
         {
             var username = User.Identity.Name; // Get the logged-in user's name
             var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
-            return Ok(new { IsLoggedIn = true, Username = username, Id = userId });
+            var role = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
+            return Ok(new { IsLoggedIn = true, Username = username, Id = userId, Role = role });
         }
 
 
@@ -60,20 +61,28 @@ namespace AskMate.Controllers
             return NotFound("This user does not exist.");
         }
 
+        [Authorize]
+        [HttpDelete("/users/{id}")]
+        public IActionResult DeleteUser(string id)
+        {
+            _database.DeleteUser(id);
+            return Ok();
+        }
+
 
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginRequest user)
         {
             // Validate credentials (replace with actual validation)
-            if (_database.AuthUser(user.Username, user.Password, out string userID))
+            if (_database.AuthUser(user.Username, user.Password, out User userFromDb))
             {
                 Console.WriteLine("login");
                 // Create user claims
                 var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.Name, user.Username),
-                new Claim(ClaimTypes.Role, "User"), //to be implemented
-                new Claim(ClaimTypes.NameIdentifier, userID)
+                new Claim(ClaimTypes.Role, userFromDb.Role),
+                new Claim(ClaimTypes.NameIdentifier, userFromDb.Id)
             };
 
                 // Create identity and principal

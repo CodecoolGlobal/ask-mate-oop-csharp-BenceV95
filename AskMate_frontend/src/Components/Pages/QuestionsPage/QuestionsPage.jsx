@@ -3,50 +3,80 @@ import { AuthContext } from "../../AuthContext/AuthContext"
 import { Navigate } from "react-router-dom"
 import Tags from "./Tags"
 import './QuestionsPage.css';
+import SearchDiv from "./SearchDiv";
 
-export default function QuestionsPage({ questions, categories }) {
+export default function QuestionsPage({ questions, categories, setQuestions }) {
 
-    const { isLoggedIn } = useContext(AuthContext)
+    const { user } = useContext(AuthContext)
     const [selectedCategory, setSelectedCategory] = useState(0);
     const [filteredQuestions, setFilteredQuestions] = useState([]);
+    const [searchedWords, setSearchedWords] = useState("");
 
     useEffect(() => {
-        setFilteredQuestions(questions);
-    }, [questions]);
-    
+        if (selectedCategory === 0 && searchedWords === "") {
+            setFilteredQuestions(questions)
+        } else {
+            const filteredByTag = filterQuestionsByTag(selectedCategory);
+            const filteredByWords = filterByWords(filteredByTag, searchedWords);
+            setFilteredQuestions(filteredByWords)
+        }
+    }, [questions, searchedWords, selectedCategory]);
+
+
+    //basic search algorithm
+    function filterByWords(halfFiltered, words) {
+        if (words) {
+            const fullyFiltered = halfFiltered.filter(question => question.body.toLowerCase().includes(words.toLowerCase()) || question.title.toLowerCase().includes(words.toLowerCase()));
+            return fullyFiltered;
+        }
+        return halfFiltered;
+    }
+
+
     const findCategoryNameById = (id) => {
-        const res = categories.find(x => x.id == id);
-        return res.name;
+        const result = categories.find(category => category.id == id);
+        return result.name;
     }
 
     const filterQuestionsByTag = (id) => {
-        const filtered = questions.filter((x) => x.categories === id);
+        if (id === 0) {
+            return questions;
+        }
+        const filtered = questions.filter((question) => question.categories === id);
         console.log(filtered);
-        setFilteredQuestions(filtered);
+        return filtered;
     }
 
     // filtering does not work well yet
     const deleteQuestion = async (id) => {
-        const updatedData = questions.filter((x) => x.id !== id);
+        const updatedData = questions.filter((question) => question.id !== id);
+        setQuestions(updatedData);
         setFilteredQuestions(updatedData);
         try {
-            const response = await fetch(`http://localhost:5166/Question/${id}`, {
-                method: 'DELETE',            
+            const response = await fetch(`http://localhost:5166/Answer/all/${id}`, {
+                method: 'DELETE',
                 credentials: "include"
             });
 
-            if (!response.ok) {
-                const errorText = await response.text();
-                console.error(`Error: ${response.status} - ${errorText}`);
-                throw new Error("Network response was not ok!");
+            if (response.ok) {
+                try {
+
+                    const response = await fetch(`http://localhost:5166/Question/${id}`, {
+                        method: 'DELETE',
+                        credentials: "include"
+                    });
+
+                    if (!response.ok) {
+                        throw new Error("Network response was not ok!");
+                    }
+                } catch (e) { console.log(e) }
             }
             console.log("delete successful");
-        }
-        catch (error) {
-            console.log("delete failed:",error);            
+
+        } catch (error) {
+            console.log("delete failed:", error);
         }
     }
-
     /* 
     The plan is to use media query breakpoints
     so that the website looks appealing and has great ratios
@@ -54,7 +84,7 @@ export default function QuestionsPage({ questions, categories }) {
     */
     return (
         <>
-            {isLoggedIn ?
+            {user.isLoggedIn ?
                 <div className="mainDiv">
 
                     <div className="categoriesDiv">
@@ -64,23 +94,24 @@ export default function QuestionsPage({ questions, categories }) {
                             filter={filterQuestionsByTag}
                         />
                     </div>
-
                     <div className="questionsDiv">
-                        {filteredQuestions.map(question => {
+                        {filteredQuestions.length > 0 ? filteredQuestions.map(question => {
                             return <div key={question.id} className="card">
                                 <div className="card-body">
                                     <h5 className="card-title">{question.title}</h5>
                                     <p className="card-text">{question.body}</p>
-                                    <i>Tag: {findCategoryNameById(question.categories)}</i><br></br>
-                                    <a href="#" className="btn btn-primary">Answer</a>
-                                    <button className="btn btn-danger" id={question.id} onClick={(e) => deleteQuestion(e.target.id)}>Delete</button>
+                                    <i>Tag: {findCategoryNameById(question.categories)}</i><br />
+                                    <b>Answers:{question.relatedAnswerCount}</b> <br />
+                                    <a href={`/questions/${question.id}`} className="btn btn-primary">Answer</a>
+                                    {question.userId === user.id && <button className="btn btn-danger" id={question.id} onClick={(e) => deleteQuestion(e.target.id)}>Delete</button>}
                                 </div>
                             </div>
-                        })}
+                        }) : "No Question in this category yet!"}
                     </div>
 
                     <div className="askAQuestionDiv">
                         <a className="btn btn-warning" href="/ask">Ask a Question</a>
+                        <SearchDiv setSearchedWords={setSearchedWords} />
                     </div>
                 </div>
                 :

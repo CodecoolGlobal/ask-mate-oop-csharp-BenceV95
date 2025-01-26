@@ -49,6 +49,22 @@ namespace AskMate.Repos
 
         }
 
+
+        private int GetNumberOfRelatedAnswersByQuestionId(string id)
+        {
+            using var connection = new NpgsqlConnection(_connectionString);
+            connection.Open();
+
+            var query = "SELECT COUNT(question_id) FROM answers WHERE question_id = :id";
+
+            using var command = new NpgsqlCommand(query, connection);
+            command.Parameters.AddWithValue(":id", id);
+
+            var result = command.ExecuteScalar();
+
+            return Convert.ToInt32(result);
+        }
+
         //getAll
         public List<Question> GetAllQuestions()
         {
@@ -70,7 +86,8 @@ namespace AskMate.Repos
                     Title = (string)row["title"],
                     Body = (string)row["body"],
                     PostDate = (DateTime)row["post_date"],
-                    Categories = (int)row["categories"]
+                    Categories = (int)row["categories"],
+                    RelatedAnswerCount = GetNumberOfRelatedAnswersByQuestionId((string)row["id"])
                 }
                 );
             }
@@ -117,18 +134,6 @@ namespace AskMate.Repos
                     Categories = reader.GetInt32("categories")
                 };
             }
-
-            // Move to the next result set (the answers)
-            if (await reader.NextResultAsync() && question != null)
-            {
-                while (await reader.ReadAsync())
-                {
-                    var answerID = reader.GetString(reader.GetOrdinal("id"));
-
-                    question.RelatedAnswersIDs.Add(answerID);
-                }
-            }
-
             return question;
         }
 

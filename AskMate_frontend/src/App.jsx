@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import './App.css'
-import ErrorPage from './Components/Pages/ErrorPage/ErrorPage'
+import ErrorPage from './Components/Pages/ErrorPage/UnauthorizedPage'
 import Navbar from './Components/Navbar/Navbar';
 import RegistrationForm from './Components/Forms/RegistrationForm/RegistrationForm';
 import LoginForm from './Components/Forms/LoginForm/LoginForm';
@@ -12,11 +12,13 @@ import UsersPage from './Components/Pages/UsersPage/UsersPage';
 import { AuthContext } from './Components/AuthContext/AuthContext';
 import { useContext } from 'react';
 import AskQuestionForm from './Components/Forms/AskQuestionForm/AskQuestionForm';
+import AnswerPage from './Components/Pages/AnswerPage/AnswerPage';
+import UserPage from './Components/Pages/UsersPage/UserPage';
 
 
 function App() {
 
-  const { isLoggedIn, setIsLoggedIn, setLoggedInUser, refreshSession } = useContext(AuthContext);
+  const { user, refreshSession } = useContext(AuthContext);
 
   const [questions, setQuestions] = useState([]);
   const [users, setUsers] = useState([]);
@@ -24,14 +26,10 @@ function App() {
 
   const navigate = useNavigate();
 
-  // useEffect(()=>{
-  // console.log(username)
-  // },[username])
-
   function setResponseMessage(message) {
     console.log(message);
   }
-
+  console.log("users:", users)
 
   async function loginUser(username, password) {
     try {
@@ -104,25 +102,25 @@ function App() {
     const loadData = async () => {
       try {
         const questions = await fetchData("http://localhost:5166/Question");
-        //const users = await fetchData("http://localhost:5166/User/allUsers");
+        const fetchedUsers = await fetchData("http://localhost:5166/User/allUsers");
         const categories = await fetchData("http://localhost:5166/categories");
         setCategories(categories);
-        //setUsers(users);
+        setUsers(fetchedUsers);
         setQuestions(questions);
       } catch (err) {
         console.log(err.message);
       }
     };
 
-    if(isLoggedIn) {
+    if (user.isLoggedIn) {
       loadData();
     }
-    
+
     //console.log("questions:1", questions)
   }, []);
 
 
-  
+
 
 
 
@@ -131,7 +129,7 @@ function App() {
     logOutUser()
   }
 
-
+  console.log("usersinApp", users)
 
   return (
     <>
@@ -139,11 +137,13 @@ function App() {
       <Routes>
         <Route path="/" element={<MainPage />} />
         <Route path="/login" element={<LoginForm navigate={navigate} loginUser={loginUser} />} />
-        <Route path="/register" element={<RegistrationForm navigate={navigate}/>} />
-        <Route path="/questions" element={<QuestionsPage questions={questions} categories={categories} />} />
+        <Route path="/register" element={<RegistrationForm navigate={navigate} />} />
+        <Route path="/questions" element={<QuestionsPage questions={questions} categories={categories} setQuestions={setQuestions} />} />
         <Route path="/users" element={<UsersPage users={users} />} />
         <Route path="/error" element={<ErrorPage />} />
-        <Route path="/ask" element={<AskQuestionForm categories={categories}/>} />
+        <Route path="/ask" element={<AskQuestionForm categories={categories} />} />
+        <Route path="/questions/:id" element={<AnswerPage fetchData={fetchData} categories={categories} users={users} />} />
+        <Route path="/users/:username" element={<UserPage users={users} />} />
       </Routes>
     </>
   );
@@ -151,4 +151,3 @@ function App() {
 
 
 export default App
-

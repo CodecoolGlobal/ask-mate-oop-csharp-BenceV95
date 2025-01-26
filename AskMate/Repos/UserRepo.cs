@@ -25,7 +25,7 @@ namespace AskMate.Repos
             using (var connection = new NpgsqlConnection(_connectionString))
             {
                 connection.Open();
-                using (var command = new NpgsqlCommand("SELECT id, username, email_address FROM users", connection))
+                using (var command = new NpgsqlCommand("SELECT id, username, email_address, isAdmin FROM users", connection))
                 {
                     using (var reader = command.ExecuteReader())
                     {
@@ -36,6 +36,7 @@ namespace AskMate.Repos
                                 Id = reader.GetString(reader.GetOrdinal("id")),
                                 Username = reader.GetString(reader.GetOrdinal("username")),
                                 Email = reader.GetString(reader.GetOrdinal("email_address")),
+                                Role = reader.GetBoolean(reader.GetOrdinal("isAdmin")) ? "admin" : "user"
                             });
                         }
                     }
@@ -142,10 +143,22 @@ namespace AskMate.Repos
         }
 
 
+        public void DeleteUser(string id)
+        {
+            using var connection = new NpgsqlConnection(_connectionString);
+            connection.Open();
+
+            using var adapter = new NpgsqlDataAdapter("DELETE FROM ONLY users WHERE id = :id ", connection);
+            adapter.SelectCommand?.Parameters.AddWithValue(":id", id);
+
+            adapter.SelectCommand?.ExecuteNonQuery();
+        }
+
 
         //authenticate
-        public bool AuthUser(string usernameOrEmail, string password, out string? userID)
+        public bool AuthUser(string usernameOrEmail, string password, out User user)
         {
+
             using var connection = new NpgsqlConnection(_connectionString);
 
             connection.Open();
@@ -164,15 +177,17 @@ namespace AskMate.Repos
 
                 var storedHash = (string)row["password"];
                 var storedSalt = (byte[])row["salt"];
-                userID = (string)row["id"];
-                //_connectionString.Close();
+                var userID = (string)row["id"];
+                var isAdmin = (bool)row["isAdmin"];
+                user = new() { Id = userID, Role = isAdmin ? "admin" : "user" };
+
                 return Utils.VerifyPassword(password, storedHash, storedSalt);
             }
 
             // _connectionString.Close();
 
             //if no such user found
-            userID = null;
+            user = new() { Id = null, Role = "user" };
             return false;
         }
 
@@ -217,4 +232,9 @@ namespace AskMate.Repos
 
         }
     }
+
+    //TODO: organize classes better! We don't need so many similar classes (multiple users)
+
+    //Also, don't forget to make the db not to require a isAdmin to be passed, cause thats illogical to do so when someone registers! they should be "users" automatically!
+
 }

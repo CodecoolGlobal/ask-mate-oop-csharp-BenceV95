@@ -39,4 +39,7 @@ CREATE TABLE answers (
     FOREIGN KEY (question_id) REFERENCES questions(id)
 );
 
+-- add isAdmin column to users, set constraint NOT NULL
+--ALTER TABLE users ADD COLUMN isAdmin BOOLEAN DEFAULT FALSE;
 
+--ALTER TABLE users ALTER COLUMN isAdmin SET NOT NULL;
