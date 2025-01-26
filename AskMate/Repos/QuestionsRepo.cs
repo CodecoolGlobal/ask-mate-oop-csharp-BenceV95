@@ -28,6 +28,45 @@ namespace AskMate.Repos
 
         }
 
+        public List<Question>? Search(string query)
+        {
+            
+            using var connection = new NpgsqlConnection(_connectionString);
+            connection.Open();
+
+            using var adapter =
+                new NpgsqlDataAdapter(@"
+                    SELECT *
+                    FROM questions
+                    WHERE to_tsvector('english', title || ' ' || body)
+                        @@ to_tsquery('english', @query)
+                    LIMIT 10",
+                    connection);
+            adapter.SelectCommand?.Parameters.AddWithValue("query", $"{query}:*");
+
+            var dataSet = new DataSet();
+            adapter.Fill(dataSet);
+            var table = dataSet.Tables[0];
+
+            var queryResult = new List<Question>();
+            foreach (DataRow row in table.Rows)
+            {
+                queryResult.Add(new Question()
+                    {
+                        ID = (string)row["id"],
+                        UserId = (string)row["user_id"],
+                        Title = (string)row["title"],
+                        Body = (string)row["body"],
+                        PostDate = (DateTime)row["post_date"],
+                        Categories = (int)row["categories"],
+                        RelatedAnswerCount = GetNumberOfRelatedAnswersByQuestionId((string)row["id"])
+                    }
+                );
+            }
+
+            return queryResult;
+        }
+
         //create
         public string CreateNewQuestion(Question question, string loggedInUserID)
         {

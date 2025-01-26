@@ -1,13 +1,26 @@
 import "./SearchDiv.css";
+import { useState } from "react";
 
+export default function SearchDiv({ onSearch }) {
 
-export default function SearchDiv({ setSearchedWords }) {
+    const [query, setQuery] = useState("");
 
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        if (query.trim()) {
+            onSearch(query);
+        }        
+    };
 
     return (
-        <div className="main">
+        <form className="searchDiv" onSubmit={handleSubmit}>
             Search In Questions <br />
-            <input onChange={(e) => { setSearchedWords(e.target.value) }} type="text" name="searchField" id="searchField" />
-        </div>
+            <input
+             type="text"
+             value={query}
+             onChange={(e) => setQuery(e.target.value)}
+             placeholder="Search..." />
+            <button className="btn btn-success m-1" type="submit">Search</button>
+        </form>
     )
 }

@@ -1,5 +1,11 @@
-.main{
+.searchDiv {
     border: solid white 2px;
+    border-radius: 10px;
     width: 100%;
-    height: 50%;
+    height: fit-content;
+    padding: 0.5rem;
+}
+
+.searchDiv input {
+    width: 100%;
 }

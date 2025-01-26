@@ -10,7 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 string CONNECTIONSTRING = Environment.GetEnvironmentVariable("CONNECTION_STRING");
 
-builder.Services.AddSingleton<string>(sp => CONNECTIONSTRING + "ask_mate");
+builder.Services.AddSingleton<string>(sp => CONNECTIONSTRING + "ask_mate;"+ "Pooling=true;"); // db_name + pooling
 
 
 //questions

@@ -8,5 +8,6 @@ namespace AskMate.Repos
         public Task<Question> GetQuestion(string questionID);
         public string CreateNewQuestion(Question question, string loggedInUserID);
         public void DeleteQuestion(string questionID);
+        List<Question>? Search(string query);
     }
 }

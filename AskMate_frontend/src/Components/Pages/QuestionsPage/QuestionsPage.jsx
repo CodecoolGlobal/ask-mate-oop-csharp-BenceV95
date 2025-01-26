@@ -10,29 +10,41 @@ export default function QuestionsPage({ questions, categories, setQuestions }) {
     const { user } = useContext(AuthContext)
     const [selectedCategory, setSelectedCategory] = useState(0);
     const [filteredQuestions, setFilteredQuestions] = useState([]);
-    const [searchedWords, setSearchedWords] = useState("");
+    const [searchResult, setSearchResult] = useState([]);
+
+    
 
     useEffect(() => {
-        if (selectedCategory === 0 && searchedWords === "") {
+        if (selectedCategory === 0 && searchResult.length === 0) {
             setFilteredQuestions(questions)
         } else {
-            const filteredByTag = filterQuestionsByTag(selectedCategory);
-            const filteredByWords = filterByWords(filteredByTag, searchedWords);
-            setFilteredQuestions(filteredByWords)
+            //const filteredByTag = filterQuestionsByTag(selectedCategory);            
+            //setFilteredQuestions(filteredByTag)
+            setFilteredQuestions(searchResult);
+            console.log("search updated");
+            
         }
-    }, [questions, searchedWords, selectedCategory]);
+    }, [questions, selectedCategory, searchResult]);
 
+    const fetchQuestions = async (query) => {
+        
+        try {
+            const response = await fetch(`http://localhost:5166/Question/search?query=${encodeURIComponent(query)}`, {
+                method: 'GET',
+                credentials: "include"
+            });
 
-    //basic search algorithm
-    function filterByWords(halfFiltered, words) {
-        if (words) {
-            const fullyFiltered = halfFiltered.filter(question => question.body.toLowerCase().includes(words.toLowerCase()) || question.title.toLowerCase().includes(words.toLowerCase()));
-            return fullyFiltered;
+            if (response.ok) {
+                const data = await response.json();
+                setSearchResult(data);
+                console.log("search data: ",data);
+                
+            }
+        } catch (error) {
+            console.log("fetch failed:", error);
         }
-        return halfFiltered;
     }
-
-
+    
     const findCategoryNameById = (id) => {
         const result = categories.find(category => category.id == id);
         return result.name;
@@ -46,8 +58,7 @@ export default function QuestionsPage({ questions, categories, setQuestions }) {
         console.log(filtered);
         return filtered;
     }
-
-    // filtering does not work well yet
+    
     const deleteQuestion = async (id) => {
         const updatedData = questions.filter((question) => question.id !== id);
         setQuestions(updatedData);
@@ -103,7 +114,7 @@ export default function QuestionsPage({ questions, categories, setQuestions }) {
                                     <i>Tag: {findCategoryNameById(question.categories)}</i><br />
                                     <b>Answers:{question.relatedAnswerCount}</b> <br />
                                     <a href={`/questions/${question.id}`} className="btn btn-primary">Answer</a>
-                                    {question.userId === user.id && <button className="btn btn-danger" id={question.id} onClick={(e) => deleteQuestion(e.target.id)}>Delete</button>}
+                                    {question.userId === user.id && <button className="btn btn-danger m-1" id={question.id} onClick={(e) => deleteQuestion(e.target.id)}>Delete</button>}
                                 </div>
                             </div>
                         }) : "No Question in this category yet!"}
@@ -111,7 +122,7 @@ export default function QuestionsPage({ questions, categories, setQuestions }) {
 
                     <div className="askAQuestionDiv">
                         <a className="btn btn-warning" href="/ask">Ask a Question</a>
-                        <SearchDiv setSearchedWords={setSearchedWords} />
+                        <SearchDiv onSearch={fetchQuestions} />
                     </div>
                 </div>
                 :

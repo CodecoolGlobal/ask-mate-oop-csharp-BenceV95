@@ -56,4 +56,29 @@ public class QuestionController : ControllerBase
         return Ok();
     }
 
+    [Authorize]
+    [HttpGet("search")]
+    public IActionResult Search([FromQuery] string query)
+    {
+        try
+        {
+            if (string.IsNullOrWhiteSpace(query))
+            {
+                return BadRequest("Query cannot be empty.");
+            }
+
+            var searched = _database.Search(query);
+            if (searched == null)
+            {
+                return NotFound(searched);
+            }
+
+            return Ok(searched);
+        }
+        catch (Exception e)
+        {
+            return StatusCode(500, new { Message = "Internal Server Error", details = e.Message });
+        }
+        
+    }
 }
