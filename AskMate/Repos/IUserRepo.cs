@@ -1,4 +1,6 @@
-﻿namespace AskMate.Models.Repos
+﻿using AskMate.Models;
+
+namespace AskMate.Repos
 {
     public interface IUserRepo
     {
@@ -6,7 +8,8 @@
         public int CalculateUserPoints(string userID);
         public bool ValidUser(string userID);
         object? CreateUser(string username, string email, string password);
-        bool AuthUser(string usernameOrEmail, string password, out string? userID);
+        bool AuthUser(string usernameOrEmail, string password, out User user);
         List<User> GetAllUsers();
+        void DeleteUser(string id);
     }
 }

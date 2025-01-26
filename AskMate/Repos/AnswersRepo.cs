@@ -1,7 +1,8 @@
-﻿using Npgsql;
+﻿using AskMate.Models;
+using Npgsql;
 using System.Data;
 
-namespace AskMate.Models.Repos
+namespace AskMate.Repos
 {
     public class AnswersRepo : IAnswersRepo
     {
@@ -56,6 +57,43 @@ namespace AskMate.Models.Repos
 
             return createdId;
         }
+
+        public List<Answer>? GetAllAnswersByQuestionId(string id)
+        {
+            using var connection = new NpgsqlConnection(_connectionString);
+            connection.Open();
+            List<Answer> answers = new List<Answer>();
+
+            using (var command = new NpgsqlCommand("SELECT * FROM answers WHERE question_id = :id", connection))
+            {
+                command.Parameters.AddWithValue(":id", id);
+                using (var reader = command.ExecuteReader())
+                    while (reader.Read())
+                    {
+                        answers.Add(new Answer()
+                        {
+                            ID = reader.GetString(reader.GetOrdinal("id")),
+                            UserId = reader.GetString(reader.GetOrdinal("user_id")),
+                            QuestionID = reader.GetString(reader.GetOrdinal("question_id")),
+                            Body = reader.GetString(reader.GetOrdinal("body")),
+                            PostDate = reader.GetDateTime(reader.GetOrdinal("post_date"))
+                        });
+                    }
+            }
+            return answers.Count <= 0 ? null : answers;
+        }
+
+        public void DeleteAnswerByQuestionId(string id)
+        {
+            using var connection = new NpgsqlConnection(_connectionString);
+            connection.Open();
+
+            using var adapter = new NpgsqlDataAdapter("DELETE FROM ONLY answers WHERE question_id = :id ", connection);
+            adapter.SelectCommand?.Parameters.AddWithValue(":id", id);
+
+            adapter.SelectCommand?.ExecuteNonQuery();
+        }
+
 
         public void DeleteAnswer(string id)
         {

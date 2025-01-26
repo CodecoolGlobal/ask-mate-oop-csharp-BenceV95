@@ -1,11 +1,11 @@
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using System.Globalization;
-using AskMate.Models.Repos;
 using Npgsql;
 using AskMate.Models;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
+using AskMate.Repos;
 
 namespace AskMate.Controllers;
 
@@ -27,6 +27,8 @@ public class QuestionController : ControllerBase
     {
         return Ok(_database.GetAllQuestions());
     }
+
+
     [Authorize]
     [HttpGet("{id}")]
     public async Task<IActionResult> GetQuestion(string id)

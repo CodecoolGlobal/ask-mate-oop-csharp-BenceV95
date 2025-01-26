@@ -9,14 +9,23 @@ export function AuthProvider({ children }) {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [isLoading, setIsLoading] = useState(true)
     const [loggedInUsername, setLoggedInUsername] = useState("");
+    const [userId, setUserId] = useState("");
+    const [user, setUser] = useState({});
 
 
-// this is called when the user logs in or out...
+    // this is called when the user logs in or out...
     async function refreshSession() {
         setIsLoading(true);
         const status = await checkSession();
         setIsLoggedIn(status.isLoggedIn);
         setLoggedInUsername(status.username);
+        setUserId(status.id)
+        setUser({
+            isLoggedIn: status.isLoggedIn,
+            username: status.username,
+            id: status.id,
+            isAdmin: status.role === "admin" ? true : false
+        })
         setIsLoading(false);
     };
 
@@ -24,13 +33,22 @@ export function AuthProvider({ children }) {
     useEffect(() => {
         async function fetchLoginStatus() {
             const status = await checkSession();
-            await delay(1000) //for testing
+            //await delay(1000) //for testing
             console.log("status:", status)
             setIsLoggedIn(status.isLoggedIn)
             setLoggedInUsername(status.username)
-            setIsLoading(false)
+            setUserId(status.id)
+            setUser({
+                isLoggedIn: status.isLoggedIn,
+                username: status.username,
+                id: status.id,
+                isAdmin: status.role === "admin" ? true : false
+            });
+            setIsLoading(false);
+            console.log("user", user)
         }
         fetchLoginStatus();
+        console.log("useragain:", user)
     }, []);
 
     if (isLoading) {
@@ -40,7 +58,7 @@ export function AuthProvider({ children }) {
     }
 
     return (
-        <AuthContext.Provider value={{ refreshSession, loggedInUsername, isLoggedIn, setIsLoggedIn }}>
+        <AuthContext.Provider value={{ refreshSession, loggedInUsername, isLoggedIn, setIsLoggedIn, userId, user }}>
             {children}
         </AuthContext.Provider>
     )
@@ -62,7 +80,8 @@ async function checkSession() {
     } else {
         return {
             isLoggedIn: false,
-            username: "Guest"
+            username: "Guest",
+            isAdmin: false
         }
     }
 }

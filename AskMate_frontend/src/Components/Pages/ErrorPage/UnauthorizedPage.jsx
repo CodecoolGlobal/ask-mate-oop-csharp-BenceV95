@@ -1,5 +1,5 @@
 import React from 'react'
-import './ErrorPage.css';
+import './UnauthorizedPage.css';
 
 const ErrorPage = () => {
   return (
