@@ -16,6 +16,7 @@ const AskQuestionForm = ({ categories }) => {
     const [searchQuery, setSearchQuery] = useState("");
     const [searching, setSearching] = useState(false);
     const [searched, setSearched] = useState(false);
+    const [questiondId, setQuestionId] = useState("");
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -63,6 +64,11 @@ const AskQuestionForm = ({ categories }) => {
                 }),
                 credentials: 'include'
             });
+
+            if (response.ok) {
+                const data = await response.text();
+                setQuestionId(data);
+            }
 
             setResponseMessage("Question Posted");
             setTitle("");
@@ -133,7 +139,13 @@ const AskQuestionForm = ({ categories }) => {
                             <br />
                             <button className='btn btn-success' type='submit'>Ask</button>
                         </form>
-                        <p>{responseMessage}</p>
+                        {
+                            responseMessage && 
+                            <div>
+                                <p className='responseMessage'>{responseMessage}</p>
+                                <a href={`/questions/${questiondId}`} className='btn btn-primary'>View Your Question</a>
+                            </div>
+                        }
                     </div>)
             }
         </>
