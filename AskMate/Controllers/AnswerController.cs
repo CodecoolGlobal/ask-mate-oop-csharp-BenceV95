@@ -1,5 +1,5 @@
 ﻿using AskMate.Models;
-using AskMate.Models.Repos;
+using AskMate.Repos;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;

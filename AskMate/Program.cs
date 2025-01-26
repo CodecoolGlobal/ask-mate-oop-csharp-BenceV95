@@ -1,6 +1,6 @@
 using AskMate.Middleware;
 using AskMate.Models;
-using AskMate.Models.Repos;
+using AskMate.Repos;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Hosting.Server;
 using Npgsql;

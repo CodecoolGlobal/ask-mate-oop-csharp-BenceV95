@@ -1,9 +1,10 @@
-﻿using Npgsql;
+﻿using AskMate.Models;
+using Npgsql;
 using System.Data;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace AskMate.Models.Repos
+namespace AskMate.Repos
 {
     public class UserRepo : IUserRepo
     {

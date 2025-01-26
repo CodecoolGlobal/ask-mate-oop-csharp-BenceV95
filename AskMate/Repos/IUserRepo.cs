@@ -1,4 +1,6 @@
-﻿namespace AskMate.Models.Repos
+﻿using AskMate.Models;
+
+namespace AskMate.Repos
 {
     public interface IUserRepo
     {

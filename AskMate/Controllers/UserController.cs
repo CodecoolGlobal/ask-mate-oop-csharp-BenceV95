@@ -1,10 +1,10 @@
 ﻿using AskMate.Models;
-using AskMate.Models.Repos;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
+using AskMate.Repos;
 
 namespace AskMate.Controllers
 {
