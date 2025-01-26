@@ -3,32 +3,45 @@
     flex-direction: column;
     height: 100%;
     overflow: hidden;
-    gap: 3rem;
+    gap: 1rem;
     margin: 1rem;
-    border: blueviolet solid 2px;
+    border: white solid 2px;
+    border-radius: 10px;
     padding: 0.5rem;
 }
 
 .questionDetailsDiv {
-    border: solid white 2px;
+    border: white solid 2px;
+    border-radius: 10px;
     height: 20%;
 }
 
 .answerForm {
-    border: solid green 2px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border: white solid 2px;
+    border-radius: 10px;
     padding: 1rem;
     width: 100%;
-    align-self: center;
     height: 20%;
 }
 
+.answerForm textarea {
+    width: 80%;
+    height: max-content;
+    padding: 1rem;
+    resize: none;
+    border-radius: 10px;
+}
 
 .answersDiv {
     display: flex;
     flex-direction: column;
-    height: 50%;
-    border: solid yellow 2px;
-    overflow-y: scroll;
+    height: 60%;
+    border: white solid 2px;
+    border-radius: 10px;
+    overflow-y: hidden;
     gap: 1rem;
     padding: 1rem;
     align-items: center;
@@ -37,18 +50,27 @@
 .answerCardDiv{
     background-color: #323232;
     color: white;
-    border: red solid 2px;
+    border: white solid 2px;
+    border-radius: 10px;
     width: 75%;
     overflow-wrap: break-word;
     height: fit-content;
-    padding: 1rem;
-}
-.answerBody{
-    width: 50%;
-    resize: none;
+    padding: 0.5rem;
 }
 
-pre {
+.answerCardHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: white solid 2px;
+}
+
+.answerCardHeader p {
+    margin: 0;
+}
+
+.answerCardDiv pre {
+    margin-top: 1rem;
     white-space: pre-wrap; 
     word-wrap: break-word;
     overflow-wrap: break-word; 

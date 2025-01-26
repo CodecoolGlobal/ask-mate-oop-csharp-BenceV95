@@ -3,17 +3,47 @@ import './AskQuestionForm.css';
 import { useState, } from 'react';
 
 
-
-
-
 const AskQuestionForm = ({ categories }) => {
 
+    // ask question second
     const [selectedCategory, setSelectedCategory] = useState(0);
     const [title, setTitle] = useState("");
     const [body, setBody] = useState("");
     const [responseMessage, setResponseMessage] = useState("");
 
-    console.log(selectedCategory);
+    // search first
+    const [searchResult, setSearchResult] = useState([]);
+    const [searchQuery, setSearchQuery] = useState("");
+    const [searching, setSearching] = useState(false);
+    const [searched, setSearched] = useState(false);
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        setSearched(true);
+        if (searchQuery.trim()) {
+            setTitle(searchQuery);
+            fetchQuestions(searchQuery);
+        }
+    };
+
+    const fetchQuestions = async (query) => {
+
+        try {
+            const response = await fetch(`http://localhost:5166/Question/search?query=${encodeURIComponent(query)}`, {
+                method: 'GET',
+                credentials: "include"
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                setSearchResult(data);
+                console.log("search data: ", data);
+
+            }
+        } catch (error) {
+            console.log("fetch failed:", error);
+        }
+    }
 
     async function SubmitQuestion(e) {
         e.preventDefault();
@@ -46,24 +76,68 @@ const AskQuestionForm = ({ categories }) => {
     }
 
     return (
-        <div className='askQuestionFormDiv'>
-            <form className='ask' onSubmit={SubmitQuestion}>
-                <input type='text' placeholder='Title' name='title' className='title' onChange={(e) => setTitle(e.target.value)} value={title}></input><br />
-                <textarea placeholder='body' name='body' onChange={(e) => setBody(e.target.value)} value={body}></textarea><br />
+        <>
+            {
+                !searching ?
+                    (<>
+                        <form onSubmit={handleSubmit} className='searchForm'>
+                            <input
+                                type='text'
+                                placeholder='Search'
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                                value={searchQuery}
+                            >
+                            </input>
+                            <button type='submit' className='btn btn-success'>Search</button>
+                            {(searched) &&
+                                <button onClick={() => setSearching(true)} className='btn btn-primary'>Ask</button>
+                            }
+                        </form>
 
-                <select className="form-select" name='categories' value={selectedCategory} onChange={(e) => setSelectedCategory(e.target.value)}>
-                    <option value={0} disabled>Set category</option>
-                    {
-                        categories.map(category => {
-                            return <option key={category.id} value={category.id}>{category.name}</option>
-                        })
-                    }
-                </select>
-                <br />
-                <button className='btn btn-success' type='submit'>Ask</button>
-            </form>
-            <p>{responseMessage}</p>
-        </div>
+                        <div className='searchResults'>
+                            {
+                                searchResult.map((result) => {
+                                    return (
+                                        <div key={result.id} className='searchResult'>
+                                            <h3>{result.title}</h3>
+                                            <p>{result.body}</p>
+                                            <a href={`/questions/${result.id}`} className='btn btn-primary'>View Question</a>
+                                        </div>
+                                    )
+                                })
+                            }
+                        </div>
+                    </>
+                    )
+                    :
+                    (<div className='askQuestionFormDiv'>
+                        <form className='ask' onSubmit={SubmitQuestion}>
+                            <input
+                                type='text'
+                                placeholder='Title'
+                                name='title'
+                                className='title'
+                                onChange={(e) => setTitle(e.target.value)}
+                                value={title}
+                            ></input><br />
+                            <textarea placeholder='body' name='body' onChange={(e) => setBody(e.target.value)} value={body}></textarea><br />
+
+                            <select className="form-select" name='categories' value={selectedCategory} onChange={(e) => setSelectedCategory(e.target.value)}>
+                                <option value={0} disabled>Set category</option>
+                                {
+                                    categories.map(category => {
+                                        return <option key={category.id} value={category.id}>{category.name}</option>
+                                    })
+                                }
+                            </select>
+                            <br />
+                            <button className='btn btn-success' type='submit'>Ask</button>
+                        </form>
+                        <p>{responseMessage}</p>
+                    </div>)
+            }
+        </>
+
     )
 }
 

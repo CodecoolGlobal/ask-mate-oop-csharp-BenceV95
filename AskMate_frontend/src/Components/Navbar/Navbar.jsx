@@ -24,6 +24,9 @@ const Navbar = ({ handleLogOut }) => {
               <li className="nav-item">
                 <a className="nav-link" href="/questions">Questions</a>
               </li>
+              <li className="nav-item">
+                <a className="nav-link" href="/ask">Ask</a>
+              </li>
               {user.isAdmin && <li className="nav-item">
                 <a className="nav-link" href="/users">Users</a>
               </li>}

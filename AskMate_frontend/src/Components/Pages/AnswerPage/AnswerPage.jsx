@@ -1,9 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { useParams } from "react-router-dom";
 import ErrorPage from "../ErrorPage/UnauthorizedPage";
 import "./AnswerPage.css";
+import { AuthContext } from '../../AuthContext/AuthContext';
 
 const AnswerPage = ({ fetchData, categories, users }) => {
+    const { user } = useContext(AuthContext);
+
     const { id } = useParams(); // Destructure the `id` from the URL
     const [questionData, setQuestionData] = useState(null);
     const [answerBody, setAnswerBody] = useState("");
@@ -64,12 +67,17 @@ const AnswerPage = ({ fetchData, categories, users }) => {
     }
 
     async function handleSubmit(e) {
-        e.preventDefault()
+        e.preventDefault();
+
+        if (answerBody === "") {
+            alert("Please write an non empty answer!")
+            return;
+        }
+
         await postAnswer()
         setFetchAgain(!fetchAgain)
         setAnswerBody("");
     }
-
 
     function convertDate(dateString) {
         const date = new Date(dateString);
@@ -90,30 +98,48 @@ const AnswerPage = ({ fetchData, categories, users }) => {
         const user = users.find((user) => user.id === id);
         return user ? user.username : "Anonym";
     }
+
     return (
         <>
             {questionData != null ?
                 <div className="mainAnswerDiv">
+
                     <div className="questionDetailsDiv">
                         <h1>{questionData.title}</h1>
                         <h3>{questionData.body}</h3>
                         <h4>Category: {findCategoryNameById(questionData.categories)}</h4>
                     </div>
-                    <div className="answerForm">
-                        <form onSubmit={(e) => handleSubmit(e)} action="">
-                            <textarea value={answerBody} name="answerBody" className="answerBody" id="answerBody" placeholder="Your answer" onChange={(e) => { setAnswerBody(e.target.value) }} ></textarea><br />
-                            <button className='btn btn-success' type="submit">Send Answer</button>
-                        </form>
-                    </div>
+
+                    <form onSubmit={(e) => handleSubmit(e)} className="answerForm">
+                        <textarea
+                            value={answerBody}
+                            name="answerBody"
+                            className="answerBody"
+                            id="answerBody"
+                            placeholder="Your answer"
+                            onChange={(e) => { setAnswerBody(e.target.value) }}
+                        ></textarea>
+                        <button className='btn btn-success' type="submit">Send Answer</button>
+                    </form>
+
                     <div className="answersDiv">
                         {answers.map(answer => {
-                            return <div key={answer.id} className="answerCardDiv" >
-                                <div>{getUsernameById(answer.userId)}'s answer:</div>
+                            return (<div key={answer.id} className="answerCardDiv" >
+                                <div className="answerCardHeader">
+                                    <p>{getUsernameById(answer.userId)}'s answer:</p>
+                                    <i>{convertDate(answer.postDate)}</i>
+                                    {answer.userId === user.id &&
+                                        (<>
+                                            <button className="btn btn-danger">Delete</button>
+                                            <button className="btn btn-warning">Edit (WIP)</button>
+                                        </>)}
+
+                                </div>
                                 <pre>{answer.body}</pre>
-                                <i>{convertDate(answer.postDate)}</i>
-                            </div>
+                            </div>)
                         })}
                     </div>
+
                 </div>
                 :
                 <ErrorPage />

@@ -67,7 +67,10 @@ public class QuestionController : ControllerBase
                 return BadRequest("Query cannot be empty.");
             }
 
-            var searched = _database.Search(query);
+            string formattedQuery = string.Join(" & ", query.Split(' ', StringSplitOptions.RemoveEmptyEntries));
+
+            var searched = _database.Search(formattedQuery);
+
             if (searched == null)
             {
                 return NotFound(searched);
