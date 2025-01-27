@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using AskMate.Repos;
+using System.ComponentModel.DataAnnotations;
 
 namespace AskMate.Controllers
 {
@@ -16,6 +17,36 @@ namespace AskMate.Controllers
         public UserController(IUserRepo database)
         {
             _database = database;
+        }
+
+
+
+        [HttpPut("update/{id}")]
+        public IActionResult UpdateUser([FromBody] UserUpdateRequest userUpdate, string id)
+        {
+            try
+            {
+                _database.UpdateUser(id, userUpdate);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet]
+        public IActionResult GetUserByNameOrEmail(string nameOrEmail)
+        {
+            try
+            {
+                var user = _database.GetUserByNameOrEmail(nameOrEmail);
+                return Ok(user);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
 
@@ -37,6 +68,25 @@ namespace AskMate.Controllers
         {
             return Ok(_database.GetAllUsers());
         }
+
+
+        [HttpGet("paginate/")]
+        public IActionResult GetUsersPaginated([Required] int pageNumber, [Required] int limit)
+        {
+            try
+            {
+                var data = _database.GetUsersPaginated(pageNumber, limit);
+
+                //List<User> users = data.users;
+                //int usersCount = users.Count;
+
+                return Ok(new { data.totalCount, data.users });
+            }
+            catch (Exception e) { return BadRequest(e.Message); };
+        }
+
+
+
 
         //session check
         [HttpGet("session")]
