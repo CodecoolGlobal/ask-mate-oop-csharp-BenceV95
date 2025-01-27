@@ -17,6 +17,51 @@ namespace AskMate.Repos
         }
 
 
+        //using tuple
+        public (List<User> users, int totalCount) GetUsersPaginated(int pageNumber, int limit)
+        {
+            List<User> users = new List<User>();
+            int totalCount = 0;
+
+            using (var connection = new NpgsqlConnection(_connectionString))
+            {
+                connection.Open();
+
+
+                var command = new NpgsqlCommand("SELECT * FROM users ORDER BY username LIMIT :limit OFFSET (:pageNumber - 1 ) * :limit", connection);
+                command.Parameters.AddWithValue(":limit", limit);
+                command.Parameters.AddWithValue(":pageNumber", pageNumber);
+                using var reader = command.ExecuteReader();
+                {
+                    while (reader.Read())
+                    {
+                        var user = new User
+                        {
+                            Id = reader.GetString(reader.GetOrdinal("id")),
+                            Username = reader.GetString(reader.GetOrdinal("username")),
+                            Email = reader.GetString(reader.GetOrdinal("email_address"))
+                        };
+
+                        users.Add(user);
+                    }
+
+                }
+
+
+            }
+            //open a 2nd connection to get the count
+            using (var connection = new NpgsqlConnection(_connectionString))
+            {
+                connection.Open();
+                var countQuery = new NpgsqlCommand("SELECT COUNT(*) FROM users", connection);
+                totalCount = Convert.ToInt32(countQuery.ExecuteScalar());
+            }
+            return (users, totalCount);
+        }
+
+
+
+
         public List<User> GetAllUsers()
         {
             List<User> users = new List<User>();

@@ -11,5 +11,6 @@ namespace AskMate.Repos
         bool AuthUser(string usernameOrEmail, string password, out User user);
         List<User> GetAllUsers();
         void DeleteUser(string id);
+        public (List<User> users, int totalCount) GetUsersPaginated(int pageNumber, int limit);
     }
 }
