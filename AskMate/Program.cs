@@ -1,27 +1,29 @@
 using AskMate.Middleware;
-using AskMate.Models.Repos;
+using AskMate.Models;
+using AskMate.Repos;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Hosting.Server;
 using Npgsql;
 
 var builder = WebApplication.CreateBuilder(args);
 
-string CONNECTIONSTRING = "Server=localhost;Port=5432;User Id=postgres;Password=Vonat2024;Database=ask_mate"; // make this to get from the env
 
-var connection = new NpgsqlConnection(CONNECTIONSTRING);
+string CONNECTIONSTRING = Environment.GetEnvironmentVariable("CONNECTION_STRING");
+
+builder.Services.AddSingleton<string>(sp => CONNECTIONSTRING + "ask_mate;"+ "Pooling=true;"); // db_name + pooling
+
 
 //questions
-builder.Services.AddScoped<IQuestionsRepo>(provider =>
-new QuestionsRepo(connection));
+builder.Services.AddScoped<IQuestionsRepo, QuestionsRepo>();
 
 //answers
-builder.Services.AddScoped<IAnswersRepo>(provider =>
-new AnswersRepo(connection));
+builder.Services.AddScoped<IAnswersRepo, AnswersRepo>();
 
 //users
-builder.Services.AddScoped<IUserRepo>(provider =>
-new UserRepo(connection));
+builder.Services.AddScoped<IUserRepo, UserRepo>();
 
-
+//categories
+builder.Services.AddScoped<ICategoriesRepo, CategoriesRepo>();
 
 
 // Add services to the container.
@@ -40,6 +42,17 @@ builder.Services.AddAuthentication("Cookies")
         options.ExpireTimeSpan = TimeSpan.FromHours(1); // Expiration
     });
 
+//built in cors
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowFrontend", policy =>
+    {
+        policy.WithOrigins("http://localhost:5173")
+              .AllowAnyHeader()
+              .AllowAnyMethod()
+              .AllowCredentials();
+    });
+});
 
 var app = builder.Build();
 
@@ -59,5 +72,8 @@ app.UseCorsMiddleware();
 app.UseAuthorization();
 
 app.MapControllers();
+
+//built in cors
+app.UseCors("AllowFrontend");
 
 app.Run();

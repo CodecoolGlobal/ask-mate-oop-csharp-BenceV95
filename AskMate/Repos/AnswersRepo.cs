@@ -1,20 +1,23 @@
-﻿using Npgsql;
+﻿using AskMate.Models;
+using Npgsql;
 using System.Data;
 
-namespace AskMate.Models.Repos
+namespace AskMate.Repos
 {
     public class AnswersRepo : IAnswersRepo
     {
-        NpgsqlConnection _connectionString;
-        public AnswersRepo(NpgsqlConnection connectionString)
+        string _connectionString;
+        public AnswersRepo(string connectionString)
         {
             _connectionString = connectionString;
         }
 
         public object? GetAnswer(string id)
         {
-            _connectionString.Open();
-            var adapter = new NpgsqlDataAdapter("SELECT * FROM answers WHERE id = :id", _connectionString);
+            using var connection = new NpgsqlConnection(_connectionString);
+            connection.Open();
+
+            using var adapter = new NpgsqlDataAdapter("SELECT * FROM answers WHERE id = :id", connection);
             adapter.SelectCommand?.Parameters.AddWithValue(":id", id);
 
             var dataSet = new DataSet();
@@ -24,7 +27,6 @@ namespace AskMate.Models.Repos
             if (table.Rows.Count > 0)
             {
                 DataRow row = table.Rows[0];
-                _connectionString.Close();
                 return new Answer()
                 {
                     ID = (string)row["id"],
@@ -35,16 +37,16 @@ namespace AskMate.Models.Repos
                 };
             }
 
-            _connectionString.Close();
-
             return null;
         }
 
         public object? CreateNewAnswer(Answer answer, string loggedInUserID)
         {
-            _connectionString.Open();
 
-            using var adapter = new NpgsqlDataAdapter("INSERT INTO answers (id, user_id,question_id, body, post_date) VALUES (:id, :user_id, :question_id, :body, :post_date) RETURNING id", _connectionString);
+            using var connection = new NpgsqlConnection(_connectionString);
+            connection.Open();
+
+            using var adapter = new NpgsqlDataAdapter("INSERT INTO answers (id, user_id,question_id, body, post_date) VALUES (:id, :user_id, :question_id, :body, :post_date) RETURNING id", connection);
             adapter.SelectCommand?.Parameters.AddWithValue(":id", Guid.NewGuid().ToString());
             adapter.SelectCommand?.Parameters.AddWithValue(":user_id", loggedInUserID);
             adapter.SelectCommand?.Parameters.AddWithValue(":question_id", answer.QuestionID);
@@ -52,29 +54,66 @@ namespace AskMate.Models.Repos
             adapter.SelectCommand?.Parameters.AddWithValue(":post_date", DateTime.UtcNow);
 
             var createdId = (string)adapter.SelectCommand?.ExecuteScalar();
-            _connectionString.Close();
+
             return createdId;
         }
 
-        public void DeleteAnswer(string id)
+        public List<Answer>? GetAllAnswersByQuestionId(string id)
         {
-            _connectionString.Open();
+            using var connection = new NpgsqlConnection(_connectionString);
+            connection.Open();
+            List<Answer> answers = new List<Answer>();
 
-            using var adapter = new NpgsqlDataAdapter("DELETE FROM ONLY answers WHERE id = :id ", _connectionString);
+            using (var command = new NpgsqlCommand("SELECT * FROM answers WHERE question_id = :id", connection))
+            {
+                command.Parameters.AddWithValue(":id", id);
+                using (var reader = command.ExecuteReader())
+                    while (reader.Read())
+                    {
+                        answers.Add(new Answer()
+                        {
+                            ID = reader.GetString(reader.GetOrdinal("id")),
+                            UserId = reader.GetString(reader.GetOrdinal("user_id")),
+                            QuestionID = reader.GetString(reader.GetOrdinal("question_id")),
+                            Body = reader.GetString(reader.GetOrdinal("body")),
+                            PostDate = reader.GetDateTime(reader.GetOrdinal("post_date"))
+                        });
+                    }
+            }
+            return answers.Count <= 0 ? null : answers;
+        }
+
+        public void DeleteAnswerByQuestionId(string id)
+        {
+            using var connection = new NpgsqlConnection(_connectionString);
+            connection.Open();
+
+            using var adapter = new NpgsqlDataAdapter("DELETE FROM ONLY answers WHERE question_id = :id ", connection);
             adapter.SelectCommand?.Parameters.AddWithValue(":id", id);
 
             adapter.SelectCommand?.ExecuteNonQuery();
-            _connectionString.Close();
+        }
+
+
+        public void DeleteAnswer(string id)
+        {
+            using var connection = new NpgsqlConnection(_connectionString);
+            connection.Open();
+
+            using var adapter = new NpgsqlDataAdapter("DELETE FROM ONLY answers WHERE id = :id ", connection);
+            adapter.SelectCommand?.Parameters.AddWithValue(":id", id);
+
+            adapter.SelectCommand?.ExecuteNonQuery();
         }
 
         public void UpdateAnswer(Answer answer)
         {
-            _connectionString.Open();
+            using var connection = new NpgsqlConnection(_connectionString);
+            connection.Open();
 
-            var adapter = new NpgsqlDataAdapter(
-                "UPDATE answers SET body = :body WHERE id = :id",
-                _connectionString
-            );
+
+            using var adapter = new NpgsqlDataAdapter(
+                  "UPDATE answers SET body = :body WHERE id = :id", connection);
 
             adapter.SelectCommand?.Parameters.AddWithValue(":id", answer.ID);
             adapter.SelectCommand?.Parameters.AddWithValue(":user_id", answer.UserId);
@@ -83,7 +122,6 @@ namespace AskMate.Models.Repos
 
             adapter.SelectCommand?.ExecuteNonQuery();
 
-            _connectionString.Close();
         }
 
 
@@ -93,14 +131,14 @@ namespace AskMate.Models.Repos
         /// <param name="answerId"></param>
         public void AcceptAnswer(string answerId)
         {
-            _connectionString.Open();
+            using var connection = new NpgsqlConnection(_connectionString);
+            connection.Open();
 
-            var adapter = new NpgsqlDataAdapter("UPDATE answers SET is_accepted = true WHERE id = :answerID;", _connectionString);
+            using var adapter = new NpgsqlDataAdapter("UPDATE answers SET is_accepted = true WHERE id = :answerID;", connection);
             adapter.SelectCommand?.Parameters.AddWithValue(":answerID", answerId);
 
             adapter.SelectCommand.ExecuteNonQuery();
 
-            _connectionString.Close();
         }
 
 
@@ -112,9 +150,10 @@ namespace AskMate.Models.Repos
         /// <returns></returns>
         public bool IsAnswerBelongToLoggedInUsersQuestion(string loggedInUserID, string answerId)
         {
-            _connectionString.Open();
+            using var connection = new NpgsqlConnection(_connectionString);
+            connection.Open();
 
-            var adapter = new NpgsqlDataAdapter(" SELECT answers.user_id AS answerer, questions.user_id AS asker, answers.is_accepted FROM answers JOIN questions ON questions.id = answers.question_id WHERE answers.id = :answerID ", _connectionString);
+            using var adapter = new NpgsqlDataAdapter(" SELECT answers.user_id AS answerer, questions.user_id AS asker, answers.is_accepted FROM answers JOIN questions ON questions.id = answers.question_id WHERE answers.id = :answerID ", connection);
 
             adapter.SelectCommand?.Parameters.AddWithValue(":answerID", answerId);
 
@@ -131,12 +170,10 @@ namespace AskMate.Models.Repos
 
                 if (storedUserId == loggedInUserID)
                 {
-                    _connectionString.Close();
                     return true;
                 }
 
             }
-            _connectionString.Close();
             return false;
 
         }

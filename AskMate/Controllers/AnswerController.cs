@@ -1,5 +1,5 @@
 ﻿using AskMate.Models;
-using AskMate.Models.Repos;
+using AskMate.Repos;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
@@ -22,6 +22,22 @@ namespace AskMate.Controllers
         {
             return Ok(_database.GetAnswer(id));
 
+        }
+
+        [Authorize]
+        [HttpDelete("all/{id}")]
+        public IActionResult DeleteAnswerByQuestionId(string id)
+        {
+            _database.DeleteAnswerByQuestionId(id);
+            return Ok();
+        }
+
+        [Authorize]
+        [HttpGet("all/{id}")]
+        public IActionResult GetAllAnswersByQuestionId(string id)
+        {
+            var answers = _database.GetAllAnswersByQuestionId(id);
+            return Ok(answers);
         }
 
         [Authorize]

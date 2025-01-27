@@ -1,10 +1,10 @@
 ﻿using AskMate.Models;
-using AskMate.Models.Repos;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
+using AskMate.Repos;
 
 namespace AskMate.Controllers
 {
@@ -27,8 +27,28 @@ namespace AskMate.Controllers
         [HttpPost()]
         public IActionResult CreateUser([FromBody] UserRequest request)
         {
-            return Ok(_database.CreateUser(request.Username, request.Email, request.Password));
+            var result = _database.CreateUser(request.Username, request.Email, request.Password);
+
+            return Ok();
         }
+
+        [HttpGet("allUsers")]
+        public IActionResult GetUsers()
+        {
+            return Ok(_database.GetAllUsers());
+        }
+
+        //session check
+        [HttpGet("session")]
+        [Authorize] // Requires the user to be authenticated
+        public IActionResult ValidateSession()
+        {
+            var username = User.Identity.Name; // Get the logged-in user's name
+            var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+            var role = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
+            return Ok(new { IsLoggedIn = true, Username = username, Id = userId, Role = role });
+        }
+
 
         [Authorize]
         [HttpGet("/{id}/Points")]
@@ -41,20 +61,28 @@ namespace AskMate.Controllers
             return NotFound("This user does not exist.");
         }
 
+        [Authorize]
+        [HttpDelete("/users/{id}")]
+        public IActionResult DeleteUser(string id)
+        {
+            _database.DeleteUser(id);
+            return Ok();
+        }
+
 
         [HttpPost("login")]
-        public async Task<IActionResult> Login(string username, string password)
+        public async Task<IActionResult> Login([FromBody] LoginRequest user)
         {
             // Validate credentials (replace with actual validation)
-            if (_database.AuthUser(username, password, out string userID))
+            if (_database.AuthUser(user.Username, user.Password, out User userFromDb))
             {
                 Console.WriteLine("login");
                 // Create user claims
                 var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.Name, username),
-                new Claim(ClaimTypes.Role, "User"), //to be implemented
-                new Claim(ClaimTypes.NameIdentifier, userID)
+                new Claim(ClaimTypes.Name, user.Username),
+                new Claim(ClaimTypes.Role, userFromDb.Role),
+                new Claim(ClaimTypes.NameIdentifier, userFromDb.Id)
             };
 
                 // Create identity and principal

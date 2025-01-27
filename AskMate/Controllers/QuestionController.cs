@@ -1,11 +1,11 @@
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using System.Globalization;
-using AskMate.Models.Repos;
 using Npgsql;
 using AskMate.Models;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
+using AskMate.Repos;
 
 namespace AskMate.Controllers;
 
@@ -27,6 +27,8 @@ public class QuestionController : ControllerBase
     {
         return Ok(_database.GetAllQuestions());
     }
+
+
     [Authorize]
     [HttpGet("{id}")]
     public async Task<IActionResult> GetQuestion(string id)
@@ -40,6 +42,7 @@ public class QuestionController : ControllerBase
     public IActionResult CreateQuestion([FromBody] Question question)
     {
         var loggedInUserID = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        Console.WriteLine(loggedInUserID);
 
         //returns the id
         return Ok(_database.CreateNewQuestion(question, loggedInUserID));
@@ -53,4 +56,32 @@ public class QuestionController : ControllerBase
         return Ok();
     }
 
+    [Authorize]
+    [HttpGet("search")]
+    public IActionResult Search([FromQuery] string query)
+    {
+        try
+        {
+            if (string.IsNullOrWhiteSpace(query))
+            {
+                return BadRequest("Query cannot be empty.");
+            }
+
+            string formattedQuery = string.Join(" & ", query.Split(' ', StringSplitOptions.RemoveEmptyEntries));
+
+            var searched = _database.Search(formattedQuery);
+
+            if (searched == null)
+            {
+                return NotFound(searched);
+            }
+
+            return Ok(searched);
+        }
+        catch (Exception e)
+        {
+            return StatusCode(500, new { Message = "Internal Server Error", details = e.Message });
+        }
+        
+    }
 }

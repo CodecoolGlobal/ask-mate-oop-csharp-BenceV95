@@ -1,0 +1,53 @@
+.mainDiv {
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+    max-width: 100%;
+    width: 100%;
+    justify-content: space-between;
+    padding: 1rem;
+    border: solid white 2px;
+    border-radius: 10px;
+}
+
+.categoriesDiv {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    border: solid white 2px;
+    border-radius: 10px;
+    padding: 1rem;
+    width: 25%;
+    max-width: 25dvw;
+    max-height: fit-content;
+}
+
+.questionsDiv {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    border: solid white 2px;
+    border-radius: 10px;
+    padding: 1rem;
+    overflow-y: auto;
+    max-height: 80dvh;
+    width: 50%;
+    scrollbar-width: none; /*hide scrollbar*/
+
+}
+
+.askAQuestionDiv {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    border: solid white 2px;
+    border-radius: 10px;
+    padding: 1rem;
+    width: 25%;
+    max-height: fit-content;
+}
+
+.card {
+    background-color: #323232;
+    color: white;
+}
