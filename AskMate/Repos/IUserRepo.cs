@@ -12,5 +12,7 @@ namespace AskMate.Repos
         List<User> GetAllUsers();
         void DeleteUser(string id);
         public (List<User> users, int totalCount) GetUsersPaginated(int pageNumber, int limit);
+        public User GetUserByNameOrEmail(string nameOrEmail);
+        public void UpdateUser(string id, UserUpdateRequest updateRequest);
     }
 }

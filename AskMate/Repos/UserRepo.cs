@@ -17,6 +17,51 @@ namespace AskMate.Repos
         }
 
 
+        public User GetUserByNameOrEmail(string nameOrEmail)
+        {
+            User user = null;
+
+            using var connection = new NpgsqlConnection(_connectionString);
+            {
+                connection.Open();
+
+                var command = new NpgsqlCommand("SELECT * FROM users WHERE username = :nameOrEmail OR email_address = :nameOrEmail", connection);
+                command.Parameters.AddWithValue(":nameOrEmail", nameOrEmail);
+                using var reader = command.ExecuteReader();
+                {
+                    while (reader.Read())
+                    {
+                        user = new User()
+                        {
+                            Id = reader.GetString(reader.GetOrdinal("id")),
+                            Username = reader.GetString(reader.GetOrdinal("username")),
+                            Email = reader.GetString(reader.GetOrdinal("email_address"))
+                        };
+                    }
+                }
+            }
+
+            return user;
+        }
+
+
+        public void UpdateUser(string id, UserUpdateRequest updateRequest)
+        {
+            using var connection = new NpgsqlConnection(_connectionString);
+            {
+                connection.Open();
+                var command = new NpgsqlCommand("UPDATE users SET username = :newUsername, email_address = :newEmailAddress WHERE id = :userId", connection);
+                command.Parameters.AddWithValue(":newUsername", updateRequest.Username);
+                command.Parameters.AddWithValue(":newEmailAddress", updateRequest.Email);
+                command.Parameters.AddWithValue(":userId", id);
+
+                command.ExecuteNonQuery();
+
+            }
+        }
+
+
+
         //using tuple
         public (List<User> users, int totalCount) GetUsersPaginated(int pageNumber, int limit)
         {

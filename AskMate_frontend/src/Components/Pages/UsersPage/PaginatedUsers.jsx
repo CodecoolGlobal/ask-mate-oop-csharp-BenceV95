@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
+import UserCard from "./UserCard";
+import "./PaginatedUsers.css";
 
 
 
 
-export default function PaginatedUsers({users}) {
+export default function PaginatedUsers({ users }) {
     const [data, setData] = useState([]); // Store the fetched data
     const [currentPage, setCurrentPage] = useState(1); // Current page
     const [totalPages, setTotalPages] = useState(1); // Total number of pages
@@ -25,7 +27,7 @@ export default function PaginatedUsers({users}) {
             const response = await fetch(`http://localhost:5166/User/paginate?pageNumber=${page}&limit=${ITEMS_PER_PAGE}`);
             const parsedData = await response.json();
             setData(parsedData.users);
-            setTotalPages(Math.ceil(parsedData.totalCount/5));
+            setTotalPages(Math.ceil(parsedData.totalCount / 5));
         } catch (error) {
             console.error('Error fetching data:', error);
         } finally {
@@ -47,11 +49,11 @@ export default function PaginatedUsers({users}) {
             {isLoading ? (
                 <p>Loading...</p>
             ) : (
-                <ul>
-                    {data.map((item) => (
-                        <li key={item.id}>{item.username} <br />{item.email}</li>
-                    ))}
-                </ul>
+                <div className="userCards">
+                    {
+                        data.map(user => <UserCard user={user} />)
+                    }
+                </div>
             )}
             <Pagination
                 currentPage={currentPage}
@@ -66,11 +68,12 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
     const pages = [...Array(totalPages).keys()].map((n) => n + 1);
 
     return (
-        <div>
+        <div className="pageButtons">
             {pages.map((page) => (
                 <button
                     key={page}
                     onClick={() => onPageChange(page)}
+                    className={page === currentPage ? "btn btn-success" : "btn btn-warning"}
                     disabled={page === currentPage}
                 >
                     {page}

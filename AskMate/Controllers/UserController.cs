@@ -20,6 +20,36 @@ namespace AskMate.Controllers
         }
 
 
+
+        [HttpPut("update/{id}")]
+        public IActionResult UpdateUser([FromBody] UserUpdateRequest userUpdate, string id)
+        {
+            try
+            {
+                _database.UpdateUser(id, userUpdate);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet]
+        public IActionResult GetUserByNameOrEmail(string nameOrEmail)
+        {
+            try
+            {
+                var user = _database.GetUserByNameOrEmail(nameOrEmail);
+                return Ok(user);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+
         /// <summary>
         /// Sends a post request to the server, to make a new user in the database, and from the request body it extracts the required data
         /// </summary>
@@ -50,7 +80,7 @@ namespace AskMate.Controllers
                 //List<User> users = data.users;
                 //int usersCount = users.Count;
 
-                return Ok(new {data.totalCount, data.users});
+                return Ok(new { data.totalCount, data.users });
             }
             catch (Exception e) { return BadRequest(e.Message); };
         }
