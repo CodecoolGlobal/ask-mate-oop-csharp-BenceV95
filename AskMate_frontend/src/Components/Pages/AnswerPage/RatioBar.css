@@ -1,0 +1,28 @@
+.ratio-bars-main{
+    padding: 0%;
+    margin: 0%;
+    gap: 0;
+    width: 100%;
+    height: 50%;
+    border:  gold dotted 2px;
+}
+
+.ratio-bars {
+    width: 20%; 
+    height: 50%;
+    border-radius: 15px;
+    display: flex;
+    overflow: hidden;
+  }
+  
+  .green-bar {
+    height: 100%;
+    background-color: #4CAF50;
+    transition: width 0.5s ease;
+  }
+  
+  .red-bar {
+    height: 100%;
+    background-color: #f44336;
+    transition: width 0.5s ease;
+  }

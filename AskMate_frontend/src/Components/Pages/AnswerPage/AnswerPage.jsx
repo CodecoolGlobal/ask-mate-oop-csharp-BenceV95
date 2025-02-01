@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import ErrorPage from "../ErrorPage/UnauthorizedPage";
 import "./AnswerPage.css";
 import { AuthContext } from '../../AuthContext/AuthContext';
+import Answers from "./Answers";
 
 const AnswerPage = ({ fetchData, categories, users }) => {
     const { user } = useContext(AuthContext);
@@ -121,25 +122,7 @@ const AnswerPage = ({ fetchData, categories, users }) => {
                         ></textarea>
                         <button className='btn btn-success' type="submit">Send Answer</button>
                     </form>
-
-                    <div className="answersDiv">
-                        {answers.map(answer => {
-                            return (<div key={answer.id} className="answerCardDiv" >
-                                <div className="answerCardHeader">
-                                    <p>{getUsernameById(answer.userId)}'s answer:</p>
-                                    <i>{convertDate(answer.postDate)}</i>
-                                    {answer.userId === user.id &&
-                                        (<>
-                                            <button className="btn btn-danger">Delete</button>
-                                            <button className="btn btn-warning">Edit (WIP)</button>
-                                        </>)}
-
-                                </div>
-                                <pre>{answer.body}</pre>
-                            </div>)
-                        })}
-                    </div>
-
+                    <Answers answers={answers} getUsernameById={getUsernameById} convertDate={convertDate} user={user} />
                 </div>
                 :
                 <ErrorPage />

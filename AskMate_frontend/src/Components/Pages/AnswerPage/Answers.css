@@ -1,0 +1,42 @@
+
+.answersDiv {
+    display: flex;
+    flex-direction: column;
+    height: 60%;
+    border: fuchsia solid 2px;
+    border-radius: 10px;
+    overflow: auto;
+    scrollbar-width: none;
+    gap: 1rem;
+    padding: 1rem;
+    align-items: center;
+}
+
+.answerCardDiv{
+    background-color: #323232;
+    color: white;
+    border: darkcyan solid 2px;
+    border-radius: 10px;
+    width: 75%;
+    overflow-wrap: break-word;
+    height: fit-content;
+    padding: 0.5rem;
+}
+
+.answerCardHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: white solid 2px;
+}
+
+.answerCardHeader p {
+    margin: 0;
+}
+
+.answerCardDiv pre {
+    margin-top: 1rem;
+    white-space: pre-wrap; 
+    word-wrap: break-word;
+    overflow-wrap: break-word; 
+}
