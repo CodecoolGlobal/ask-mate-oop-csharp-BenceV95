@@ -1,6 +1,7 @@
 using AskMate.Middleware;
 using AskMate.Models;
 using AskMate.Repos;
+using AskMate.Repos.Votes;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Hosting.Server;
 using Npgsql;
@@ -24,6 +25,9 @@ builder.Services.AddScoped<IUserRepo, UserRepo>();
 
 //categories
 builder.Services.AddScoped<ICategoriesRepo, CategoriesRepo>();
+
+//votes
+builder.Services.AddScoped<IVotesRepo, VotesRepo>();
 
 
 // Add services to the container.
