@@ -8,8 +8,8 @@ namespace AskMate.Repos.Votes
 
         public Vote VoteOnAnswer(VoteCreateRequest voteCreateRequest);
         public IEnumerable<Vote> GetVotesByAnswerIds(string[] answerIds);
-        public void ChangeVote(string voteId);
-        public void DeleteVote(string voteId);
+        public void ChangeVote(int voteId);
+        public void DeleteVote(int voteId);
 
     }
 }

@@ -1,4 +1,7 @@
-﻿using AskMate.Models.Vote;
+﻿using AskMate.Models;
+using AskMate.Models.Vote;
+using Npgsql;
+using System.Data;
 
 namespace AskMate.Repos.Votes
 {
@@ -9,25 +12,100 @@ namespace AskMate.Repos.Votes
         {
             _connectionString = connectionString;
         }
+
         public Vote VoteOnAnswer(VoteCreateRequest voteCreateRequest)
         {
-            throw new NotImplementedException();
+            using var connection = new NpgsqlConnection(_connectionString);
+            connection.Open();
+
+            using var adapter = new NpgsqlDataAdapter("INSERT INTO votes (user_id,answer_id, is_useful) VALUES (:user_id, :answer_id, :is_useful) RETURNING id", connection);
+            adapter.SelectCommand?.Parameters.AddWithValue(":user_id", voteCreateRequest.UserId);
+            adapter.SelectCommand?.Parameters.AddWithValue(":answer_id", voteCreateRequest.AnswerId);
+            adapter.SelectCommand?.Parameters.AddWithValue(":is_useful", voteCreateRequest.IsUseful);
+
+            var voteId = (int)adapter.SelectCommand?.ExecuteScalar();
+
+            Vote vote = new Vote()
+            {
+                Id = voteId,
+                UserId = voteCreateRequest.UserId,
+                AnswerId = voteCreateRequest.AnswerId,
+                IsUseful = voteCreateRequest.IsUseful,
+            };
+
+            return vote;
         }
+
         public IEnumerable<Vote> GetVotesByAnswerIds(string[] answerIds)
         {
-            throw new NotImplementedException();
+            using var connection = new NpgsqlConnection(_connectionString);
+            connection.Open();
+            List<Vote> votes = new List<Vote>();
+
+            // dynamic parameter placeholders (:id1 :id2 etc...)
+            var parameters = answerIds.Select((id, index) => $":id{index}").ToArray();
+            string query = $"SELECT * FROM votes WHERE answer_id IN ({string.Join(",", parameters)})";
+
+            using var command = new NpgsqlCommand(query, connection);
+
+            for (int i = 0; i < answerIds.Length; i++)
+            {
+                command.Parameters.AddWithValue($":id{i}", answerIds[i]);
+            }
+
+            using var reader = command.ExecuteReader();
+            while (reader.Read())
+            {
+                votes.Add(new Vote()
+                {
+                    Id = reader.GetInt32(reader.GetOrdinal("id")),
+                    UserId = reader.GetString(reader.GetOrdinal("user_id")),
+                    AnswerId = reader.GetString(reader.GetOrdinal("answer_id")),
+                    IsUseful = reader.GetBoolean(reader.GetOrdinal("is_useful"))
+                });
+            }
+
+            return votes;
         }
 
-        public void ChangeVote(string voteId)
+        /// <summary>
+        /// This should just change an existing vote from useful to not useful (vica-versa)
+        /// </summary>
+        /// <param VoteId="voteId"></param>
+        public void ChangeVote(int voteId)
         {
-            throw new NotImplementedException();
+            using var connection = new NpgsqlConnection(_connectionString);
+            connection.Open();
+
+            string query = " UPDATE votes SET is_useful = NOT is_useful  WHERE id = :voteId";
+
+            using var command = new NpgsqlCommand(query, connection);
+            command.Parameters.AddWithValue(":voteId", voteId);
+
+            int rowsAffected = command.ExecuteNonQuery();
+            if (rowsAffected == 0)
+            {
+                throw new Exception("Vote not found.");
+            }
         }
 
-        public void DeleteVote(string voteId)
+
+        public void DeleteVote(int voteId)
         {
-            throw new NotImplementedException();
-        }
+            using var connection = new NpgsqlConnection(_connectionString);
+            connection.Open();
 
+            string query = "DELETE FROM votes WHERE id = :voteId";
+
+            using var command = new NpgsqlCommand(query, connection);
+            command.Parameters.AddWithValue(":voteId", voteId);
+
+            int rowsAffected = command.ExecuteNonQuery();
+            if (rowsAffected == 0)
+            {
+                throw new Exception("Vote not found.");
+            }
+        }
 
     }
 }

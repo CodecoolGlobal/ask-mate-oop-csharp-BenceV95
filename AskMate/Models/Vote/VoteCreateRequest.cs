@@ -4,6 +4,6 @@
     {
         public bool IsUseful { get; set; }
         public string UserId { get; set; }
-        public string AnswerID { get; set; }
+        public string AnswerId { get; set; }
     }
 }
