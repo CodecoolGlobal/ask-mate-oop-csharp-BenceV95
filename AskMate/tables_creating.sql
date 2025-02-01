@@ -2,6 +2,7 @@ DROP TABLE IF EXISTS answers;
 DROP TABLE IF EXISTS questions;
 DROP TABLE IF EXISTS users;
 DROP TABLE IF EXISTS categories;
+DROP TABLE IF EXISTS votes;
 
 CREATE TABLE categories (
     id SERIAL PRIMARY KEY,
@@ -38,6 +39,15 @@ CREATE TABLE answers (
     FOREIGN KEY (user_id) REFERENCES users(id),
     FOREIGN KEY (question_id) REFERENCES questions(id)
 );
+
+CREATE TABLE votes (
+    id SERIAL PRIMARY KEY,
+    is_useful BOOLEAN NOT NULL,
+    user_id VARCHAR(255) NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    answer_id VARCHAR(255) NOT NULL REFERENCES answers(id) ON DELETE CASCADE,
+    UNIQUE (answer_id, user_id)
+);
+
 
 -- add isAdmin column to users, set constraint NOT NULL
 --ALTER TABLE users ADD COLUMN isAdmin BOOLEAN DEFAULT FALSE;
