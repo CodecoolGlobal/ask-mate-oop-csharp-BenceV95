@@ -6,8 +6,8 @@ import "./Answers.css"
 
 
 export default function AnswerCard({ answers, getUsernameById, convertDate, user }) {
-    const [greenValue, setGreenValue] = useState(1);  // Percentage for green
-    const [redValue, setRedValue] = useState(1);      // Percentage for red
+    const [greenValue, setGreenValue] = useState(0);
+    const [redValue, setRedValue] = useState(0);
 
 
     return (

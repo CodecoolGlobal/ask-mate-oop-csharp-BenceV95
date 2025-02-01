@@ -1,28 +1,38 @@
-.ratio-bars-main{
+.ratio-bars-main {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
     padding: 0%;
     margin: 0%;
     gap: 0;
     width: 100%;
-    height: 50%;
-    border:  gold dotted 2px;
+    height: 3rem;
+    border: gold dotted 2px;
 }
 
 .ratio-bars {
-    width: 20%; 
+    display: flex;
+    width: 20%;
     height: 50%;
     border-radius: 15px;
-    display: flex;
     overflow: hidden;
-  }
-  
-  .green-bar {
+}
+
+.green-bar {
     height: 100%;
     background-color: #4CAF50;
     transition: width 0.5s ease;
-  }
-  
-  .red-bar {
+}
+
+.red-bar {
     height: 100%;
     background-color: #f44336;
     transition: width 0.5s ease;
-  }
+}
+
+.total-ratings {
+    margin-left: 10px;
+    font-size: 16px;
+    color: #ffffff;
+}
