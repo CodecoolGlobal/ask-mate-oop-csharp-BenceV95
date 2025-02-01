@@ -2,25 +2,35 @@
     display: flex;
     flex-direction: column;
     height: 100%;
-    overflow: hidden;
     gap: 1rem;
     margin: 1rem;
-    border: white solid 2px;
+    border: green solid 2px;
     border-radius: 10px;
     padding: 0.5rem;
 }
+/* questionsDiv: */
+/* display: flex;
+flex-direction: row;
+gap: 1rem;
+max-width: 100%;
+width: 100%;
+justify-content: space-between;
+padding: 1rem;
+border: solid white 2px;
+border-radius: 10px; */
+
 
 .questionDetailsDiv {
-    border: white solid 2px;
+    border: purple solid 2px;
     border-radius: 10px;
-    height: 20%;
+    height:fit-content;
 }
 
 .answerForm {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    border: white solid 2px;
+    border: peru solid 2px;
     border-radius: 10px;
     padding: 1rem;
     width: 100%;
@@ -39,9 +49,10 @@
     display: flex;
     flex-direction: column;
     height: 60%;
-    border: white solid 2px;
+    border: fuchsia solid 2px;
     border-radius: 10px;
-    overflow-y: hidden;
+    overflow: auto;
+    scrollbar-width: none;
     gap: 1rem;
     padding: 1rem;
     align-items: center;
@@ -50,7 +61,7 @@
 .answerCardDiv{
     background-color: #323232;
     color: white;
-    border: white solid 2px;
+    border: darkcyan 2px;
     border-radius: 10px;
     width: 75%;
     overflow-wrap: break-word;
