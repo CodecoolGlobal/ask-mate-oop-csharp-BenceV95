@@ -44,5 +44,34 @@ namespace AskMate.Controllers
             }
         }
 
+        [HttpDelete("/votes/delete/{voteId}")]
+        public IActionResult DeleteVote(int voteId)
+        {
+            try
+            {
+                _votesRepo.DeleteVote(voteId);
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPut("/vote/change/{voteId}")]
+        public IActionResult ChangeVote(int voteId)
+        {
+            try
+            {
+                _votesRepo.ChangeVote(voteId);
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+
     }
 }
