@@ -14,6 +14,7 @@ import { useContext } from 'react';
 import AskQuestionForm from './Components/Forms/AskQuestionForm/AskQuestionForm';
 import AnswerPage from './Components/Pages/AnswerPage/AnswerPage';
 import UserPage from './Components/Pages/UsersPage/UserPage';
+import Footer from './Components/Footer/Footer';
 
 
 function App() {
@@ -134,6 +135,7 @@ function App() {
   return (
     <>
       <Navbar handleLogOut={handleLogOut} />
+      <main>
       <Routes>
         <Route path="/" element={<MainPage />} />
         <Route path="/login" element={<LoginForm navigate={navigate} loginUser={loginUser} />} />
@@ -145,6 +147,8 @@ function App() {
         <Route path="/questions/:id" element={<AnswerPage fetchData={fetchData} categories={categories} users={users} />} />
         <Route path="/users/:username" element={<UserPage users={users} />} />
       </Routes>
+      </main>
+      <Footer />
     </>
   );
 };
