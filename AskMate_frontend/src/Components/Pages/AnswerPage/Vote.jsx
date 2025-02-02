@@ -7,17 +7,29 @@ export default function Vote({ voteData, user, answer, setFetchVotesAgain }) {
     async function handleLikeAnswer(e) {
         e.preventDefault();
         if (!usersVote) {
+            //if the user didnt vote on the question
             await sendVote(true)
-            setFetchVotesAgain((prevState) => !prevState)
+        } else if (!usersVote.isUseful) {
+            //if the user voted on the oppoiste value first
+            await changeVote()
+        } else {
+            //if user clicks on the same vote as he clicked previously
+            await deleteVote()
         }
+        //re-fetch votes to render them properly
+        setFetchVotesAgain((prevState) => !prevState)
     }
 
     async function handleDislikeAnswer(e) {
         e.preventDefault();
         if (!usersVote) {
             await sendVote(false)
-            setFetchVotesAgain((prevState) => !prevState)
+        } else if (usersVote.isUseful) {
+            await changeVote()
+        } else {
+            await deleteVote()
         }
+        setFetchVotesAgain((prevState) => !prevState)
     }
 
     useEffect(() => {
@@ -26,8 +38,24 @@ export default function Vote({ voteData, user, answer, setFetchVotesAgain }) {
     }, [voteData])
 
 
-    async function changeVote(params) {
-        const response = await fetch(`http://localhost:5166/vote/change/${voteId}`)
+    async function changeVote() {
+        try {
+            const response = await fetch(`http://localhost:5166/vote/change/${usersVote.id}`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json", // Optional if the body is empty
+                }
+            });
+
+            if (response.ok) {
+                console.log("Vote changed successfully!");
+            } else {
+                const errorText = await response.text();
+                console.error("Failed to change vote:", errorText);
+            }
+        } catch (error) {
+            console.error("Error in request:", error);
+        }
     }
 
 
@@ -50,6 +78,29 @@ export default function Vote({ voteData, user, answer, setFetchVotesAgain }) {
             throw new Error(`Error ${response.status}: ${errorText}`);
         }
     }
+
+    async function deleteVote() {
+        try {
+            const response = await fetch(`http://localhost:5166/votes/delete/${usersVote.id}`, {
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json",
+                }
+            });
+
+            if (response.ok) {
+                console.log("Vote deleted successfully!");
+            } else {
+                const errorText = await response.text();
+                console.error("Failed to delete vote:", errorText);
+            }
+        } catch (error) {
+            console.error("Error in request:", error);
+        }
+    }
+
+
+
 
     return (
         <div className="voteDiv">

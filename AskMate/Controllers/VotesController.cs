@@ -35,13 +35,11 @@ namespace AskMate.Controllers
         {
             try
             {
-                Console.WriteLine(voteCreateRequest.ToString());
                 var vote = _votesRepo.VoteOnAnswer(voteCreateRequest);
                 return Ok(vote);
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.ToString());
                 return BadRequest(ex.Message);
             }
         }
