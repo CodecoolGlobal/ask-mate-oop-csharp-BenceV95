@@ -15,7 +15,8 @@ CREATE TABLE users (
     email_address VARCHAR(255) NOT NULL UNIQUE,
     reg_time TIMESTAMP NOT NULL,
     password VARCHAR(255) NOT NULL,
-    salt BYTEA NOT NULL
+    salt BYTEA NOT NULL,
+    isAdmin BOOLEAN DEFAULT FALSE NOT NULL 
 );
 
 CREATE TABLE questions (
@@ -48,8 +49,31 @@ CREATE TABLE votes (
     UNIQUE (answer_id, user_id)
 );
 
+INSERT INTO categories (name)
+VALUES 
+    ('Animals'),
+    ('Automobiles'),
+    ('Business'),
+    ('Economy'),
+    ('Education'),
+    ('Entertainment'),
+    ('Environment'),
+    ('Food & Cooking'),
+    ('Health'),
+    ('History'),
+    ('Mathematics'),
+    ('Philosophy'),
+    ('Politics'),
+    ('Psychology'),
+    ('Relationships'),
+    ('Religion'),
+    ('Science'),
+    ('Sports'),
+    ('Technology'),
+    ('Travel')
+ON CONFLICT (name) DO NOTHING;
 
 -- add isAdmin column to users, set constraint NOT NULL
---ALTER TABLE users ADD COLUMN isAdmin BOOLEAN DEFAULT FALSE;
+--ALTER TABLE users ADD COLUMN isAdmin BOOLEAN NOT NULL DEFAULT FALSE;
 
 --ALTER TABLE users ALTER COLUMN isAdmin SET NOT NULL;

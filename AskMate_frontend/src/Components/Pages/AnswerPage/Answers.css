@@ -2,11 +2,10 @@
 .answersDiv {
     display: flex;
     flex-direction: column;
-    height: 60%;
+    max-height: fit-content;
     border: fuchsia solid 2px;
     border-radius: 10px;
-    overflow: auto;
-    scrollbar-width: none;
+    /* overflow-y: auto; */
     gap: 1rem;
     padding: 1rem;
     align-items: center;
