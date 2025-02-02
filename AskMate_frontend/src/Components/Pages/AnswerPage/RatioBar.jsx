@@ -1,8 +1,13 @@
 import React, { useState } from 'react';
 import './RatioBar.css';
 
-export default function RatioBar({ greenValue, redValue }) {
-    const total = greenValue + redValue;
+export default function RatioBar({ voteData }) {
+
+    const total = voteData.length;
+
+    let greenValue = voteData.filter(vote => vote.isUseful).length;
+    let redValue = total - greenValue;
+
 
     //to display  a basic bar even if both numbers are 0
     const greenPercentage = (greenValue == 0 && redValue == 0) ? 100 : (greenValue / total) * 100;

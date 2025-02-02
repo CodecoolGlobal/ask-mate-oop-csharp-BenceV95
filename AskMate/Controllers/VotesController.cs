@@ -14,8 +14,8 @@ namespace AskMate.Controllers
             _votesRepo = votesRepo;
         }
 
-
-        [HttpGet("/votes")]
+        //get method cannot have  a body, so i have to make it POST
+        [HttpPost("/votes")]
         public IActionResult GetAllVotesByAnswerIds([FromBody] GetVotesRequest votesRequest)
         {
             try
@@ -35,11 +35,13 @@ namespace AskMate.Controllers
         {
             try
             {
+                Console.WriteLine(voteCreateRequest.ToString());
                 var vote = _votesRepo.VoteOnAnswer(voteCreateRequest);
                 return Ok(vote);
             }
             catch (Exception ex)
             {
+                Console.WriteLine(ex.ToString());
                 return BadRequest(ex.Message);
             }
         }
