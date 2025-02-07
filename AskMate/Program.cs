@@ -1,10 +1,10 @@
 using AskMate.Middleware;
-using AskMate.Models;
 using AskMate.Repos;
+using AskMate.Repos.Answers;
+using AskMate.Repos.Categories;
+using AskMate.Repos.Questions;
+using AskMate.Repos.Users;
 using AskMate.Repos.Votes;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Hosting.Server;
-using Npgsql;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -47,6 +47,7 @@ builder.Services.AddAuthentication("Cookies")
     });
 
 //built in cors
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend", policy =>
@@ -58,6 +59,7 @@ builder.Services.AddCors(options =>
     });
 });
 
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -67,9 +69,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseRouting();
 //add authetication
 app.UseAuthentication();
-
 
 app.UseCorsMiddleware();
 

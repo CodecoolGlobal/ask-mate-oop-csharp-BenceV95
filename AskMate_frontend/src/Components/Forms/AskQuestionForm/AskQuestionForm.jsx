@@ -30,7 +30,7 @@ const AskQuestionForm = ({ categories }) => {
     const fetchQuestions = async (query) => {
 
         try {
-            const response = await fetch(`http://localhost:5166/Question/search?query=${encodeURIComponent(query)}`, {
+            const response = await fetch(`/api/Question/search?query=${encodeURIComponent(query)}`, {
                 method: 'GET',
                 credentials: "include"
             });
@@ -50,7 +50,7 @@ const AskQuestionForm = ({ categories }) => {
         e.preventDefault();
         // validate entries !!!!
         try {
-            const response = await fetch('http://localhost:5166/Question', {
+            const response = await fetch('/api/Question', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

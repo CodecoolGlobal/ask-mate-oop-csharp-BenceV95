@@ -1,7 +1,7 @@
-﻿using AskMate.Models;
+﻿using AskMate.Models.Categories;
 using Npgsql;
 
-namespace AskMate.Repos
+namespace AskMate.Repos.Categories
 {
     public class CategoriesRepo : ICategoriesRepo
     {

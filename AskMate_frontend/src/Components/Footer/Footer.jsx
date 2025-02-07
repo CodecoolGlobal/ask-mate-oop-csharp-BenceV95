@@ -5,7 +5,7 @@ export default function Footer() {
     return (
         <div className="footerDiv">
             <footer >
-                <p>© 2025 AskApe. All rights reserved.</p>
+                <span>© 2025 AskApe. All rights reserved.</span>
                 <nav>
                     <a href="/about">About</a> |
                     <a href="/contact">Contact</a> |

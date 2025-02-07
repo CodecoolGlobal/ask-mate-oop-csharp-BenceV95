@@ -1,4 +1,4 @@
-﻿namespace AskMate.Models
+﻿namespace AskMate.Models.Users
 {
     public class User
     {

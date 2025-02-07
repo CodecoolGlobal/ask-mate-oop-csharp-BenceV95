@@ -14,7 +14,7 @@ export default function RegistrationForm({ navigate }) {
         e.preventDefault();
 
         try {
-            const response = await fetch('http://localhost:5166/User', {
+            const response = await fetch('/api/User', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
