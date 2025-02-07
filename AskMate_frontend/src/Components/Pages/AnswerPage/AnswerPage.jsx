@@ -83,12 +83,12 @@ const AnswerPage = ({ fetchData, categories, users }) => {
     function convertDate(dateString) {
         const date = new Date(dateString);
 
-        const formattedDate = date.toLocaleDateString("hu-HU", {
+        const formattedDate = date.toLocaleDateString( {
             year: "numeric",
             month: "long",
             day: "numeric",
         });
-        const formattedTime = date.toLocaleTimeString("hu-HU", {
+        const formattedTime = date.toLocaleTimeString( {
             hour: "2-digit",
             minute: "2-digit",
         });

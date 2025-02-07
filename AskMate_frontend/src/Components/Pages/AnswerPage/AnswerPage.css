@@ -3,7 +3,6 @@
     flex-direction: column;
     height: 100%;
     gap: 1rem;
-    margin: 1rem;
     border: green solid 2px;
     border-radius: 10px;
     padding: 0.5rem;
@@ -38,7 +37,7 @@ border-radius: 10px; */
 }
 
 .answerForm textarea {
-    width: 80%;
+    width: 85%;
     height: max-content;
     padding: 1rem;
     resize: none;
