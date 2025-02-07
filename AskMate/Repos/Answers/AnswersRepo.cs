@@ -1,8 +1,8 @@
-﻿using AskMate.Models;
+﻿using AskMate.Models.Answers;
 using Npgsql;
 using System.Data;
 
-namespace AskMate.Repos
+namespace AskMate.Repos.Answers
 {
     public class AnswersRepo : IAnswersRepo
     {

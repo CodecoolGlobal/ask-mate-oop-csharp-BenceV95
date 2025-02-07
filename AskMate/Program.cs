@@ -1,5 +1,9 @@
 using AskMate.Middleware;
 using AskMate.Repos;
+using AskMate.Repos.Answers;
+using AskMate.Repos.Categories;
+using AskMate.Repos.Questions;
+using AskMate.Repos.Users;
 using AskMate.Repos.Votes;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -8,6 +12,7 @@ var builder = WebApplication.CreateBuilder(args);
 string CONNECTIONSTRING = Environment.GetEnvironmentVariable("CONNECTION_STRING");
 
 builder.Services.AddSingleton<string>(sp => CONNECTIONSTRING + "ask_mate;"+ "Pooling=true;"); // db_name + pooling
+
 
 RegisterServices();
 AddOptionsToRegisteredServices();
@@ -21,6 +26,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseRouting();
 //add authetication
 app.UseAuthentication();
 

@@ -1,6 +1,6 @@
-﻿using AskMate.Models;
+﻿using AskMate.Models.Answers;
 
-namespace AskMate.Repos
+namespace AskMate.Repos.Answers
 {
     public interface IAnswersRepo
     {
