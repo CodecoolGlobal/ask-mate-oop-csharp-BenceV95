@@ -17,7 +17,7 @@ const AnswerPage = ({ fetchData, categories, users }) => {
     useEffect(() => {
         const fetchQuestion = async () => {
             try {
-                const data = await fetchData(`http://localhost:5166/Question/${id}`)
+                const data = await fetchData(`/api/Question/${id}`)
                 setQuestionData(data);
             } catch (error) {
                 console.log(error);
@@ -25,7 +25,7 @@ const AnswerPage = ({ fetchData, categories, users }) => {
         }
         const fetchAnswers = async () => {
             try {
-                const data = await fetchData(`http://localhost:5166/Answer/all/${id}`)
+                const data = await fetchData(`/api/Answer/all/${id}`)
                 setAnswers(data.reverse());
             } catch (error) {
                 console.log(error);
@@ -42,7 +42,7 @@ const AnswerPage = ({ fetchData, categories, users }) => {
 
     async function postAnswer() {
         try {
-            const response = await fetch("http://localhost:5166/Answer", {
+            const response = await fetch("/api/Answer", {
                 method: "POST",
                 headers: {
                     "content-type": "application/json",
@@ -106,6 +106,7 @@ const AnswerPage = ({ fetchData, categories, users }) => {
                 <div className="mainAnswerDiv">
 
                     <div className="questionDetailsDiv">
+                        <span>{getUsernameById(questionData.userId)}'s Question:</span>
                         <h1>{questionData.title}</h1>
                         <h3>{questionData.body}</h3>
                         <h4>Category: {findCategoryNameById(questionData.categories)}</h4>
@@ -122,7 +123,7 @@ const AnswerPage = ({ fetchData, categories, users }) => {
                         ></textarea>
                         <button className='btn btn-success' type="submit">Send Answer</button>
                     </form>
-                    <Answers answers={answers} getUsernameById={getUsernameById} convertDate={convertDate} user={user} />
+                    <Answers answers={answers} getUsernameById={getUsernameById} convertDate={convertDate} user={user} op_id={questionData.userId}/>
                 </div>
                 :
                 <ErrorPage />

@@ -3,8 +3,8 @@
     flex-direction: column;
     height: 100%;
     gap: 1rem;
-    border: green solid 2px;
-    border-radius: 10px;
+    /* border: green solid 2px;
+    border-radius: 10px; */
     padding: 0.5rem;
 }
 /* questionsDiv: */
@@ -20,7 +20,7 @@ border-radius: 10px; */
 
 
 .questionDetailsDiv {
-    border: purple solid 2px;
+    border: white solid 2px;
     border-radius: 10px;
     height:fit-content;
 }
@@ -29,7 +29,7 @@ border-radius: 10px; */
     display: flex;
     align-items: center;
     justify-content: space-between;
-    border: peru solid 2px;
+    border: white solid 2px;
     border-radius: 10px;
     padding: 1rem;
     width: 100%;
