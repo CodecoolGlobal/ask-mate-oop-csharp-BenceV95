@@ -87,7 +87,7 @@ export default function AnswerPage({ answers, getUsernameById, convertDate, user
                                 <button className="btn btn-warning">Edit (WIP)</button>
                             </>)
                         }
-                        {(op_id != answer.userId && !isQuestionClosed) && (<button className="btn btn-success" onClick={(e) => acceptAnswer(e)} id={answer.id}>Accept Answer</button>)}
+                        {(op_id != answer.userId && !isQuestionClosed && user.id == op_id) && (<button className="btn btn-success" onClick={(e) => acceptAnswer(e)} id={answer.id}>Accept Answer</button>)}
                     </div>
                     <pre>{answer.body}</pre>
                     <div className="vote-ratio-bar-wrapper">

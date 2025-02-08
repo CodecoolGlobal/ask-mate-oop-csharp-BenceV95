@@ -46,7 +46,8 @@ namespace AskMate.Controllers
         {
             // user may create an answer if a question is not closed by having an accepted answer or if there are no answers yet.
             var answers = _database.GetAllAnswersByQuestionId(answer.QuestionID);
-            if (answers.Any(a=>a.IsAccepted))
+
+            if (answers != null && answers.Any(a=>a.IsAccepted))
             {
                 return BadRequest("You can not post an answer to a closed question.");
             }

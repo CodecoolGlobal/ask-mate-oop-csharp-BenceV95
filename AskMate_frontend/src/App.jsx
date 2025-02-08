@@ -15,6 +15,7 @@ import AskQuestionForm from './Components/Forms/AskQuestionForm/AskQuestionForm'
 import AnswerPage from './Components/Pages/AnswerPage/AnswerPage';
 import UserPage from './Components/Pages/UsersPage/UserPage';
 import Footer from './Components/Footer/Footer';
+import Missing from './Components/Pages/ErrorPage/Missing';
 
 
 function App() {
@@ -74,6 +75,7 @@ function App() {
       const result = await response.json();
       if (response.ok) {
         setResponseMessage("logout successful")
+        navigate("/")
         await refreshSession(); //also, not elegant..
       } else {
         setResponseMessage("error during logout")
@@ -146,6 +148,7 @@ function App() {
         <Route path="/ask" element={<AskQuestionForm categories={categories} />} />
         <Route path="/questions/:id" element={<AnswerPage fetchData={fetchData} categories={categories} users={users} />} />
         <Route path="/users/:username" element={<UserPage users={users} />} />
+        <Route path='*' element={<Missing />} />
       </Routes>
       </main>
       <Footer />
