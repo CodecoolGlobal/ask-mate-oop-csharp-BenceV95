@@ -5,11 +5,11 @@ import { useEffect, useState } from "react";
 import "./Answers.css"
 
 
-export default function AnswerPage({ answers, getUsernameById, convertDate, user, op_id }) {
+export default function AnswerPage({ answers, getUsernameById, convertDate, user, op_id, isQuestionClosed }) {
     const [votes, setVotes] = useState([]);
     const [answerIds, setAnswerIds] = useState([]);
     const [fetchVotesAgain, setFetchVotesAgain] = useState(false);
-
+    
     useEffect(() => {
         if (answers.length > 0) {
             setAnswerIds(answers.map(answer => answer.id));
@@ -23,7 +23,7 @@ export default function AnswerPage({ answers, getUsernameById, convertDate, user
         }
     }, [answerIds, fetchVotesAgain]);
 
-
+    
 
 
     async function fetchVotes() {
@@ -61,7 +61,7 @@ export default function AnswerPage({ answers, getUsernameById, convertDate, user
             });
     
             if (!response.ok) {
-                throw new Error(response.status);
+                throw new Error(response.message);
             }
 
             const data = await response.json();
@@ -77,25 +77,25 @@ export default function AnswerPage({ answers, getUsernameById, convertDate, user
     return (
         <div className="answersDiv">
             {answers.map(answer => {
-                return (<div key={answer.id} className={op_id == answer.userId ? ("answerCardDivOP") : ("answerCardDiv")}>
+                return (<div key={answer.id} className={(isQuestionClosed && answer.isAccepted) ? ("answerCardDivAccepted") : (op_id == answer.userId ? ("answerCardDivOP") : ("answerCardDiv"))}>
                     <div className="answerCardHeader">                        
                         <span>{op_id == answer.userId && (<b>👑OP👑 </b>)}{getUsernameById(answer.userId)}'s answer:</span>
                         <i>{convertDate(answer.postDate)}</i>
-                        {answer.userId === user.id &&
+                        {(answer.userId === user.id && !isQuestionClosed) &&
                             (<>
                                 <button className="btn btn-danger">Delete</button>
                                 <button className="btn btn-warning">Edit (WIP)</button>
                             </>)
                         }
-                        {op_id != answer.userId && (<button className="btn btn-success" onClick={(e) => acceptAnswer(e)} id={answer.id}>Accept Answer</button>)}
+                        {(op_id != answer.userId && !isQuestionClosed) && (<button className="btn btn-success" onClick={(e) => acceptAnswer(e)} id={answer.id}>Accept Answer</button>)}
                     </div>
                     <pre>{answer.body}</pre>
                     <div className="vote-ratio-bar-wrapper">
-                        <RatioBar voteData={filterAnswerVoteData(answer.id)} />
-                        {answer.userId != user.id && <Vote setFetchVotesAgain={setFetchVotesAgain} answer={answer} voteData={filterAnswerVoteData(answer.id)} user={user} />}
+                        <RatioBar voteData={filterAnswerVoteData(answer.id)} isQuestionClosed={isQuestionClosed}/>
+                        {answer.userId != user.id && <Vote setFetchVotesAgain={setFetchVotesAgain} answer={answer} voteData={filterAnswerVoteData(answer.id)} user={user} isQuestionClosed={isQuestionClosed}/>}
                     </div>
                 </div>)
             })}
         </div>
     )
-}
+} 

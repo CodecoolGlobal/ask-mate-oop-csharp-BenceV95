@@ -76,13 +76,14 @@ namespace AskMate.Repos.Answers
                             UserId = reader.GetString(reader.GetOrdinal("user_id")),
                             QuestionID = reader.GetString(reader.GetOrdinal("question_id")),
                             Body = reader.GetString(reader.GetOrdinal("body")),
-                            PostDate = reader.GetDateTime(reader.GetOrdinal("post_date"))
+                            PostDate = reader.GetDateTime(reader.GetOrdinal("post_date")),
+                            IsAccepted = reader.GetBoolean(reader.GetOrdinal("is_accepted"))
                         });
                     }
             }
             return answers.Count <= 0 ? null : answers;
         }
-
+        
         public void DeleteAnswerByQuestionId(string id)
         {
             using var connection = new NpgsqlConnection(_connectionString);

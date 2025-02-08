@@ -29,7 +29,7 @@ export default function QuestionsPage({ questions, categories, setQuestions }) {
     const fetchQuestions = async (query) => {
         
         try {
-            const response = await fetch(`http://localhost:5166/Question/search?query=${encodeURIComponent(query)}`, {
+            const response = await fetch(`/api/Question/search?query=${encodeURIComponent(query)}`, {
                 method: 'GET',
                 credentials: "include"
             });

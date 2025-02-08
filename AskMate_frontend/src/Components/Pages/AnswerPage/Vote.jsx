@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import "./Vote.css"
 
-export default function Vote({ voteData, user, answer, setFetchVotesAgain }) {
+export default function Vote({ voteData, user, answer, setFetchVotesAgain, isQuestionClosed }) {
     const [usersVote, setUsersVote] = useState(null);
 
     async function handleLikeAnswer(e) {
@@ -107,12 +107,16 @@ export default function Vote({ voteData, user, answer, setFetchVotesAgain }) {
             Was this answer useful?
             <button
                 onClick={(e) => handleLikeAnswer(e)}
-                className={`btn ${usersVote?.isUseful ? "btn-success" : "btn-light"}`}>
+                disabled={isQuestionClosed}
+                className={`btn ${usersVote?.isUseful ? "btn-success" : "btn-light"}`}
+            >
                 Yes
             </button>
             <button
                 onClick={(e) => handleDislikeAnswer(e)}
-                className={`btn ${(usersVote == null || usersVote?.isUseful) ? "btn-light" : "btn-danger"}`}>
+                disabled={isQuestionClosed}
+                className={`btn ${(usersVote == null || usersVote?.isUseful) ? "btn-light" : "btn-danger"}`}
+            >
                 No
             </button>
         </div>
