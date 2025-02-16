@@ -76,7 +76,7 @@ export default function QuestionsPage({ questions, categories, setQuestions }) {
                     </div>
                     <div className="questionsDiv">
                         {filteredQuestions.length > 0 ? filteredQuestions.map(question => {
-                            return <QuestionCard user={user} categories={categories} question={question}></QuestionCard>
+                            return <QuestionCard withButtons={true} user={user} categories={categories} question={question}></QuestionCard>
                         }) : "No Question in this category yet!"}
                     </div>
 

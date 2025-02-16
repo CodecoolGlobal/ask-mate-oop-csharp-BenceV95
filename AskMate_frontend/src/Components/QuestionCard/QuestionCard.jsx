@@ -1,6 +1,6 @@
 import "./QuestionCard.css"
 
-export default function QuestionCard({ question, categories, user }) {
+export default function QuestionCard({ question, categories, user, withButtons }) {
 
     const findCategoryNameById = (id) => {
         const result = categories.find(category => category.id == id);
@@ -49,8 +49,13 @@ export default function QuestionCard({ question, categories, user }) {
                 <p className="card-text">{question.body}</p>
                 <i>Tag: {findCategoryNameById(question.categories)}</i><br />
                 <b>Answers:{question.relatedAnswerCount}</b> <br />
-                <a href={`/questions/${question.id}`} className="btn btn-primary">Answer</a>
-                {question.userId === user.id && <button className="btn btn-danger m-1" id={question.id} onClick={(e) => deleteQuestion(e.target.id)}>Delete</button>}
+                {withButtons &&
+                    <>
+                        <a href={`/questions/${question.id}`} className="btn btn-primary">Answer</a>
+                        {question.userId === user.id && <button className="btn btn-danger m-1" id={question.id} onClick={(e) => deleteQuestion(e.target.id)}>Delete</button>}
+                    </>
+                }
+
             </div>
         </div>
     )
