@@ -13,7 +13,7 @@ import { AuthContext } from './Components/AuthContext/AuthContext';
 import { useContext } from 'react';
 import AskQuestionForm from './Components/Forms/AskQuestionForm/AskQuestionForm';
 import AnswerPage from './Components/Pages/AnswerPage/AnswerPage';
-import UserPage from './Components/Pages/UsersPage/UserPage';
+import UserPage from './Components/Pages/UserPage/UserPage';
 import Footer from './Components/Footer/Footer';
 
 
@@ -136,17 +136,17 @@ function App() {
     <>
       <Navbar handleLogOut={handleLogOut} />
       <main>
-      <Routes>
-        <Route path="/" element={<MainPage />} />
-        <Route path="/login" element={<LoginForm navigate={navigate} loginUser={loginUser} />} />
-        <Route path="/register" element={<RegistrationForm navigate={navigate} />} />
-        <Route path="/questions" element={<QuestionsPage questions={questions} categories={categories} setQuestions={setQuestions} />} />
-        <Route path="/users" element={<UsersPage users={users} />} />
-        <Route path="/error" element={<ErrorPage />} />
-        <Route path="/ask" element={<AskQuestionForm categories={categories} />} />
-        <Route path="/questions/:id" element={<AnswerPage fetchData={fetchData} categories={categories} users={users} />} />
-        <Route path="/users/:username" element={<UserPage users={users} />} />
-      </Routes>
+        <Routes>
+          <Route path="/" element={<MainPage />} />
+          <Route path="/login" element={<LoginForm navigate={navigate} loginUser={loginUser} />} />
+          <Route path="/register" element={<RegistrationForm navigate={navigate} />} />
+          <Route path="/questions" element={<QuestionsPage questions={questions} categories={categories} setQuestions={setQuestions} />} />
+          <Route path="/users" element={<UsersPage users={users} />} />
+          <Route path="/error" element={<ErrorPage />} />
+          <Route path="/ask" element={<AskQuestionForm categories={categories} />} />
+          <Route path="/questions/:id" element={<AnswerPage fetchData={fetchData} categories={categories} users={users} />} />
+          <Route path="/users/:username" element={<UserPage categories={categories} users={users} />} />
+        </Routes>
       </main>
       <Footer />
     </>

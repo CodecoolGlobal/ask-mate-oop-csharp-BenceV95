@@ -29,3 +29,8 @@
     border:  salmon solid 2px;
     width: fit-content;
 }
+
+.user-questions{
+    border: sandybrown solid 2px;
+    padding: 1rem;
+}
