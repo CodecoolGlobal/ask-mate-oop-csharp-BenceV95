@@ -67,17 +67,13 @@ export function AuthProvider({ children }) {
 
 
 
+//continue from here!
 
 async function checkSession() {
-    const response = await fetch("/api/User/session", {
-        method: "GET",
-        credentials: "include", // Include cookies with the request
-    });
-
-    if (response.ok) {
-        const data = await response.json();
-        return data
-    } else {
+    try {
+        const data = await apiGet("/api/User/session");
+        return data;
+    } catch (e) {
         return {
             isLoggedIn: false,
             username: "Guest",
