@@ -1,0 +1,38 @@
+.ratio-bars-main {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    padding: 0%;
+    margin: 0%;
+    gap: 0;
+    width: 50%;
+    height: 3rem;
+    /* border: gold dotted 2px; */
+}
+
+.ratio-bars {
+    display: flex;
+    width: 20%;
+    height: 50%;
+    border-radius: 15px;
+    overflow: hidden;
+}
+
+.green-bar {
+    height: 100%;
+    background-color: #4CAF50;
+    transition: width 0.5s ease;
+}
+
+.red-bar {
+    height: 100%;
+    background-color: #f44336;
+    transition: width 0.5s ease;
+}
+
+.total-ratings {
+    margin-left: 10px;
+    font-size: 16px;
+    color: #ffffff;
+}

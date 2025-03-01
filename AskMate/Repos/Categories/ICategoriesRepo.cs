@@ -1,6 +1,6 @@
-﻿using AskMate.Models;
+﻿using AskMate.Models.Categories;
 
-namespace AskMate.Repos
+namespace AskMate.Repos.Categories
 {
     public interface ICategoriesRepo
     {

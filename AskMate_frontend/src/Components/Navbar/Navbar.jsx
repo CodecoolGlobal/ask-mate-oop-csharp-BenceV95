@@ -13,7 +13,7 @@ const Navbar = ({ handleLogOut }) => {
 
   return (
     <>
-      <nav className="navbar mb-5 navbar-expand-sm bg-primary text-white">
+      <nav className="navbar mb-2 navbar-expand-sm bg-primary text-white">
         <div className="container-fluid">
           <a className="navbar-brand" href="/">AskApe</a>
           <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -31,7 +31,7 @@ const Navbar = ({ handleLogOut }) => {
                 <a className="nav-link" href="/users">Users</a>
               </li>}
               <li className="nav-item">
-                <a className="nav-link" href="/profile">{user.username}</a>
+                <a className="nav-link" href={`/users/${user.username}`}>{user.username}</a>
               </li>
             </ul>
           </div>

@@ -1,0 +1,7 @@
+.voteDiv {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-self: flex-end;
+    gap: 1rem;
+}
