@@ -78,7 +78,7 @@ namespace AskMate.Controllers
         }
 
         [Authorize]
-        [HttpPatch("Accept/{id}")]
+        [HttpPost("Accept/{id}")]
         public IActionResult AcceptAnswer(string id)
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
