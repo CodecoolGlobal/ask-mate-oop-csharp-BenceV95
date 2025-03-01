@@ -31,7 +31,7 @@ const Navbar = ({ handleLogOut }) => {
                 <a className="nav-link" href="/users">Users</a>
               </li>}
               <li className="nav-item">
-                <a className="nav-link" href="/profile">{user.username}</a>
+                <a className="nav-link" href={`/users/${user.username}`}>{user.username}</a>
               </li>
             </ul>
           </div>

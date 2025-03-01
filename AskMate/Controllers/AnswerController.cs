@@ -37,7 +37,11 @@ namespace AskMate.Controllers
         public IActionResult GetAllAnswersByQuestionId(string id)
         {
             var answers = _database.GetAllAnswersByQuestionId(id);
-            return Ok(answers);
+            if (answers == null)
+            {
+                return Ok(Array.Empty<int>());
+            }
+                return Ok(answers);
         }
 
         [Authorize]
