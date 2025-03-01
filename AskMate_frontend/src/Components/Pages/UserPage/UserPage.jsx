@@ -1,9 +1,11 @@
 import { useParams } from "react-router-dom";
 import "./UserPage.css"
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import QuestionCard from "../../QuestionCard/QuestionCard";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import AnswerCard from "../../AnswerCard/AnswerCard";
+import React from "react";
+import { AuthContext } from "../../AuthContext/AuthContext";
 
 
 
@@ -19,8 +21,8 @@ import AnswerCard from "../../AnswerCard/AnswerCard";
 
 
 export default function UserPage({ users, categories, questions }) {
-    const { username } = useParams();
     const [answers, setAnswers] = useState(null);
+    const { user } = React.useContext(AuthContext)
 
     const [selectedUser, setSelectedUser] = useState({});
 
@@ -31,20 +33,16 @@ export default function UserPage({ users, categories, questions }) {
 
 
     useEffect(() => {
-        setSelectedUser(findUser(username))
+        setSelectedUser(findUser(user.username))
     }, [users])
 
 
-    //find out why answers dont load properly!
+    //find out why answers dont load properly! 
     useEffect(() => {
-        console.log("questions", questions)
         getAllUserAnswers().then(answers => setAnswers(answers));
-        console.log("answers:", answers)
     }, [questions])
 
-    useEffect(() => {
-        console.log("answers:", answers)
-    }, [answers])
+
 
     // for now it will filter on the frontend 
 
@@ -67,7 +65,7 @@ export default function UserPage({ users, categories, questions }) {
 
             const responses = await Promise.all(
                 userQuestions.map(async (question) => {
-                    const response = await fetch(`http://localhost:5166/Answer/all/${question.id}`, {
+                    const response = await fetch(`/api/Answer/all/${question.id}`, {
                         credentials: "include"
                     });
 
@@ -81,18 +79,17 @@ export default function UserPage({ users, categories, questions }) {
 
             console.log(e)
         }
-    } 
+    }
 
 
 
     return (
         <div className="userPageMainDiv">
-            {username}
             <form action="">
                 <div className="inputFieldsDiv">
                     <div className="usernameDiv">
                         <label htmlFor="name">Username:</label>
-                        <input type="text" placeholder={username} name="name" id="name" />
+                        <input type="text" placeholder={user.username} name="name" id="name" />
                     </div>
                     <div className="emailDiv">
                         <label htmlFor="email">Email:</label>
@@ -104,10 +101,10 @@ export default function UserPage({ users, categories, questions }) {
             </form>
             <div className="questions-and-answers">
                 <div className="user-questions dropdown">
-                    <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <button className="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                         Users Questions
                     </button>
-                    <ul class="dropdown-menu">
+                    <ul className="dropdown-menu">
                         {selectUsersQuestions(questions)?.map((question, index) =>
                             <li key={index} ><a className="dropdown-item" href={`http://localhost:5173/questions/${question.id}`} >  <QuestionCard withButtons={false} user={selectedUser} categories={categories} question={question} /></a></li>
 
@@ -116,10 +113,10 @@ export default function UserPage({ users, categories, questions }) {
 
                 </div>
                 <div className="user-answers dropdown">
-                    <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        Users Answers 
+                    <button className="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Users Answers
                     </button>
-                    <ul class="dropdown-menu">
+                    <ul className="dropdown-menu">
                         {answers?.map((answer, index) =>
                             <li key={index} ><a className="dropdown-item" href={`http://localhost:5173/questions/${answer.questionID}`}  >  <AnswerCard user={selectedUser} categories={categories} answer={answer} /></a></li>
 
