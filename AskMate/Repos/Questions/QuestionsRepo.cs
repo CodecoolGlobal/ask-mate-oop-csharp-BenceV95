@@ -1,4 +1,5 @@
-﻿using AskMate.Models;
+﻿using AskMate.Models.Questions;
+using AskMate.Repos.Questions;
 using Npgsql;
 using System.Data;
 

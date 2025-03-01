@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import "./Vote.css"
 
-export default function Vote({ voteData, user, answer, setFetchVotesAgain }) {
+export default function Vote({ voteData, user, answer, setFetchVotesAgain, isQuestionClosed }) {
     const [usersVote, setUsersVote] = useState(null);
 
     async function handleLikeAnswer(e) {
@@ -40,7 +40,7 @@ export default function Vote({ voteData, user, answer, setFetchVotesAgain }) {
 
     async function changeVote() {
         try {
-            const response = await fetch(`http://localhost:5166/vote/change/${usersVote.id}`, {
+            const response = await fetch(`/api/vote/change/${usersVote.id}`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json", // Optional if the body is empty
@@ -60,7 +60,7 @@ export default function Vote({ voteData, user, answer, setFetchVotesAgain }) {
 
 
     async function sendVote(likeOrDislike) {
-        const response = await fetch(`http://localhost:5166/vote`, {
+        const response = await fetch(`/api/vote`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -81,7 +81,7 @@ export default function Vote({ voteData, user, answer, setFetchVotesAgain }) {
 
     async function deleteVote() {
         try {
-            const response = await fetch(`http://localhost:5166/votes/delete/${usersVote.id}`, {
+            const response = await fetch(`/api/votes/delete/${usersVote.id}`, {
                 method: "DELETE",
                 headers: {
                     "Content-Type": "application/json",
@@ -107,12 +107,16 @@ export default function Vote({ voteData, user, answer, setFetchVotesAgain }) {
             Was this answer useful?
             <button
                 onClick={(e) => handleLikeAnswer(e)}
-                className={`btn ${usersVote?.isUseful ? "btn-success" : "btn-light"}`}>
+                disabled={isQuestionClosed}
+                className={`btn ${usersVote?.isUseful ? "btn-success" : "btn-light"}`}
+            >
                 Yes
             </button>
             <button
                 onClick={(e) => handleDislikeAnswer(e)}
-                className={`btn ${(usersVote == null || usersVote?.isUseful) ? "btn-light" : "btn-danger"}`}>
+                disabled={isQuestionClosed}
+                className={`btn ${(usersVote == null || usersVote?.isUseful) ? "btn-light" : "btn-danger"}`}
+            >
                 No
             </button>
         </div>

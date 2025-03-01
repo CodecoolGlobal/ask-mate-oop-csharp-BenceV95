@@ -69,7 +69,7 @@ export function AuthProvider({ children }) {
 
 
 async function checkSession() {
-    const response = await fetch("http://localhost:5166/User/session", {
+    const response = await fetch("/api/User/session", {
         method: "GET",
         credentials: "include", // Include cookies with the request
     });

@@ -4,8 +4,9 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
-using AskMate.Repos;
 using System.ComponentModel.DataAnnotations;
+using AskMate.Repos.Users;
+using AskMate.Models.Users;
 
 namespace AskMate.Controllers
 {

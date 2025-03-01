@@ -19,7 +19,8 @@
     padding: 1rem;
     width: 25%;
     max-width: 25dvw;
-    max-height: fit-content;
+    max-height: 80dvh;
+    overflow-y: scroll;
 }
 
 .questionsDiv {

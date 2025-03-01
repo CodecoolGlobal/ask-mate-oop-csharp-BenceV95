@@ -2,10 +2,10 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using System.Globalization;
 using Npgsql;
-using AskMate.Models;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
-using AskMate.Repos;
+using AskMate.Repos.Questions;
+using AskMate.Models.Questions;
 
 namespace AskMate.Controllers;
 

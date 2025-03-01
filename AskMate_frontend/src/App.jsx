@@ -15,6 +15,7 @@ import AskQuestionForm from './Components/Forms/AskQuestionForm/AskQuestionForm'
 import AnswerPage from './Components/Pages/AnswerPage/AnswerPage';
 import UserPage from './Components/Pages/UserPage/UserPage';
 import Footer from './Components/Footer/Footer';
+import Missing from './Components/Pages/ErrorPage/Missing';
 
 
 function App() {
@@ -34,7 +35,7 @@ function App() {
 
   async function loginUser(username, password) {
     try {
-      const response = await fetch('http://localhost:5166/User/login', {
+      const response = await fetch('/api/User/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -64,7 +65,7 @@ function App() {
 
   async function logOutUser() {
     try {
-      const response = await fetch("http://localhost:5166/User/logout", {
+      const response = await fetch("/api/User/logout", {
         method: "POST",
         headers: {
           "content-type": "application/json",
@@ -74,6 +75,7 @@ function App() {
       const result = await response.json();
       if (response.ok) {
         setResponseMessage("logout successful")
+        navigate("/")
         await refreshSession(); //also, not elegant..
       } else {
         setResponseMessage("error during logout")
@@ -102,9 +104,9 @@ function App() {
   useEffect(() => {
     const loadData = async () => {
       try {
-        const questions = await fetchData("http://localhost:5166/Question");
-        const fetchedUsers = await fetchData("http://localhost:5166/User/allUsers");
-        const categories = await fetchData("http://localhost:5166/categories");
+        const questions = await fetchData("/api/Question");
+        const fetchedUsers = await fetchData("/api/User/allUsers");
+        const categories = await fetchData("/api/categories");
         setCategories(categories);
         setUsers(fetchedUsers);
         setQuestions(questions);
@@ -146,6 +148,7 @@ function App() {
           <Route path="/ask" element={<AskQuestionForm categories={categories} />} />
           <Route path="/questions/:id" element={<AnswerPage fetchData={fetchData} categories={categories} users={users} />} />
           <Route path="/users/:username" element={<UserPage questions={questions} categories={categories} users={users} />} />
+          <Route path='*' element={<Missing />} />
         </Routes>
       </main>
       <Footer />

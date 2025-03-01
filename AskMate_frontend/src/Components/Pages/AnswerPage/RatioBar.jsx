@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './RatioBar.css';
 
-export default function RatioBar({ voteData }) {
+export default function RatioBar({ voteData, isQuestionClosed }) {
 
     const total = voteData.length;
 

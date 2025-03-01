@@ -1,4 +1,5 @@
-﻿using AskMate.Models;
+﻿using AskMate.Models.Users;
+using AskMate.Repos.Users;
 using Npgsql;
 using System.Data;
 using System.Security.Cryptography;

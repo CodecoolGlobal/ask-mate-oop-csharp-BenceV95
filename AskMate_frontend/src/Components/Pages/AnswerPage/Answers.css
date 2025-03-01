@@ -2,11 +2,10 @@
 .answersDiv {
     display: flex;
     flex-direction: column;
-    height: 60%;
-    border: fuchsia solid 2px;
+    max-height: fit-content;
+    border: white solid 2px;
     border-radius: 10px;
-    overflow: auto;
-    scrollbar-width: none;
+    /* overflow-y: auto; */
     gap: 1rem;
     padding: 1rem;
     align-items: center;
@@ -15,7 +14,29 @@
 .answerCardDiv{
     background-color: #323232;
     color: white;
-    border: darkcyan solid 2px;
+    border: #0D6EFD solid 2px;
+    border-radius: 10px;
+    width: 75%;
+    overflow-wrap: break-word;
+    height: fit-content;
+    padding: 0.5rem;
+}
+
+.answerCardDivOP {
+    background-color: #0D6E77;
+    color: white;
+    border: #0D6EFD solid 2px;
+    border-radius: 10px;
+    width: 75%;
+    overflow-wrap: break-word;
+    height: fit-content;
+    padding: 0.5rem;
+}
+
+.answerCardDivAccepted {
+    background-color: green;
+    color: white;
+    border: #0D6EFD solid 2px;
     border-radius: 10px;
     width: 75%;
     overflow-wrap: break-word;
@@ -43,6 +64,7 @@
 
 .vote-ratio-bar-wrapper{
     display:flex;
-    border:  2px solid seagreen;
+    border-top:  2px solid white;
     gap: 1rem;
+    padding-top: 0.3rem;
 }
