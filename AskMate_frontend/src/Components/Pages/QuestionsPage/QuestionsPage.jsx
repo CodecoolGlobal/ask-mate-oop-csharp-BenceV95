@@ -86,7 +86,7 @@ export default function QuestionsPage({ questions, categories, setQuestions }) {
                     </div>
                 </div>
                 :
-                <Navigate to={"/error"} />
+                <Navigate to={"/unauthorized"} />
             }
         </>
     )

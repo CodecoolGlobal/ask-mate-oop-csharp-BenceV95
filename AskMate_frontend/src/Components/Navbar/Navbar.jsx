@@ -30,9 +30,11 @@ const Navbar = ({ handleLogOut }) => {
               {user.isAdmin && <li className="nav-item">
                 <a className="nav-link" href="/users">Users</a>
               </li>}
-              <li className="nav-item">
-                <a className="nav-link" href={`/users/${user.username}`}>{user.username}</a>
-              </li>
+              {user.isLoggedIn && //only display "profile" if the user is logged in"
+                <li className="nav-item">
+                  <a className="nav-link" href={`/users/${user.username}`}>{user.username}</a>
+                </li>
+              }
             </ul>
           </div>
         </div>

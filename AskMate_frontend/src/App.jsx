@@ -144,7 +144,7 @@ function App() {
           <Route path="/register" element={<RegistrationForm navigate={navigate} />} />
           <Route path="/questions" element={<QuestionsPage questions={questions} categories={categories} setQuestions={setQuestions} />} />
           <Route path="/users" element={<UsersPage users={users} />} />
-          <Route path="/error" element={<ErrorPage />} />
+          <Route path="/unauthorized" element={<ErrorPage />} />
           <Route path="/ask" element={<AskQuestionForm categories={categories} />} />
           <Route path="/questions/:id" element={<AnswerPage fetchData={fetchData} categories={categories} users={users} />} />
           <Route path="/users/:username" element={<UserPage questions={questions} categories={categories} users={users} />} />

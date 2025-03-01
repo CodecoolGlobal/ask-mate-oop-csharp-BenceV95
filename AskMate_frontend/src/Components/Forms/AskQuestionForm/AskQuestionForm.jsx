@@ -1,9 +1,12 @@
 import React from 'react'
 import './AskQuestionForm.css';
 import { useState, } from 'react';
-
+import { AuthContext } from '../../AuthContext/AuthContext';
+import { Navigate } from 'react-router-dom';
 
 const AskQuestionForm = ({ categories }) => {
+
+    const { user } = React.useContext(AuthContext)
 
     // ask question second
     const [selectedCategory, setSelectedCategory] = useState(0);
@@ -83,71 +86,79 @@ const AskQuestionForm = ({ categories }) => {
 
     return (
         <>
-            {
-                !searching ?
-                    (<>
-                        <form onSubmit={handleSubmit} className='searchForm'>
-                            <input
-                                type='text'
-                                placeholder='Search'
-                                onChange={(e) => setSearchQuery(e.target.value)}
-                                value={searchQuery}
-                            >
-                            </input>
-                            <button type='submit' className='btn btn-success'>Search</button>
-                            {(searched) &&
-                                <button onClick={() => setSearching(true)} className='btn btn-primary'>Ask</button>
-                            }
-                        </form>
+            {user.isLoggedIn ?
+                <>
+                    {
+                        !searching ?
+                            (<>
+                                <form onSubmit={handleSubmit} className='searchForm'>
+                                    <input
+                                        type='text'
+                                        placeholder='Search'
+                                        onChange={(e) => setSearchQuery(e.target.value)}
+                                        value={searchQuery}
+                                    >
+                                    </input>
+                                    <button type='submit' className='btn btn-success'>Search</button>
+                                    {(searched) &&
+                                        <button onClick={() => setSearching(true)} className='btn btn-primary'>Ask</button>
+                                    }
+                                </form>
 
-                        <div className='searchResults'>
-                            {
-                                searchResult.map((result) => {
-                                    return (
-                                        <div key={result.id} className='searchResult'>
-                                            <h3>{result.title}</h3>
-                                            <p>{result.body}</p>
-                                            <a href={`/questions/${result.id}`} className='btn btn-primary'>View Question</a>
-                                        </div>
-                                    )
-                                })
-                            }
-                        </div>
-                    </>
-                    )
-                    :
-                    (<div className='askQuestionFormDiv'>
-                        <form className='ask' onSubmit={SubmitQuestion}>
-                            <input
-                                type='text'
-                                placeholder='Title'
-                                name='title'
-                                className='title'
-                                onChange={(e) => setTitle(e.target.value)}
-                                value={title}
-                            ></input><br />
-                            <textarea placeholder='body' name='body' onChange={(e) => setBody(e.target.value)} value={body}></textarea><br />
+                                <div className='searchResults'>
+                                    {
+                                        searchResult.map((result) => {
+                                            return (
+                                                <div key={result.id} className='searchResult'>
+                                                    <h3>{result.title}</h3>
+                                                    <p>{result.body}</p>
+                                                    <a href={`/questions/${result.id}`} className='btn btn-primary'>View Question</a>
+                                                </div>
+                                            )
+                                        })
+                                    }
+                                </div>
+                            </>
+                            )
+                            :
+                            (<div className='askQuestionFormDiv'>
+                                <form className='ask' onSubmit={SubmitQuestion}>
+                                    <input
+                                        type='text'
+                                        placeholder='Title'
+                                        name='title'
+                                        className='title'
+                                        onChange={(e) => setTitle(e.target.value)}
+                                        value={title}
+                                    ></input><br />
+                                    <textarea placeholder='body' name='body' onChange={(e) => setBody(e.target.value)} value={body}></textarea><br />
 
-                            <select className="form-select" name='categories' value={selectedCategory} onChange={(e) => setSelectedCategory(e.target.value)}>
-                                <option value={0} disabled>Set category</option>
+                                    <select className="form-select" name='categories' value={selectedCategory} onChange={(e) => setSelectedCategory(e.target.value)}>
+                                        <option value={0} disabled>Set category</option>
+                                        {
+                                            categories.map(category => {
+                                                return <option key={category.id} value={category.id}>{category.name}</option>
+                                            })
+                                        }
+                                    </select>
+                                    <br />
+                                    <button className='btn btn-success' type='submit'>Ask</button>
+                                </form>
                                 {
-                                    categories.map(category => {
-                                        return <option key={category.id} value={category.id}>{category.name}</option>
-                                    })
+                                    responseMessage &&
+                                    <div>
+                                        <p className='responseMessage'>{responseMessage}</p>
+                                        <a href={`/questions/${questiondId}`} className='btn btn-primary'>View Your Question</a>
+                                    </div>
                                 }
-                            </select>
-                            <br />
-                            <button className='btn btn-success' type='submit'>Ask</button>
-                        </form>
-                        {
-                            responseMessage && 
-                            <div>
-                                <p className='responseMessage'>{responseMessage}</p>
-                                <a href={`/questions/${questiondId}`} className='btn btn-primary'>View Your Question</a>
-                            </div>
-                        }
-                    </div>)
+                            </div>)
+                    }
+                </> : <Navigate to={"/unauthorized"} />
+
+
             }
+
+
         </>
 
     )
