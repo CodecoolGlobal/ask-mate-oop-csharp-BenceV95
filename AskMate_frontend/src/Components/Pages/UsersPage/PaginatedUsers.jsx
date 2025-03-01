@@ -24,7 +24,7 @@ export default function PaginatedUsers({ users }) {
     const fetchData = async (page) => {
         setIsLoading(true);
         try {
-            const response = await fetch(`http://localhost:5166/User/paginate?pageNumber=${page}&limit=${ITEMS_PER_PAGE}`);
+            const response = await fetch(`/api/User/paginate?pageNumber=${page}&limit=${ITEMS_PER_PAGE}`);
             const parsedData = await response.json();
             setData(parsedData.users);
             setTotalPages(Math.ceil(parsedData.totalCount / 5));
@@ -51,7 +51,7 @@ export default function PaginatedUsers({ users }) {
             ) : (
                 <div className="userCards">
                     {
-                        data.map(user => <UserCard user={user} />)
+                        data.map(user => <UserCard key={user.id} user={user} />)
                     }
                 </div>
             )}

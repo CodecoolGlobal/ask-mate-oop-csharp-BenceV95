@@ -90,14 +90,18 @@ namespace AskMate.Controllers
 
 
         //session check
+        [Authorize]
         [HttpGet("session")]
-        [Authorize] // Requires the user to be authenticated
         public IActionResult ValidateSession()
         {
             var username = User.Identity.Name; // Get the logged-in user's name
             var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
             var role = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
-            return Ok(new { IsLoggedIn = true, Username = username, Id = userId, Role = role });
+            if (userId != null)
+            {
+                return Ok(new { IsLoggedIn = true, Username = username, Id = userId, Role = role });
+            }
+            return Unauthorized();
         }
 
 
