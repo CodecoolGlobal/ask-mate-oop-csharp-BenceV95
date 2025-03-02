@@ -1,5 +1,5 @@
 import React from 'react'
-import './AskQuestionForm.css';
+//import './AskQuestionForm.css';
 import { useState, } from 'react';
 
 
@@ -48,7 +48,10 @@ const AskQuestionForm = ({ categories }) => {
 
     async function SubmitQuestion(e) {
         e.preventDefault();
-        // validate entries !!!!
+        if (selectedCategory === 0) {
+            alert("Please select a category");
+            return;
+        }
         try {
             const response = await fetch('/api/Question', {
                 method: 'POST',
@@ -82,73 +85,129 @@ const AskQuestionForm = ({ categories }) => {
     }
 
     return (
-        <>
+        <div className='container d-flex flex-column gap-3'>
             {
                 !searching ?
                     (<>
-                        <form onSubmit={handleSubmit} className='searchForm'>
-                            <input
-                                type='text'
-                                placeholder='Search'
+                        <form onSubmit={handleSubmit} className='container-sm border border-2 border-white rounded p-3 d-flex flex-column gap-3'>
+                            <textarea
+                                className='form-control'
+                                placeholder='Ask a question. For best results, start with a question word like "How" or "What".'
                                 onChange={(e) => setSearchQuery(e.target.value)}
                                 value={searchQuery}
-                            >
-                            </input>
-                            <button type='submit' className='btn btn-success'>Search</button>
-                            {(searched) &&
-                                <button onClick={() => setSearching(true)} className='btn btn-primary'>Ask</button>
-                            }
+                                name='search'
+                                required
+                                disabled={searching}
+                                style={{ height: "100px" }}
+                            />
+                            <div className='d-flex justify-content-around'>
+                                {
+                                    searching ? (
+                                        <button className="btn btn-success" type="button" disabled>
+                                            <span className="spinner-border spinner-border-sm" aria-hidden="true"></span>
+                                            <span role="status">Loading...</span>
+                                        </button>
+                                    ) : (
+                                        <button type='submit' className='btn btn-success'>Search</button>
+                                    )
+                                }
+
+                                {
+                                    searched && (
+                                        <button onClick={() => setSearching(true)} className='btn btn-primary'>Ask</button>
+                                    )
+                                }
+
+                            </div>
                         </form>
 
-                        <div className='searchResults'>
-                            {
-                                searchResult.map((result) => {
-                                    return (
-                                        <div key={result.id} className='searchResult'>
+
+                        {searched && (
+                            <div className='d-flex flex-column border border-2 border-white rounded p-3 gap-3'>
+                                <h3>Search Results</h3>
+                                {searchResult.length === 0 ? (
+                                    <div>
+                                        <p>Seems like no question has been found.</p>
+                                    </div>
+                                ) : (
+                                    searchResult.map((result) => (
+                                        <div key={result.id} className='p-3 rounded' style={{ backgroundColor: "#404040" }}>
                                             <h3>{result.title}</h3>
                                             <p>{result.body}</p>
                                             <a href={`/questions/${result.id}`} className='btn btn-primary'>View Question</a>
                                         </div>
-                                    )
-                                })
-                            }
-                        </div>
+                                    ))
+                                )}
+                            </div>
+                        )}
+
+
                     </>
                     )
                     :
-                    (<div className='askQuestionFormDiv'>
+                    (<div className='container-sm border border-2 border-white rounded p-3'>
                         <form className='ask' onSubmit={SubmitQuestion}>
-                            <input
-                                type='text'
-                                placeholder='Title'
-                                name='title'
-                                className='title'
-                                onChange={(e) => setTitle(e.target.value)}
-                                value={title}
-                            ></input><br />
-                            <textarea placeholder='body' name='body' onChange={(e) => setBody(e.target.value)} value={body}></textarea><br />
-
-                            <select className="form-select" name='categories' value={selectedCategory} onChange={(e) => setSelectedCategory(e.target.value)}>
-                                <option value={0} disabled>Set category</option>
-                                {
-                                    categories.map(category => {
-                                        return <option key={category.id} value={category.id}>{category.name}</option>
-                                    })
-                                }
-                            </select>
-                            <br />
+                            <div className='mb-3'>
+                                <label
+                                    htmlFor="title"
+                                    className="form-label"
+                                >Title</label>
+                                <input
+                                    type='text'
+                                    placeholder='Title'
+                                    name='title'
+                                    className='form-control'
+                                    onChange={(e) => setTitle(e.target.value)}
+                                    value={title}
+                                    required
+                                />
+                            </div>
+                            <div className='mb-3'>
+                                <label
+                                    htmlFor="body"
+                                    className="form-label"
+                                >Details</label>
+                                <textarea
+                                    placeholder='You can go in depth here, be specific. The more details you provide, the better the answers you will get.'
+                                    name='body'
+                                    onChange={(e) => setBody(e.target.value)}
+                                    value={body}
+                                    required
+                                    className='form-control'
+                                />
+                            </div>
+                            <div className='mb-3'>
+                                <label
+                                    htmlFor="categories"
+                                    className="form-label"
+                                >Category</label>
+                                <select
+                                    className="form-select form-select-sm"
+                                    name='categories'
+                                    value={selectedCategory}
+                                    onChange={(e) => setSelectedCategory(e.target.value)}
+                                    required
+                                >
+                                    <option value={0} disabled>Set category</option>
+                                    {
+                                        categories.map(category => {
+                                            return <option key={category.id} value={category.id}>{category.name}</option>
+                                        })
+                                    }
+                                </select>
+                            </div>
                             <button className='btn btn-success' type='submit'>Ask</button>
                         </form>
                         {
-                            responseMessage && 
-                            <div>
+                            responseMessage &&
+                            <div className='container mt-5'>
                                 <p className='responseMessage'>{responseMessage}</p>
                                 <a href={`/questions/${questiondId}`} className='btn btn-primary'>View Your Question</a>
                             </div>
                         }
                     </div>)
             }
-        </>
+        </div>
 
     )
 }

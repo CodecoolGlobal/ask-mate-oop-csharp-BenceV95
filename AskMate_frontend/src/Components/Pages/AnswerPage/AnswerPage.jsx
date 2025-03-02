@@ -7,7 +7,7 @@ import Answers from "./Answers";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 
-const AnswerPage = ({ fetchData, categories, users }) => {
+const AnswerPage = ({ fetchData, categories, users, questions, setQuestions }) => {
     const { user } = useContext(AuthContext);
     let navigate = useNavigate();
     const { id } = useParams(); // Destructure the `id` from the URL
@@ -132,9 +132,14 @@ const AnswerPage = ({ fetchData, categories, users }) => {
                     console.log(error)
                 }
             }
-            console.log("delete successful");
+            
+            const questionsCopy = [...questions];
+            const deletedQuestionFilteredOut = questionsCopy.filter(q => q.id != id);
+            setQuestions(deletedQuestionFilteredOut);
+
             setIsQuestionDeleting(false);
-            navigate("/questions",{replace:true, forceRefresh:true});
+            navigate("/",{replace:true, forceRefresh:true});
+            alert("Question deleted successfully");
         } catch (error) {
             console.log("delete failed:", error);
         }

@@ -140,7 +140,7 @@ function App() {
           <Route path="/users" element={<UsersPage users={users} />} />
           <Route path="/error" element={<ErrorPage />} />
           <Route path="/ask" element={<AskQuestionForm categories={categories} />} />
-          <Route path="/questions/:id" element={<AnswerPage fetchData={fetchData} categories={categories} users={users} />} />
+          <Route path="/questions/:id" element={<AnswerPage fetchData={fetchData} categories={categories} users={users} questions={questions} setQuestions={setQuestions}/>} />
           <Route path="/users/:username" element={<UserPage questions={questions} categories={categories} users={users} />} />
           <Route path='*' element={<Missing />} />
         </Routes>

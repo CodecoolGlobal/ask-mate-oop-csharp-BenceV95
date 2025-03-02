@@ -75,8 +75,13 @@ export default function QuestionsPage({ questions, categories, setQuestions }) {
                         />
                     </div>
                     <div className="questionsDiv">
-                        {filteredQuestions.length > 0 ? filteredQuestions.map(question => {
-                            return <QuestionCard withButtons={true} user={user} categories={categories} question={question}></QuestionCard>
+                        {filteredQuestions.length > 0 ? filteredQuestions.map((question,i) => {
+                            return <QuestionCard
+                                key={i} // so it stops complaining even though it is set under the component...
+                                user={user}
+                                categories={categories}
+                                question={question}
+                            />
                         }) : "No Question in this category yet!"}
                     </div>
 
