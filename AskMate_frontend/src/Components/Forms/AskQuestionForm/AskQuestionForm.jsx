@@ -46,6 +46,8 @@ const AskQuestionForm = ({ categories }) => {
         e.preventDefault();
         // validate entries !!!!
         try {
+            if (selectedCategory === 0) { throw new Error("Category must be set!") }
+
             const data = await apiPost('/Question', {
                 id: "", // modify backend so it doesnt expect unnecesary data (id, userdId etc...)
                 userId: "",
@@ -54,7 +56,7 @@ const AskQuestionForm = ({ categories }) => {
                 categories: selectedCategory,
             });
 
-            setQuestionId(data);
+            setQuestionId(data.message);
 
             setResponseMessage("Question Posted");
             setTitle("");
@@ -63,7 +65,7 @@ const AskQuestionForm = ({ categories }) => {
 
         } catch (error) {
             console.log(error);
-            setResponseMessage(error);
+            setResponseMessage(error.message);
         }
     }
 
