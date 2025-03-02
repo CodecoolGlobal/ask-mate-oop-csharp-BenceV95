@@ -9,7 +9,6 @@ const Navbar = ({ handleLogOut }) => {
   const { user } = React.useContext(AuthContext)
 
 
-  console.log("inNavbar", user)
 
   return (
     <>

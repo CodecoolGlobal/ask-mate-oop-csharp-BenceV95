@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import UserCard from "./UserCard";
 import "./PaginatedUsers.css";
+import { apiGet } from "../../../utils/api";
 
 
 
@@ -24,10 +25,9 @@ export default function PaginatedUsers({ users }) {
     const fetchData = async (page) => {
         setIsLoading(true);
         try {
-            const response = await fetch(`/api/User/paginate?pageNumber=${page}&limit=${ITEMS_PER_PAGE}`);
-            const parsedData = await response.json();
-            setData(parsedData.users);
-            setTotalPages(Math.ceil(parsedData.totalCount / 5));
+            const data = await apiGet(`/User/paginate?pageNumber=${page}&limit=${ITEMS_PER_PAGE}`);
+            setData(data.users);
+            setTotalPages(Math.ceil(data.totalCount / 5));
         } catch (error) {
             console.error('Error fetching data:', error);
         } finally {

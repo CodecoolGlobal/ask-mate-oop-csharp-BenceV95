@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import "./SearchUser.css"
+import { apiGet } from "../../../utils/api";
 
 
 export default function SearchUser({ setSelectedUser }) {
@@ -10,7 +11,7 @@ export default function SearchUser({ setSelectedUser }) {
 
     async function fetchUser(e) {
         e.preventDefault();
-        const response = await fetch(`http://localhost:5166/User?nameOrEmail=${searchValue}`)
+        const response = await apiGet(`/User?nameOrEmail=${searchValue}`)
         const data = await response.json();
         setSelectedUser(data);
 

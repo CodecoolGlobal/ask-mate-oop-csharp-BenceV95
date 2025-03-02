@@ -4,6 +4,7 @@ import ErrorPage from "../ErrorPage/UnauthorizedPage";
 import "./AnswerPage.css";
 import { AuthContext } from '../../AuthContext/AuthContext';
 import Answers from "./Answers";
+import { apiGet, apiPost } from "../../../utils/api";
 
 const AnswerPage = ({ fetchData, categories, users }) => {
     const { user } = useContext(AuthContext);
@@ -18,7 +19,7 @@ const AnswerPage = ({ fetchData, categories, users }) => {
     useEffect(() => {
         const fetchQuestion = async () => {
             try {
-                const data = await fetchData(`/api/Question/${id}`)
+                const data = await apiGet(`/Question/${id}`)
                 setQuestionData(data);
             } catch (error) {
                 console.log(error);
@@ -26,12 +27,10 @@ const AnswerPage = ({ fetchData, categories, users }) => {
         }
         const fetchAnswers = async () => {
             try {
-                const data = await fetchData(`/api/Answer/all/${id}`);
-                console.log(data);
+                const data = await apiGet(`/Answer/all/${id}`);
 
                 if (data.some(a => a.isAccepted == true)) {
                     setIsQuestionClosed(true);
-                    console.log("question closed");
                 }
                 setAnswers(data.reverse());
             } catch (error) {
@@ -49,25 +48,15 @@ const AnswerPage = ({ fetchData, categories, users }) => {
 
     async function postAnswer() {
         try {
-            const response = await fetch("/api/Answer", {
-                method: "POST",
-                headers: {
-                    "content-type": "application/json",
-                },
-                body: JSON.stringify({
-                    id: "",
-                    userId: "",
-                    questionID: id,
-                    body: answerBody,
-                    isAccepted: false
-                }),
-                credentials: "include"
+            const response = await apiPost("/Answer", {
+                id: "",
+                userId: "",
+                questionID: id,
+                body: answerBody,
+                isAccepted: false
             })
-            // const result = await response.json(); response is not the right format, check the backend!
-            if (!response.ok) {
-                const errorData = await response.text();
-                throw new Error(errorData || "Something went wrong")
-            }
+
+
         } catch (error) {
             console.log("Error: ", error);
         }

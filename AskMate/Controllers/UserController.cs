@@ -28,11 +28,11 @@ namespace AskMate.Controllers
             try
             {
                 _database.UpdateUser(id, userUpdate);
-                return Ok();
+                return Ok(new { message = "User successfully updated!" });
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { message = ex.Message });
             }
         }
 

@@ -1,3 +1,4 @@
+import { apiDelete } from "../../utils/api";
 import "./QuestionCard.css"
 
 export default function QuestionCard({ question, categories, user, withButtons }) {
@@ -15,25 +16,8 @@ export default function QuestionCard({ question, categories, user, withButtons }
         setQuestions(updatedData);
         setFilteredQuestions(updatedData);
         try {
-            const response = await fetch(`http://localhost:5166/Answer/all/${id}`, {
-                method: 'DELETE',
-                credentials: "include"
-            });
-
-            if (response.ok) {
-                try {
-
-                    const response = await fetch(`http://localhost:5166/Question/${id}`, {
-                        method: 'DELETE',
-                        credentials: "include"
-                    });
-
-                    if (!response.ok) {
-                        throw new Error("Network response was not ok!");
-                    }
-                } catch (e) { console.log(e) }
-            }
-            console.log("delete successful");
+            const answerDeleteResponse = await apiDelete(`/Answer/all/${id}`);
+            const questionDeleteResponse = await apiDelete(`/Question/${id}`);
 
         } catch (error) {
             console.log("delete failed:", error);

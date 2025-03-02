@@ -6,6 +6,7 @@ import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import AnswerCard from "../../AnswerCard/AnswerCard";
 import React from "react";
 import { AuthContext } from "../../AuthContext/AuthContext";
+import { apiGet } from "../../../utils/api";
 
 
 
@@ -65,11 +66,9 @@ export default function UserPage({ users, categories, questions }) {
 
             const responses = await Promise.all(
                 userQuestions.map(async (question) => {
-                    const response = await fetch(`/api/Answer/all/${question.id}`, {
-                        credentials: "include"
-                    });
+                    const data = await apiGet(`/Answer/all/${question.id}`);
 
-                    return await response.json();
+                    return data;
                 })
             );
 

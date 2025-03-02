@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import React from "react";
 import LoadingPage from "../Pages/LoadingPage/LoadingPage";
+import { apiGet } from "../../utils/api";
 
 
 export const AuthContext = React.createContext();
@@ -67,11 +68,10 @@ export function AuthProvider({ children }) {
 
 
 
-//continue from here!
 
 async function checkSession() {
     try {
-        const data = await apiGet("/api/User/session");
+        const data = await apiGet("/User/session");
         return data;
     } catch (e) {
         return {

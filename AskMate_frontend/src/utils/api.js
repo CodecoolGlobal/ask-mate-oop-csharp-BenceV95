@@ -1,9 +1,9 @@
-const apiUrl = import.meta.env.VITE_API_URL;
+
 
 
 export async function apiGet(endpoint) {
 
-    const response = await fetch(`${BACKEND_URL}/api/${endpoint}`, {
+    const response = await fetch(`/api/${endpoint}`, {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
@@ -21,7 +21,7 @@ export async function apiGet(endpoint) {
 
 
 export async function apiPut(endpoint, data) {
-    const response = await fetch(`${BACKEND_URL}/api/${endpoint}`, {
+    const response = await fetch(`/api/${endpoint}`, {
         method: "PUT",
         headers: {
             "Content-Type": "application/json",
@@ -37,9 +37,9 @@ export async function apiPut(endpoint, data) {
 }
 
 export async function apiPost(endpoint, data) {
-    console.log(`${BACKEND_URL}${endpoint}`);
 
-    const response = await fetch(`${BACKEND_URL}/api/${endpoint}`, {
+
+    const response = await fetch(`/api/${endpoint}`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -56,9 +56,9 @@ export async function apiPost(endpoint, data) {
 }
 
 export async function apiDelete(endpoint) {
-    console.log(`${BACKEND_URL}${endpoint}`);
 
-    const response = await fetch(`${BACKEND_URL}/api/${endpoint}`, {
+
+    const response = await fetch(`/api/${endpoint}`, {
         method: "DELETE",
         credentials: "include"
     });

@@ -16,6 +16,7 @@ import AnswerPage from './Components/Pages/AnswerPage/AnswerPage';
 import UserPage from './Components/Pages/UserPage/UserPage';
 import Footer from './Components/Footer/Footer';
 import Missing from './Components/Pages/ErrorPage/Missing';
+import { apiGet, apiPost } from './utils/api';
 
 
 function App() {
@@ -35,26 +36,11 @@ function App() {
 
   async function loginUser(username, password) {
     try {
-      const response = await fetch('/api/User/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: "include", // this is how you include cookies with the request
-        body: JSON.stringify({
-          username: username,
-          password: password
-        }),
-      });
+      const response = await apiPost('/User/login', { username, password });
+      console.log(response)
+      await refreshSession(); //not so elegant
+      navigate("/")
 
-      const result = await response.json();
-      if (response.ok) {
-        setResponseMessage('Login sucsessful!');
-        await refreshSession(); //not so elegant
-        navigate("/")
-      } else {
-        setResponseMessage(`Error: ${result.message}`);
-      }
     } catch (error) {
       console.error('Error:', error);
       setResponseMessage('An error occurred while logging in.');
@@ -65,48 +51,25 @@ function App() {
 
   async function logOutUser() {
     try {
-      const response = await fetch("/api/User/logout", {
-        method: "POST",
-        headers: {
-          "content-type": "application/json",
-        },
-        credentials: "include"
-      })
-      const result = await response.json();
-      if (response.ok) {
-        setResponseMessage("logout successful")
-        navigate("/")
-        await refreshSession(); //also, not elegant..
-      } else {
-        setResponseMessage("error during logout")
-      }
+      const response = await apiPost("/User/logout")
+      setResponseMessage(response)
+      navigate("/")
+      await refreshSession(); //also, not elegant..
     } catch (error) {
       console.log("error", error)
+      setResponseMessage("error during logout")
     }
   }
 
 
-
-  //basic data fetching function
-  async function fetchData(url) {
-    const response = await fetch(url, {
-      credentials: "include" //must include credidentials so the backend knows we are logged in!
-    })
-    if (response.ok) {
-      const data = await response.json();
-      return data;
-    } else {
-      throw new Error("Error during fetching data!")
-    }
-  }
 
   //fetch all necessary data
   useEffect(() => {
     const loadData = async () => {
       try {
-        const questions = await fetchData("/api/Question");
-        const fetchedUsers = await fetchData("/api/User/allUsers");
-        const categories = await fetchData("/api/categories");
+        const questions = await apiGet("/Question");
+        const fetchedUsers = await apiGet("/User/allUsers");
+        const categories = await apiGet("/categories");
         setCategories(categories);
         setUsers(fetchedUsers);
         setQuestions(questions);
@@ -118,8 +81,6 @@ function App() {
     if (user.isLoggedIn) {
       loadData();
     }
-
-    //console.log("questions:1", questions)
   }, []);
 
 
@@ -146,7 +107,7 @@ function App() {
           <Route path="/users" element={<UsersPage users={users} />} />
           <Route path="/unauthorized" element={<ErrorPage />} />
           <Route path="/ask" element={<AskQuestionForm categories={categories} />} />
-          <Route path="/questions/:id" element={<AnswerPage fetchData={fetchData} categories={categories} users={users} />} />
+          <Route path="/questions/:id" element={<AnswerPage categories={categories} users={users} />} />
           <Route path="/users/:username" element={<UserPage questions={questions} categories={categories} users={users} />} />
           <Route path='*' element={<Missing />} />
         </Routes>

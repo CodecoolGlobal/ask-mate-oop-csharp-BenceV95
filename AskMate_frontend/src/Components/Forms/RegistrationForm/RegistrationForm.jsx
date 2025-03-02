@@ -1,5 +1,6 @@
 import { useState } from "react";
 import './RegistrationForm.css';
+import { apiPost } from "../../../utils/api";
 
 export default function RegistrationForm({ navigate }) {
 
@@ -14,24 +15,11 @@ export default function RegistrationForm({ navigate }) {
         e.preventDefault();
 
         try {
-            const response = await fetch('/api/User', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    username: username,
-                    email: email,
-                    password: password,
-                }),
-            });
+            const response = await apiPost('/User', { username, email, password });
 
-            //const result = await response.json();
-            //console.log(result);
-            if (response.ok) {
-                setResponseMessage('Registration successful!\nLog in below');
-                setReg(true);
-            }
+            setResponseMessage('Registration successful!\nLog in below');
+            setReg(true);
+
         } catch (error) {
             console.error('Error:', error);
             setResponseMessage('An error occurred while registering.');

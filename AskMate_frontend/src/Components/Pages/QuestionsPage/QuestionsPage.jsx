@@ -5,9 +5,9 @@ import Tags from "./Tags"
 import './QuestionsPage.css';
 import SearchDiv from "./SearchDiv";
 import QuestionCard from "../../QuestionCard/QuestionCard";
-import { use } from "react";
+import { apiGet } from "../../../utils/api";
 
-export default function QuestionsPage({ questions, categories, setQuestions }) {
+export default function QuestionsPage({ questions, categories }) {
 
     const { user } = useContext(AuthContext)
     const [selectedCategory, setSelectedCategory] = useState(0);
@@ -20,10 +20,7 @@ export default function QuestionsPage({ questions, categories, setQuestions }) {
         if (selectedCategory === 0 && searchResult.length === 0) {
             setFilteredQuestions(questions)
         } else {
-            //const filteredByTag = filterQuestionsByTag(selectedCategory);            
-            //setFilteredQuestions(filteredByTag)
             setFilteredQuestions(searchResult);
-            console.log("search updated");
 
         }
     }, [questions, selectedCategory, searchResult]);
@@ -31,17 +28,10 @@ export default function QuestionsPage({ questions, categories, setQuestions }) {
     const fetchQuestions = async (query) => {
 
         try {
-            const response = await fetch(`/api/Question/search?query=${encodeURIComponent(query)}`, {
-                method: 'GET',
-                credentials: "include"
-            });
+            const data = await apiGet(`/Question/search?query=${encodeURIComponent(query)}`);
+            setSearchResult(data);
 
-            if (response.ok) {
-                const data = await response.json();
-                setSearchResult(data);
-                console.log("search data: ", data);
 
-            }
         } catch (error) {
             console.log("fetch failed:", error);
         }

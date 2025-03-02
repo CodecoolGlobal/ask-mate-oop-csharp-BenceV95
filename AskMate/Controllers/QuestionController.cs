@@ -45,7 +45,7 @@ public class QuestionController : ControllerBase
         Console.WriteLine(loggedInUserID);
 
         //returns the id
-        return Ok(_database.CreateNewQuestion(question, loggedInUserID));
+        return Ok(new { message = _database.CreateNewQuestion(question, loggedInUserID) });
     }
 
     [Authorize]
@@ -82,6 +82,6 @@ public class QuestionController : ControllerBase
         {
             return StatusCode(500, new { Message = "Internal Server Error", details = e.Message });
         }
-        
+
     }
 }

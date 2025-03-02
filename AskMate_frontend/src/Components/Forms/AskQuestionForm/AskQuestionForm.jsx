@@ -3,6 +3,7 @@ import './AskQuestionForm.css';
 import { useState, } from 'react';
 import { AuthContext } from '../../AuthContext/AuthContext';
 import { Navigate } from 'react-router-dom';
+import { apiGet, apiPost } from '../../../utils/api';
 
 const AskQuestionForm = ({ categories }) => {
 
@@ -33,17 +34,9 @@ const AskQuestionForm = ({ categories }) => {
     const fetchQuestions = async (query) => {
 
         try {
-            const response = await fetch(`/api/Question/search?query=${encodeURIComponent(query)}`, {
-                method: 'GET',
-                credentials: "include"
-            });
+            const data = await apiGet(`/Question/search?query=${encodeURIComponent(query)}`);
+            setSearchResult(data);
 
-            if (response.ok) {
-                const data = await response.json();
-                setSearchResult(data);
-                console.log("search data: ", data);
-
-            }
         } catch (error) {
             console.log("fetch failed:", error);
         }
@@ -53,25 +46,15 @@ const AskQuestionForm = ({ categories }) => {
         e.preventDefault();
         // validate entries !!!!
         try {
-            const response = await fetch('/api/Question', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    id: "",
-                    userId: "",
-                    title: title,
-                    body: body,
-                    categories: selectedCategory,
-                }),
-                credentials: 'include'
+            const data = await apiPost('/Question', {
+                id: "", // modify backend so it doesnt expect unnecesary data (id, userdId etc...)
+                userId: "",
+                title: title,
+                body: body,
+                categories: selectedCategory,
             });
 
-            if (response.ok) {
-                const data = await response.text();
-                setQuestionId(data);
-            }
+            setQuestionId(data);
 
             setResponseMessage("Question Posted");
             setTitle("");

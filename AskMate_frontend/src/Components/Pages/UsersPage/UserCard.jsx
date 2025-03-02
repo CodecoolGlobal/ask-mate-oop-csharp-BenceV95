@@ -1,5 +1,6 @@
 import { useState } from "react"
 import "./UserCard.css"
+import { apiDelete, apiPut } from "../../../utils/api";
 
 
 
@@ -19,35 +20,33 @@ export default function UserCard({ user }) {
         setEditMode(false);
     }
 
-//users are deleted/updated in the db but the changes are not being rendered!
+    //users are deleted/updated in the db but the changes are not being rendered!
 
 
     async function deleteUser() {
-        const response = await fetch(`http://localhost:5166/users/${user.id}`, {
-            method: "DELETE",
-            credentials: "include"
-        });
-        alert("user deleted!") //temporary display
+        try {
+            const response = await apiDelete(`/users/${user.id}`);
+            alert("user deleted!") //temporary display
+
+        } catch (e) {
+            console.log(e)
+        }
     }
 
 
     async function submitChanges() {
-        const response = await fetch(`http://localhost:5166/User/update/${user.id}`, {
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
+        try {
+            const response = await apiPut(`/User/update/${user.id}`, {
                 username: newName,
                 email: newEmail
-            })
-        });
+            });
 
-        if (response.ok) {
-            console.log("User updated successfully:");
-        } else {
-            console.error("Error updating user:", response.statusText);
+        } catch (e) {
+
+            console.error("Error updating user:", e);
         }
+
+
     }
 
 
