@@ -18,6 +18,7 @@ import Footer from './Components/Footer/Footer';
 import Missing from './Components/Pages/ErrorPage/Missing';
 import { apiGet, apiPost } from './utils/api';
 import About from './Components/Pages/About/About';
+import PrivacyPolicy from './Components/Pages/Privacy/PrivacyPolicy';
 
 function App() {
 
@@ -110,6 +111,7 @@ function App() {
           <Route path="/questions/:id" element={<AnswerPage categories={categories} users={users} />} />
           <Route path="/users/:username" element={<UserPage questions={questions} categories={categories} users={users} />} />
           <Route path='/about' element={<About />} />
+          <Route path='/privacy-policy' element={<PrivacyPolicy/>}/>
           <Route path='*' element={<Missing />} />
         </Routes>
       </main>
