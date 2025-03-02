@@ -25,7 +25,15 @@ public class QuestionController : ControllerBase
     [HttpGet()]
     public IActionResult GetAllQuestion()
     {
-        return Ok(_database.GetAllQuestions());
+        try
+        {
+            return Ok(_database.GetAllQuestions());
+
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
     }
 
 
@@ -33,27 +41,50 @@ public class QuestionController : ControllerBase
     [HttpGet("{id}")]
     public async Task<IActionResult> GetQuestion(string id)
     {
-        var question = await _database.GetQuestion(id);
-        return Ok(question);
+        try
+        {
+            var question = await _database.GetQuestion(id);
+            return Ok(question);
+
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
     }
 
     [Authorize]
     [HttpPost()]
     public IActionResult CreateQuestion([FromBody] Question question)
     {
-        var loggedInUserID = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        Console.WriteLine(loggedInUserID);
+        try
+        {
+            var loggedInUserID = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-        //returns the id
-        return Ok(new { message = _database.CreateNewQuestion(question, loggedInUserID) });
+            //returns the id
+            return Ok(new { message = _database.CreateNewQuestion(question, loggedInUserID) });
+
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
     }
 
     [Authorize]
     [HttpDelete("{id}")]
     public IActionResult DeleteQuestion(string id)
     {
-        _database.DeleteQuestion(id);
-        return Ok();
+        try
+        {
+            _database.DeleteQuestion(id);
+            return Ok(new { message = "Question deleted successfully!" });
+
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
     }
 
     [Authorize]
@@ -64,7 +95,7 @@ public class QuestionController : ControllerBase
         {
             if (string.IsNullOrWhiteSpace(query))
             {
-                return BadRequest("Query cannot be empty.");
+                return BadRequest(new { message = "Query cannot be empty." });
             }
 
             string formattedQuery = string.Join(" & ", query.Split(' ', StringSplitOptions.RemoveEmptyEntries));
@@ -73,14 +104,14 @@ public class QuestionController : ControllerBase
 
             if (searched == null)
             {
-                return NotFound(searched);
+                return NotFound(new { message = "Couldnt find any question!" });
             }
 
             return Ok(searched);
         }
-        catch (Exception e)
+        catch (Exception ex)
         {
-            return StatusCode(500, new { Message = "Internal Server Error", details = e.Message });
+            return BadRequest(new { message = ex.Message });
         }
 
     }

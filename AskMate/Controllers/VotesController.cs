@@ -25,7 +25,7 @@ namespace AskMate.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { message = ex.Message });
             }
 
         }
@@ -40,7 +40,7 @@ namespace AskMate.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { message = ex.Message });
             }
         }
 
@@ -50,11 +50,11 @@ namespace AskMate.Controllers
             try
             {
                 _votesRepo.DeleteVote(voteId);
-                return NoContent();
+                return Ok(new { message = "Vote successfully deleted!" });
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { message = ex.Message });
             }
         }
 
@@ -64,11 +64,11 @@ namespace AskMate.Controllers
             try
             {
                 _votesRepo.ChangeVote(voteId);
-                return NoContent();
+                return Ok(new { message = "Vote succesfully changed!" });
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { message = ex.Message });
             }
         }
 
