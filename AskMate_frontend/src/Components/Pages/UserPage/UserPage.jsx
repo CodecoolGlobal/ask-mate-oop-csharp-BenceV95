@@ -6,7 +6,7 @@ import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import AnswerCard from "../../AnswerCard/AnswerCard";
 import React from "react";
 import { AuthContext } from "../../AuthContext/AuthContext";
-import { apiGet } from "../../../utils/api";
+import { apiGet, apiPost } from "../../../utils/api";
 
 
 
@@ -14,6 +14,9 @@ import { apiGet } from "../../../utils/api";
 // CRUD actions on their own content
 // display the ratio of ALL your answers being useful/unuseful
 
+
+//get all the users answers
+//get all the votes that are on the answers
 
 
 //todo: 
@@ -38,8 +41,9 @@ export default function UserPage({ users, categories, questions }) {
     }, [users])
 
 
-    //find out why answers dont load properly! 
+    //find out why answers dont load properly!  
     useEffect(() => {
+        console.log("questions", questions)
         getAllUserAnswers().then(answers => setAnswers(answers));
     }, [questions])
 
@@ -63,10 +67,12 @@ export default function UserPage({ users, categories, questions }) {
     async function getAllUserAnswers() {
         try {
             const userQuestions = selectUsersQuestions(questions);
+            console.log("userQuestionsS!", userQuestions)
 
             const responses = await Promise.all(
                 userQuestions.map(async (question) => {
                     const data = await apiGet(`/Answer/all/${question.id}`);
+                    console.log("data", data) 
 
                     return data;
                 })
@@ -81,6 +87,22 @@ export default function UserPage({ users, categories, questions }) {
     }
 
 
+    async function getUsersVotes() {
+        const AnswerIds = answers?.map(answer => answer.id)
+        // const AnswerIds = ['c970a5cc-4047-4066-83c6-8beb1597f437']
+
+        // console.log("answerids", userAnswerIds)
+        const userVotes = await apiPost("/votes", {AnswerIds});
+        return userVotes;
+
+
+
+    }
+
+    useEffect(() => {
+        getUsersVotes().then(votes => console.log("votes:", votes));
+        console.log(answers)
+    }, [answers])
 
     return (
         <div className="userPageMainDiv">
