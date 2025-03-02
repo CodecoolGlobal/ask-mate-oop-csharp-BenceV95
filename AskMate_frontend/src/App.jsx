@@ -28,9 +28,6 @@ function App() {
 
   const navigate = useNavigate();
 
-  function setResponseMessage(message) {
-    console.log(message);
-  }
   console.log("users:", users)
 
   async function loginUser(username, password) {
@@ -49,15 +46,13 @@ function App() {
 
       const result = await response.json();
       if (response.ok) {
-        setResponseMessage('Login sucsessful!');
         await refreshSession(); //not so elegant
-        navigate("/")
+        navigate("/");
       } else {
-        setResponseMessage(`Error: ${result.message}`);
+        throw new Error(result.message);
       }
     } catch (error) {
-      console.error('Error:', error);
-      setResponseMessage('An error occurred while logging in.');
+       return error;
     };
   }
 
@@ -74,11 +69,10 @@ function App() {
       })
       const result = await response.json();
       if (response.ok) {
-        setResponseMessage("logout successful")
         navigate("/")
         await refreshSession(); //also, not elegant..
       } else {
-        setResponseMessage("error during logout")
+        throw new Error("error during logout");
       }
     } catch (error) {
       console.log("error", error)
