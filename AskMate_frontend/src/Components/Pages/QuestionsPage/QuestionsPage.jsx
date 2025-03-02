@@ -7,7 +7,7 @@ import SearchDiv from "./SearchDiv";
 import QuestionCard from "../../QuestionCard/QuestionCard";
 import { apiGet } from "../../../utils/api";
 
-export default function QuestionsPage({ questions, categories }) {
+export default function QuestionsPage({ questions, categories, setQuestions }) {
 
     const { user } = useContext(AuthContext)
     const [selectedCategory, setSelectedCategory] = useState(0);
@@ -66,7 +66,7 @@ export default function QuestionsPage({ questions, categories }) {
                     </div>
                     <div className="questionsDiv">
                         {filteredQuestions.length > 0 ? filteredQuestions.map(question => {
-                            return <QuestionCard withButtons={true} user={user} categories={categories} question={question}></QuestionCard>
+                            return <QuestionCard setFilteredQuestions={setFilteredQuestions} questions={questions} setQuestions={setQuestions} key={question.id} withButtons={true} user={user} categories={categories} question={question}></QuestionCard>
                         }) : "No Question in this category yet!"}
                     </div>
 

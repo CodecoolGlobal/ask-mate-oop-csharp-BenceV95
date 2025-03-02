@@ -1,7 +1,7 @@
 import { apiDelete } from "../../utils/api";
 import "./QuestionCard.css"
 
-export default function QuestionCard({ question, categories, user, withButtons }) {
+export default function QuestionCard({ question, categories, user, withButtons, questions, setQuestions, setFilteredQuestions }) {
 
     const findCategoryNameById = (id) => {
         const result = categories.find(category => category.id == id);
