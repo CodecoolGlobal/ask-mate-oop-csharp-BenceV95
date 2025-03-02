@@ -15,7 +15,7 @@ const Navbar = ({ handleLogOut }) => {
 
   return (
     <>
-      <nav className="navbar navbar-expand-sm mb-2 bg-primary text-white">
+      <nav className="navbar navbar-expand-sm bg-primary text-white">
         <div className="container-fluid">
           <Link className="navbar-brand" to="/">AskApe</Link>
           <button

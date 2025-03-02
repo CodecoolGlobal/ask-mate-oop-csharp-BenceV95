@@ -5,9 +5,9 @@
     max-width: 100%;
     width: 100%;
     justify-content: space-between;
-    padding: 1rem;
+    /* padding: 1rem;
     border: solid white 2px;
-    border-radius: 10px;
+    border-radius: 10px; */
 }
 
 .categoriesDiv {
