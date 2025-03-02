@@ -9,11 +9,15 @@ export default function RegistrationForm({ navigate }) {
     const [responseMessage, setResponseMessage] = useState("");
     const [reg, setReg] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(false);
 
     async function registerNewUser(e) {
 
         e.preventDefault();
         setLoading(true);
+        setError(false);
+        setResponseMessage("");
+
         try {
             const response = await fetch('/api/User', {
                 method: 'POST',
@@ -27,16 +31,22 @@ export default function RegistrationForm({ navigate }) {
                 }),
             });
 
-            //const result = await response.json();
-            //console.log(result);
+            const result = await response.json();
+
             if (response.ok) {
-                setResponseMessage('Registration successful!\nLog in below');
+                setResponseMessage('Registration successful! Log in below.');
                 setReg(true);
                 setLoading(false);
+            } else {
+                throw new Error(result.message);
             }
+
         } catch (error) {
-            console.error('Error:', error);
-            setResponseMessage('An error occurred while registering.');
+            console.log(error);
+            setReg(false);
+            setLoading(false);
+            setError(true);
+            setResponseMessage(error.message);
         };
     }
 
@@ -86,11 +96,11 @@ export default function RegistrationForm({ navigate }) {
                     </div>
                     {
                         loading ?
-                            (<button class="btn btn-success" type="button" disabled>
-                                <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+                            (<button className="btn btn-success" type="button" disabled>
+                                <span className="spinner-border spinner-border-sm" aria-hidden="true"></span>
                                 <span role="status">Loading...</span>
-                            </button>) 
-                            : 
+                            </button>)
+                            :
                             (<button
                                 type="submit"
                                 className="btn btn-success"
@@ -100,7 +110,7 @@ export default function RegistrationForm({ navigate }) {
 
                 </form>
                 <div className="container mt-5">
-                    <p>{responseMessage}</p>
+                    <p style={{ color: error ? "#dc3545" : "#28a745" }}>{responseMessage}</p>
                 </div>
 
                 {
