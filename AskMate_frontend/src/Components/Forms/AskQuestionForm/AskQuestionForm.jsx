@@ -21,6 +21,7 @@ const AskQuestionForm = ({ categories }) => {
     const [searching, setSearching] = useState(false);
     const [searched, setSearched] = useState(false);
     const [questiondId, setQuestionId] = useState("");
+    const [showNewlyPostedQuestion, setShowNewlyPostedQuestion] = useState(false);
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -62,6 +63,7 @@ const AskQuestionForm = ({ categories }) => {
             setTitle("");
             setBody("");
             setSelectedCategory(0);
+            setShowNewlyPostedQuestion(true)
 
         } catch (error) {
             console.log(error);
@@ -131,8 +133,11 @@ const AskQuestionForm = ({ categories }) => {
                                 </form>
                                 {
                                     responseMessage &&
+                                    <p className='responseMessage'>{responseMessage}</p>
+                                }
+                                {
+                                    showNewlyPostedQuestion &&
                                     <div>
-                                        <p className='responseMessage'>{responseMessage}</p>
                                         <a href={`/questions/${questiondId}`} className='btn btn-primary'>View Your Question</a>
                                     </div>
                                 }
