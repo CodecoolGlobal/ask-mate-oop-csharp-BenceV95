@@ -40,18 +40,13 @@ namespace AskMate.Repos.Votes
         {
             using var connection = new NpgsqlConnection(_connectionString);
             connection.Open();
-            List<Vote> votes = new List<Vote>();
 
-            // dynamic parameter placeholders (:id1 :id2 etc...)
-            var parameters = answerIds.Select((id, index) => $":id{index}").ToArray();
-            string query = $"SELECT * FROM votes WHERE answer_id IN ({string.Join(",", parameters)})";
+            string query = "SELECT * FROM votes WHERE answer_id = ANY(@answerIds)";
 
             using var command = new NpgsqlCommand(query, connection);
+            command.Parameters.AddWithValue("@answerIds", answerIds);
 
-            for (int i = 0; i < answerIds.Length; i++)
-            {
-                command.Parameters.AddWithValue($":id{i}", answerIds[i]);
-            }
+            List<Vote> votes = new List<Vote>();
 
             using var reader = command.ExecuteReader();
             while (reader.Read())
@@ -67,6 +62,7 @@ namespace AskMate.Repos.Votes
 
             return votes;
         }
+
 
         /// <summary>
         /// This should just change an existing vote from useful to not useful (vica-versa)
