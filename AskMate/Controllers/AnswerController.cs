@@ -68,6 +68,28 @@ namespace AskMate.Controllers
             }
         }
 
+
+        [Authorize]
+        [HttpGet("all/byUserId/{id}")]
+        public IActionResult GetAllAnswersByUserId(string userId)
+        {
+            try
+            {
+                var answers = _database.GetAllAnswersByUserId(userId);
+                if (answers == null)
+                {
+                    return Ok(Array.Empty<int>()); //why isnt answers an empty array by default?
+                }
+                return Ok(answers);
+
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+
         [Authorize]
         [HttpPost()]
         public IActionResult CreateAnswer(Answer answer)

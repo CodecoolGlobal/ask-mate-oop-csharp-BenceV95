@@ -1,4 +1,5 @@
 ﻿using AskMate.Models;
+using AskMate.Models.Answers;
 using AskMate.Models.Vote;
 using Npgsql;
 using System.Data;
@@ -35,7 +36,6 @@ namespace AskMate.Repos.Votes
 
             return vote;
         }
-
         public IEnumerable<Vote> GetVotesByAnswerIds(string[] answerIds)
         {
             using var connection = new NpgsqlConnection(_connectionString);
