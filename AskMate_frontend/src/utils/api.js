@@ -49,7 +49,9 @@ export async function apiPost(endpoint, data) {
     });
 
     if (!response.ok) {
-        throw new Error("API request failed");
+         const ad = await response.json()
+        console.log("error msg", ad.message);
+        throw new Error(ad.message);
     }
 
     return await response.json();

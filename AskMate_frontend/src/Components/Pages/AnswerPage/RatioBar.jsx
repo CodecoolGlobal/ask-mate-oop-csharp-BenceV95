@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './RatioBar.css';
 
-export default function RatioBar({ voteData, isQuestionClosed }) {
+export default function RatioBar({ voteData, displayNumberOfVotes = false }) {
 
     const total = voteData.length;
 
@@ -21,7 +21,7 @@ export default function RatioBar({ voteData, isQuestionClosed }) {
                 <div className="red-bar" style={{ width: `${redPercentage}%` }}>
                 </div>
             </div>
-            <span className='total-ratings'> Total ratings: {total}</span>
+            {displayNumberOfVotes ? <div> You've got {total} votes on your answers. {total > 0 && <> <br /> A {greenPercentage.toFixed(2)}% of them appear to be useful for others!</>}  </div> : <span className='total-ratings'> Total ratings: {total}</span>}
         </div>
     );
 }

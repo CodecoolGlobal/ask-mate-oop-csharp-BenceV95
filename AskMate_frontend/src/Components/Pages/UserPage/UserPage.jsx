@@ -7,6 +7,7 @@ import AnswerCard from "../../AnswerCard/AnswerCard";
 import React from "react";
 import { AuthContext } from "../../AuthContext/AuthContext";
 import { apiGet, apiPost } from "../../../utils/api";
+import RatioBar from "../AnswerPage/RatioBar";
 
 
 
@@ -27,8 +28,9 @@ import { apiGet, apiPost } from "../../../utils/api";
 export default function UserPage({ users, categories, questions }) {
     const [answers, setAnswers] = useState(null);
     const { user } = React.useContext(AuthContext)
-
+    
     const [selectedUser, setSelectedUser] = useState({});
+    const [userVotes, setUserVotes] = useState(null);
 
     function findUser(username) {
         const user = users.find((user) => user.username === username);
@@ -36,16 +38,18 @@ export default function UserPage({ users, categories, questions }) {
     }
 
 
-    useEffect(() => {
+    useEffect(() => { 
         setSelectedUser(findUser(user.username))
     }, [users])
 
 
-    //find out why answers dont load properly!  
+ 
     useEffect(() => {
-        console.log("questions", questions)
-        getAllUserAnswers().then(answers => setAnswers(answers));
-    }, [questions])
+        if(selectedUser)
+        {
+            getAllUserAnswers().then(answers => setAnswers(answers));
+        }
+    }, [selectedUser]) 
 
 
 
@@ -66,42 +70,28 @@ export default function UserPage({ users, categories, questions }) {
 
     async function getAllUserAnswers() {
         try {
-            const userQuestions = selectUsersQuestions(questions);
-            console.log("userQuestionsS!", userQuestions)
+            const data = await apiGet(`/Answer/all/byUserId/${selectedUser.id}`);
 
-            const responses = await Promise.all(
-                userQuestions.map(async (question) => {
-                    const data = await apiGet(`/Answer/all/${question.id}`);
-                    console.log("data", data) 
-
-                    return data;
-                })
-            );
-
-            return responses.flat();
+            return data;
 
         } catch (e) {
 
-            console.log(e)
+            console.log(e) 
         }
     }
 
 
     async function getUsersVotes() {
-        const AnswerIds = answers?.map(answer => answer.id)
-        // const AnswerIds = ['c970a5cc-4047-4066-83c6-8beb1597f437']
-
-        // console.log("answerids", userAnswerIds)
-        const userVotes = await apiPost("/votes", {AnswerIds});
+        const answerIds = answers?.map(answer => answer.id)
+        const userVotes = await apiPost("votes", {AnswerIds : answerIds});
         return userVotes;
-
-
-
     }
 
     useEffect(() => {
-        getUsersVotes().then(votes => console.log("votes:", votes));
-        console.log(answers)
+        if(answers)
+        {
+            getUsersVotes().then(votes => setUserVotes(votes));
+        }
     }, [answers])
 
     return (
@@ -146,7 +136,7 @@ export default function UserPage({ users, categories, questions }) {
 
                 </div>
             </div>
-
+                    {userVotes && <RatioBar voteData={userVotes} displayNumberOfVotes={true} /> }        
         </div>
     )
 

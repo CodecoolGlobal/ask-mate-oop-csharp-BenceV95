@@ -65,7 +65,7 @@ export default function Vote({ voteData, user, answer, setFetchVotesAgain, isQue
 
     async function deleteVote() {
         try {
-            const response = await apiDelete(`/api/votes/delete/${usersVote.id}`);
+            const response = await apiDelete(`/votes/delete/${usersVote.id}`);
 
         } catch (error) {
             console.error("Error in request:", error);
