@@ -73,7 +73,7 @@ const AskQuestionForm = ({ categories }) => {
 
     return (
         <>
-            {user.isLoggedIn ?
+            {user ?
                 <>
                     {
                         !searching ?

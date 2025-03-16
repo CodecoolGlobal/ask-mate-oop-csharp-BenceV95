@@ -20,10 +20,11 @@ import { apiGet, apiPost } from './utils/api';
 import About from './Components/Pages/About/About';
 import PrivacyPolicy from './Components/Pages/Privacy/PrivacyPolicy';
 import Contact from './Components/Pages/Contact/Contact';
+import Profile from './Components/Pages/Profile/Profile';
 
 function App() {
 
-  const { user, refreshSession } = useContext(AuthContext);
+  const { user, setUser } = useContext(AuthContext);
 
   const [questions, setQuestions] = useState([]);
   const [users, setUsers] = useState([]);
@@ -38,9 +39,11 @@ function App() {
 
   async function loginUser(username, password) {
     try {
+      //comes back with user meta data
       const response = await apiPost('/User/login', { username, password });
-      console.log(response)
-      await refreshSession(); //not so elegant
+      console.log("resp", response)
+      sessionStorage.setItem("user", JSON.stringify(response));
+      setUser(response)
       navigate("/")
 
     } catch (error) {
@@ -50,13 +53,13 @@ function App() {
   }
 
 
-
   async function logOutUser() {
     try {
       const response = await apiPost("/User/logout")
+      sessionStorage.removeItem("user");
+      setUser(null);
       setResponseMessage(response)
       navigate("/")
-      await refreshSession(); //also, not elegant..
     } catch (error) {
       console.log("error", error)
       setResponseMessage("error during logout")
@@ -80,7 +83,7 @@ function App() {
       }
     };
 
-    if (user.isLoggedIn) {
+    if (user) {
       loadData();
     }
   }, []);
@@ -114,6 +117,7 @@ function App() {
           <Route path='/about' element={<About />} />
           <Route path='/privacy-policy' element={<PrivacyPolicy />} />
           <Route path='contact' element={<Contact />} />
+          <Route path='/profile' element={<Profile />} />
           <Route path='*' element={<Missing />} />
         </Routes>
       </main>

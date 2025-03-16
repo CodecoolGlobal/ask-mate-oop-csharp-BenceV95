@@ -8,6 +8,7 @@ import React from "react";
 import { AuthContext } from "../../AuthContext/AuthContext";
 import { apiGet, apiPost } from "../../../utils/api";
 import RatioBar from "../AnswerPage/RatioBar";
+import { Link } from "react-router-dom";
 
 
 
@@ -94,22 +95,17 @@ export default function UserPage({ users, categories, questions }) {
         }
     }, [answers])
 
+
+
+    function navigateToPrfile(){
+        rout
+    }
+
     return (
         <div className="userPageMainDiv">
-            <form action="">
-                <div className="inputFieldsDiv">
-                    <div className="usernameDiv">
-                        <label htmlFor="name">Username:</label>
-                        <input type="text" placeholder={user.username} name="name" id="name" />
-                    </div>
-                    <div className="emailDiv">
-                        <label htmlFor="email">Email:</label>
-                        <input type="email" placeholder={selectedUser.email} name="email" id="email" />
-                    </div>
-                </div>
-                <button type="submit">Save</button>
-                <button>Delete</button>
-            </form>
+            <Link to={"/profile"}>
+            <button className="btn btn-warning">Edit Profile</button>
+            </Link>
             <div className="questions-and-answers">
                 <div className="user-questions dropdown">
                     <button className="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">

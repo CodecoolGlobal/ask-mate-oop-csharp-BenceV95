@@ -7,7 +7,7 @@ export default function MainPage() {
     const { user } = React.useContext(AuthContext)
     return (
         <>
-            Hello, {user.username}.
+            Hello, {user?.username || "Guest"}.
         </>
     )
 }

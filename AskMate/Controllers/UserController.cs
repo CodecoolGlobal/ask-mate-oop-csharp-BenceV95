@@ -183,7 +183,8 @@ namespace AskMate.Controllers
                      {
                         new Claim(ClaimTypes.Name, user.Username),
                         new Claim(ClaimTypes.Role, userFromDb.Role),
-                        new Claim(ClaimTypes.NameIdentifier, userFromDb.Id)
+                        new Claim(ClaimTypes.NameIdentifier, userFromDb.Id),
+                        //new Claim(ClaimTypes.Email, userFromDb.Email)
                     };
 
                     // Create identity and principal
@@ -197,10 +198,10 @@ namespace AskMate.Controllers
                         ExpiresUtc = DateTime.UtcNow.AddMinutes(30)
                     });
 
-                    return Ok(new { Message = "Login successful" });
+                    return Ok(new { Username = user.Username, Email = userFromDb.Email, Role = userFromDb.Role, Id = userFromDb.Id }); //should make dedicated class in future
                 }
 
-                return Unauthorized(new { Message = "Invalid username or password" });
+                return Unauthorized(new { message = "Invalid username or password" });
 
             }
             catch (Exception ex)

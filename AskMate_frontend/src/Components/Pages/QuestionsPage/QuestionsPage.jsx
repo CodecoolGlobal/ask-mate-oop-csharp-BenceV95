@@ -54,7 +54,7 @@ export default function QuestionsPage({ questions, categories, setQuestions }) {
     */
     return (
         <>
-            {user.isLoggedIn ?
+            {user ?
                 <div className="mainDiv">
 
                     <div className="categoriesDiv">

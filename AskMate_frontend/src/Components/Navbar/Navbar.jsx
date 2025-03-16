@@ -26,10 +26,10 @@ const Navbar = ({ handleLogOut }) => {
               <li className="nav-item">
                 <a className="nav-link" href="/ask">Ask</a>
               </li>
-              {user.isAdmin && <li className="nav-item">
+              {user?.isAdmin && <li className="nav-item">
                 <a className="nav-link" href="/users">Users</a>
               </li>}
-              {user.isLoggedIn && //only display "profile" if the user is logged in"
+              {user && //only display "profile" if the user is logged in"
                 <li className="nav-item">
                   <a className="nav-link" href={`/users/${user.username}`}>{user.username}</a>
                 </li>
@@ -39,7 +39,7 @@ const Navbar = ({ handleLogOut }) => {
         </div>
         <div className="container-fluid justify-content-end">
           {
-            user.isLoggedIn ?
+            user ?
               <button
                 className="btn btn-danger"
                 onClick={(e) => handleLogOut(e)}
