@@ -57,9 +57,9 @@ function App() {
     try {
       const response = await apiPost("/User/logout")
       sessionStorage.removeItem("user");
+      navigate("/") // this doesnt seem to work unfortunatelly
       setUser(null);
       setResponseMessage(response)
-      navigate("/")
     } catch (error) {
       console.log("error", error)
       setResponseMessage("error during logout")

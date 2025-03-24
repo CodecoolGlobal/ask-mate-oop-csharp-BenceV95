@@ -6,18 +6,6 @@ export default function Profile() {
     const { user } = React.useContext(AuthContext)
 
 
-
-    function findUser(username) {
-        const user = users.find((user) => user.username === username);
-        return user ? user : {}
-    }
-
-
-    useEffect(() => { 
-        setSelectedUser(findUser(user.username))
-    }, [users])
-
-
     return (
         <div className="user-profile-main">
             <h4>Dear user,
@@ -32,11 +20,15 @@ export default function Profile() {
                     </div>
                     <div className="emailDiv">
                         <label htmlFor="email">Email:</label>
-                        <input type="email" placeholder={selectedUser.email} name="email" id="email" />
+                        <input type="email" placeholder={user.email} name="email" id="email" />
+                    </div>
+                    <div className="newPwDiv">
+                        <label htmlFor="newpw">New Password</label>
+                        <input type="text"  name="newpw" id="newpw" />
                     </div>
                 </div>
-                <button type="submit">Save</button>
-                <button>Delete</button>
+                <button className="btn btn-success" type="submit">Save</button>
+                <button className="btn btn-danger" >Delete Account</button>
             </form>
         </div>
     )
