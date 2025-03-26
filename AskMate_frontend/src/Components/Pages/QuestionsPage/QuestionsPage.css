@@ -17,7 +17,7 @@
     border: solid white 2px;
     border-radius: 10px;
     padding: 1rem;
-    width: 25%;
+    min-width: fit-content;
     max-width: 25dvw;
     max-height: 80dvh;
     overflow-y: scroll;
