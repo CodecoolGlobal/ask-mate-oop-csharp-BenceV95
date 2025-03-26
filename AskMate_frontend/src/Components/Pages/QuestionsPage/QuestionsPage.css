@@ -33,8 +33,6 @@
     overflow-y: auto;
     max-height: 80dvh;
     width: 50%;
-    scrollbar-width: none; /*hide scrollbar*/
-
 }
 
 .askAQuestionDiv {
