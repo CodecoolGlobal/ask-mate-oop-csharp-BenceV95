@@ -28,11 +28,11 @@ namespace AskMate.Controllers
             try
             {
                 _database.UpdateUser(id, userUpdate);
-                return Ok();
+                return Ok(new { message = "User successfully updated!" });
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { message = ex.Message });
             }
         }
 
@@ -46,7 +46,7 @@ namespace AskMate.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { message = ex.Message });
             }
         }
 
@@ -75,7 +75,15 @@ namespace AskMate.Controllers
         [HttpGet("allUsers")]
         public IActionResult GetUsers()
         {
-            return Ok(_database.GetAllUsers());
+            try
+            {
+                return Ok(_database.GetAllUsers());
+
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
         }
 
 
@@ -91,21 +99,36 @@ namespace AskMate.Controllers
 
                 return Ok(new { data.totalCount, data.users });
             }
-            catch (Exception e) { return BadRequest(e.Message); };
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            };
         }
 
 
 
 
         //session check
+        [Authorize]
         [HttpGet("session")]
-        [Authorize] // Requires the user to be authenticated
         public IActionResult ValidateSession()
         {
-            var username = User.Identity.Name; // Get the logged-in user's name
-            var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
-            var role = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
-            return Ok(new { IsLoggedIn = true, Username = username, Id = userId, Role = role });
+            try
+            {
+                var username = User.Identity.Name; // Get the logged-in user's name
+                var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+                var role = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
+                if (userId != null) // i dont think this is necessary since the endpoint is decorated with [Auth]
+                {
+                    return Ok(new { IsLoggedIn = true, Username = username, Id = userId, Role = role });
+                }
+                return Unauthorized(new { message = "User is not logged in!" });
+
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
         }
 
 
@@ -113,59 +136,93 @@ namespace AskMate.Controllers
         [HttpGet("/{id}/Points")]
         public IActionResult PointSystem(string id)
         {
-            if (_database.ValidUser(id))
+            try
             {
-                return Ok(_database.CalculateUserPoints(id));
+                if (_database.ValidUser(id)) // ?
+                {
+                    var points = _database.CalculateUserPoints(id);
+                    return Ok(new { points });
+                }
+                return NotFound(new { message = "This user does not exist." });
+
             }
-            return NotFound("This user does not exist.");
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
         }
 
         [Authorize]
         [HttpDelete("/users/{id}")]
         public IActionResult DeleteUser(string id)
         {
-            _database.DeleteUser(id);
-            return Ok();
+            try
+            {
+                _database.DeleteUser(id);
+                return Ok(new { message = "User succesfully deleted!" });
+
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+
+            }
         }
 
 
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginRequest user)
         {
-            // Validate credentials (replace with actual validation)
-            if (_database.AuthUser(user.Username, user.Password, out User userFromDb))
+            try
             {
-                Console.WriteLine("login");
-                // Create user claims
-                var claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.Name, user.Username),
-                new Claim(ClaimTypes.Role, userFromDb.Role),
-                new Claim(ClaimTypes.NameIdentifier, userFromDb.Id)
-            };
-
-                // Create identity and principal
-                var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-                var principal = new ClaimsPrincipal(identity);
-
-                // Sign in the user
-                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal, new AuthenticationProperties
+                // Validate credentials (replace with actual validation)
+                if (_database.AuthUser(user.Username, user.Password, out User userFromDb))
                 {
-                    IsPersistent = true, // Keep the cookie even after closing the browser
-                    ExpiresUtc = DateTime.UtcNow.AddMinutes(30)
-                });
+                    // Create user claims
+                    var claims = new List<Claim>
+                     {
+                        new Claim(ClaimTypes.Name, user.Username),
+                        new Claim(ClaimTypes.Role, userFromDb.Role),
+                        new Claim(ClaimTypes.NameIdentifier, userFromDb.Id),
+                        //new Claim(ClaimTypes.Email, userFromDb.Email)
+                    };
 
-                return Ok(new { Message = "Login successful" });
+                    // Create identity and principal
+                    var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                    var principal = new ClaimsPrincipal(identity);
+
+                    // Sign in the user
+                    await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal, new AuthenticationProperties
+                    {
+                        IsPersistent = true, // Keep the cookie even after closing the browser
+                        ExpiresUtc = DateTime.UtcNow.AddMinutes(30)
+                    });
+
+                    return Ok(new { Username = user.Username, Email = userFromDb.Email, Role = userFromDb.Role, Id = userFromDb.Id }); //should make dedicated class in future
+                }
+
+                return Unauthorized(new { message = "Invalid username or password" });
+
             }
-
-            return Unauthorized(new { Message = "Invalid username or password" });
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
         }
 
         [HttpPost("logout")]
         public async Task<IActionResult> Logout()
         {
-            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            return Ok(new { Message = "Logged out" });
+            try
+            {
+                await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+                return Ok(new { Message = "User succsefully logged out!" });
+
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
         }
     }
 }

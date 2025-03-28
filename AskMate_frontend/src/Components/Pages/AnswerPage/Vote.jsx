@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react"
 import "./Vote.css"
+import { apiDelete, apiPost, apiPut } from "../../../utils/api";
 
 export default function Vote({ voteData, user, answer, setFetchVotesAgain, isQuestionClosed }) {
     const [usersVote, setUsersVote] = useState(null);
@@ -40,19 +41,8 @@ export default function Vote({ voteData, user, answer, setFetchVotesAgain, isQue
 
     async function changeVote() {
         try {
-            const response = await fetch(`/api/vote/change/${usersVote.id}`, {
-                method: "PUT",
-                headers: {
-                    "Content-Type": "application/json", // Optional if the body is empty
-                }
-            });
+            const response = await apiPut(`/vote/change/${usersVote.id}`);
 
-            if (response.ok) {
-                console.log("Vote changed successfully!");
-            } else {
-                const errorText = await response.text();
-                console.error("Failed to change vote:", errorText);
-            }
         } catch (error) {
             console.error("Error in request:", error);
         }
@@ -60,40 +50,23 @@ export default function Vote({ voteData, user, answer, setFetchVotesAgain, isQue
 
 
     async function sendVote(likeOrDislike) {
-        const response = await fetch(`/api/vote`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                answerId: `${answer.id}`, //didnt work just as a template literal
+        try {
+            const response = await apiPost(`/vote`, {
+                answerId: `${answer.id}`,
                 userId: `${user.id}`,
                 isUseful: likeOrDislike
-            })
-        });
-        if (response.ok) {
-            console.log("like vote successfully sent!")
-        } else {
-            const errorText = await response.text();
-            throw new Error(`Error ${response.status}: ${errorText}`);
+            });
+
+        } catch (e) {
+            console.log(e);
         }
+
     }
 
     async function deleteVote() {
         try {
-            const response = await fetch(`/api/votes/delete/${usersVote.id}`, {
-                method: "DELETE",
-                headers: {
-                    "Content-Type": "application/json",
-                }
-            });
+            const response = await apiDelete(`/votes/delete/${usersVote.id}`);
 
-            if (response.ok) {
-                console.log("Vote deleted successfully!");
-            } else {
-                const errorText = await response.text();
-                console.error("Failed to delete vote:", errorText);
-            }
         } catch (error) {
             console.error("Error in request:", error);
         }

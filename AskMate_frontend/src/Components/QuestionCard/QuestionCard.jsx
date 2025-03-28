@@ -1,12 +1,12 @@
 import { Link } from "react-router-dom";
 import "./QuestionCard.css"
-
 export default function QuestionCard({ question, categories, user }) {
 
     const findCategoryNameById = (id) => {
         const result = categories.find(category => category.id == id);
         return result.name;
     }
+
 
     return (
         <div key={question.id} className="card">

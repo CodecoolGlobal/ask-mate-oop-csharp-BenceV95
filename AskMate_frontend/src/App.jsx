@@ -16,11 +16,15 @@ import AnswerPage from './Components/Pages/AnswerPage/AnswerPage';
 import UserPage from './Components/Pages/UserPage/UserPage';
 import Footer from './Components/Footer/Footer';
 import Missing from './Components/Pages/ErrorPage/Missing';
-
+import { apiGet, apiPost } from './utils/api';
+import About from './Components/Pages/About/About';
+import PrivacyPolicy from './Components/Pages/Privacy/PrivacyPolicy';
+import Contact from './Components/Pages/Contact/Contact';
+import Profile from './Components/Pages/Profile/Profile';
 
 function App() {
 
-  const { user, refreshSession } = useContext(AuthContext);
+  const { user, setUser } = useContext(AuthContext);
 
   const [questions, setQuestions] = useState([]);
   const [users, setUsers] = useState([]);
@@ -32,75 +36,41 @@ function App() {
 
   async function loginUser(username, password) {
     try {
-      const response = await fetch('/api/User/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: "include", // this is how you include cookies with the request
-        body: JSON.stringify({
-          username: username,
-          password: password
-        }),
-      });
+      //comes back with user meta data
+      const response = await apiPost('/User/login', { username, password });
+      console.log("resp", response)
+      sessionStorage.setItem("user", JSON.stringify(response));
+      setUser(response)
+      navigate("/")
 
-      const result = await response.json();
-      if (response.ok) {
-        await refreshSession(); //not so elegant
-        navigate("/");
-      } else {
-        throw new Error(result.message);
-      }
     } catch (error) {
        return error;
     };
   }
 
 
-
   async function logOutUser() {
     try {
-      const response = await fetch("/api/User/logout", {
-        method: "POST",
-        headers: {
-          "content-type": "application/json",
-        },
-        credentials: "include"
-      })
-      const result = await response.json();
-      if (response.ok) {
-        navigate("/")
-        await refreshSession(); //also, not elegant..
-      } else {
-        throw new Error("error during logout");
-      }
+      const response = await apiPost("/User/logout")
+      sessionStorage.removeItem("user");
+      navigate("/") // this doesnt seem to work unfortunatelly
+      setUser(null);
+      setResponseMessage(response)
     } catch (error) {
       console.log("error", error)
+      setResponseMessage("error during logout")
     }
   }
 
 
-
-  //basic data fetching function
-  async function fetchData(url) {
-    const response = await fetch(url, {
-      credentials: "include" //must include credidentials so the backend knows we are logged in!
-    })
-    if (response.ok) {
-      const data = await response.json();
-      return data;
-    } else {
-      throw new Error("Error during fetching data!")
-    }
-  }
 
   //fetch all necessary data
   useEffect(() => {
     const loadData = async () => {
       try {
-        const questions = await fetchData("/api/Question");
-        const fetchedUsers = await fetchData("/api/User/allUsers");
-        const categories = await fetchData("/api/categories");
+        const questions = await apiGet("/Question");
+        const fetchedUsers = await apiGet("/User/allUsers");
+        const categories = await apiGet("/categories");
         setCategories(categories);
         setUsers(fetchedUsers);
         setQuestions(questions);
@@ -109,11 +79,9 @@ function App() {
       }
     };
 
-    if (user.isLoggedIn) {
+    if (user) {
       loadData();
     }
-
-    //console.log("questions:1", questions)
   }, []);
 
 
@@ -138,10 +106,14 @@ function App() {
           <Route path="/register" element={<RegistrationForm navigate={navigate} />} />
           <Route path="/questions" element={<QuestionsPage questions={questions} categories={categories} setQuestions={setQuestions} />} />
           <Route path="/users" element={<UsersPage users={users} />} />
-          <Route path="/error" element={<ErrorPage />} />
+          <Route path="/unauthorized" element={<ErrorPage />} />
           <Route path="/ask" element={<AskQuestionForm categories={categories} />} />
-          <Route path="/questions/:id" element={<AnswerPage fetchData={fetchData} categories={categories} users={users} questions={questions} setQuestions={setQuestions}/>} />
+          <Route path="/questions/:id" element={<AnswerPage categories={categories} users={users} />} />
           <Route path="/users/:username" element={<UserPage questions={questions} categories={categories} users={users} />} />
+          <Route path='/about' element={<About />} />
+          <Route path='/privacy-policy' element={<PrivacyPolicy />} />
+          <Route path='contact' element={<Contact />} />
+          <Route path='/profile' element={<Profile />} />
           <Route path='*' element={<Missing />} />
         </Routes>
       </main>

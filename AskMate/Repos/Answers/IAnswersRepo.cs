@@ -1,4 +1,5 @@
 ﻿using AskMate.Models.Answers;
+using AskMate.Models.Users;
 
 namespace AskMate.Repos.Answers
 {
@@ -11,6 +12,7 @@ namespace AskMate.Repos.Answers
         public void AcceptAnswer(string answerId);
         public bool IsAnswerBelongToLoggedInUsersQuestion(string loggedInUserID, string answerId);
         public void DeleteAnswerByQuestionId(string id);
-        public List<Answer>? GetAllAnswersByQuestionId(string id);
+        public List<Answer>? GetAllAnswersByQuestionId(string id); //should return empty, never with null!
+        public List<Answer> GetAllAnswersByUserId(string userId);
     }
 }

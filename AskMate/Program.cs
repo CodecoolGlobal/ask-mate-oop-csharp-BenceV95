@@ -1,4 +1,3 @@
-using AskMate.Middleware;
 using AskMate.Repos;
 using AskMate.Repos.Answers;
 using AskMate.Repos.Categories;
@@ -30,14 +29,11 @@ app.UseRouting();
 //add authetication
 app.UseAuthentication();
 
-app.UseCorsMiddleware(); // change it to use proxy eventually !!!
 
 app.UseAuthorization();
 
 app.MapControllers();
 
-//built in cors
-app.UseCors("AllowFrontend");
 
 app.Run();
 
@@ -73,21 +69,18 @@ void AddOptionsToRegisteredServices()
     builder.Services.AddAuthentication("Cookies")
         .AddCookie("Cookies", options =>
         {
-            options.Cookie.Name = "UserAuthCookie"; // Name of the cookie
-            options.LoginPath = "/User/login";     // Redirect to login if unauthorized
-            options.AccessDeniedPath = "/User/denied"; // Redirect if access is denied
-            options.ExpireTimeSpan = TimeSpan.FromHours(1); // Expiration
+            options.Cookie.Name = "UserAuthCookie";              // Name of the cookie
+            options.Cookie.HttpOnly = true;                       // Protect from JavaScript access
+            options.Cookie.SameSite = SameSiteMode.Strict;          // Allow cross-origin cookies
+            options.Cookie.SecurePolicy = CookieSecurePolicy.None; // Use 'Always' if you have HTTPS
+            options.ExpireTimeSpan = TimeSpan.FromHours(1);       // Expiration time
+            options.SlidingExpiration = true;                     // Extend expiration on activity
+            options.Events.OnRedirectToLogin = context =>
+            {
+                context.Response.StatusCode = 401; // Avoid redirect, just return Unauthorized
+                return Task.CompletedTask;
+            };
+
         });
 
-    //built in cors -> change it to be a proxy !!!
-    builder.Services.AddCors(options =>
-    {
-        options.AddPolicy("AllowFrontend", policy =>
-        {
-            policy.WithOrigins("http://localhost:5173")
-                .AllowAnyHeader()
-                .AllowAnyMethod()
-                .AllowCredentials();
-        });
-    });
 }

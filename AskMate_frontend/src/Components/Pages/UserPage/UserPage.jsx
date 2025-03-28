@@ -1,9 +1,14 @@
 import { useParams } from "react-router-dom";
 import "./UserPage.css"
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import QuestionCard from "../../QuestionCard/QuestionCard";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import AnswerCard from "../../AnswerCard/AnswerCard";
+import React from "react";
+import { AuthContext } from "../../AuthContext/AuthContext";
+import { apiGet, apiPost } from "../../../utils/api";
+import RatioBar from "../AnswerPage/RatioBar";
+import { Link } from "react-router-dom";
 
 
 
@@ -12,6 +17,9 @@ import AnswerCard from "../../AnswerCard/AnswerCard";
 // display the ratio of ALL your answers being useful/unuseful
 
 
+//get all the users answers
+//get all the votes that are on the answers
+
 
 //todo: 
 // - fix the setAnswers (on mount the answers are not loaded)
@@ -19,10 +27,11 @@ import AnswerCard from "../../AnswerCard/AnswerCard";
 
 
 export default function UserPage({ users, categories, questions }) {
-    const { username } = useParams();
     const [answers, setAnswers] = useState(null);
-
+    const { user } = React.useContext(AuthContext)
+    
     const [selectedUser, setSelectedUser] = useState({});
+    const [userVotes, setUserVotes] = useState(null);
 
     function findUser(username) {
         const user = users.find((user) => user.username === username);
@@ -30,21 +39,20 @@ export default function UserPage({ users, categories, questions }) {
     }
 
 
-    useEffect(() => {
-        setSelectedUser(findUser(username))
+    useEffect(() => { 
+        setSelectedUser(findUser(user.username))
     }, [users])
 
 
-    //find out why answers dont load properly!
+ 
     useEffect(() => {
-        console.log("questions", questions)
-        getAllUserAnswers().then(answers => setAnswers(answers));
-        console.log("answers:", answers)
-    }, [questions])
+        if(selectedUser)
+        {
+            getAllUserAnswers().then(answers => setAnswers(answers));
+        }
+    }, [selectedUser]) 
 
-    useEffect(() => {
-        console.log("answers:", answers)
-    }, [answers])
+
 
     // for now it will filter on the frontend 
 
@@ -63,51 +71,47 @@ export default function UserPage({ users, categories, questions }) {
 
     async function getAllUserAnswers() {
         try {
-            const userQuestions = selectUsersQuestions(questions);
+            const data = await apiGet(`/Answer/all/byUserId/${selectedUser.id}`);
 
-            const responses = await Promise.all(
-                userQuestions.map(async (question) => {
-                    const response = await fetch(`http://localhost:5166/Answer/all/${question.id}`, {
-                        credentials: "include"
-                    });
-
-                    return await response.json();
-                })
-            );
-
-            return responses.flat();
+            return data;
 
         } catch (e) {
 
-            console.log(e)
+            console.log(e) 
         }
-    } 
+    }
 
 
+    async function getUsersVotes() {
+        const answerIds = answers?.map(answer => answer.id)
+        const userVotes = await apiPost("votes", {AnswerIds : answerIds});
+        return userVotes;
+    }
+
+    useEffect(() => {
+        if(answers)
+        {
+            getUsersVotes().then(votes => setUserVotes(votes));
+        }
+    }, [answers])
+
+
+
+    function navigateToPrfile(){
+        rout
+    }
 
     return (
         <div className="userPageMainDiv">
-            {username}
-            <form action="">
-                <div className="inputFieldsDiv">
-                    <div className="usernameDiv">
-                        <label htmlFor="name">Username:</label>
-                        <input type="text" placeholder={username} name="name" id="name" />
-                    </div>
-                    <div className="emailDiv">
-                        <label htmlFor="email">Email:</label>
-                        <input type="email" placeholder={selectedUser.email} name="email" id="email" />
-                    </div>
-                </div>
-                <button type="submit">Save</button>
-                <button>Delete</button>
-            </form>
+            <Link to={"/profile"}>
+            <button className="btn btn-warning">Edit Profile</button>
+            </Link>
             <div className="questions-and-answers">
                 <div className="user-questions dropdown">
-                    <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <button className="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                         Users Questions
                     </button>
-                    <ul class="dropdown-menu">
+                    <ul className="dropdown-menu">
                         {selectUsersQuestions(questions)?.map((question, index) =>
                             <li key={index} ><a className="dropdown-item" href={`http://localhost:5173/questions/${question.id}`} >  <QuestionCard withButtons={false} user={selectedUser} categories={categories} question={question} /></a></li>
 
@@ -116,10 +120,10 @@ export default function UserPage({ users, categories, questions }) {
 
                 </div>
                 <div className="user-answers dropdown">
-                    <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        Users Answers 
+                    <button className="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Users Answers
                     </button>
-                    <ul class="dropdown-menu">
+                    <ul className="dropdown-menu">
                         {answers?.map((answer, index) =>
                             <li key={index} ><a className="dropdown-item" href={`http://localhost:5173/questions/${answer.questionID}`}  >  <AnswerCard user={selectedUser} categories={categories} answer={answer} /></a></li>
 
@@ -128,7 +132,7 @@ export default function UserPage({ users, categories, questions }) {
 
                 </div>
             </div>
-
+                    {userVotes && <RatioBar voteData={userVotes} displayNumberOfVotes={true} /> }        
         </div>
     )
 

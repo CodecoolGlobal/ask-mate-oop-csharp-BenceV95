@@ -8,6 +8,7 @@ const Navbar = ({ handleLogOut }) => {
 
   const [isNavCollapsed, setIsNavCollapsed] = useState(true);
 
+
   const handleNavCollapse = () => setIsNavCollapsed(!isNavCollapsed);
   const closeNav = () => setIsNavCollapsed(true);
 

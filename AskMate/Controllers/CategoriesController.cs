@@ -17,49 +17,81 @@ namespace AskMate.Controllers
         [HttpPost()]
         public IActionResult CreateCategory([FromBody] Category request)
         {
-            var result = _database.CreateCategory(request.Name);
-            if (result)
+            try
             {
-                return Ok();
-            }
+                var result = _database.CreateCategory(request.Name);
+                if (result)
+                {
+                    return Ok(new { message = "Category created successfully!" });
+                }
 
-            return BadRequest(); // is it though ?
+                return BadRequest(new { message = "Couldnt create category!" }); // is it though ?
+
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
         }
 
         [HttpGet()]
         public IActionResult GetAllCategories()
         {
-            var result = _database.GetAllCategories();
-            if (result.Count > 0)
+            try
             {
-                return Ok(result);
-            }
+                var result = _database.GetAllCategories();
+                if (result.Count > 0)
+                {
+                    return Ok(result);
+                }
 
-            return BadRequest(); // is it though ?
+                return Ok(new List<string>()); //send an empty list back to avoid errors
+
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
         }
 
         [HttpDelete()]
         public IActionResult DeleteCategory(int id)
         {
-            var result = _database.DeleteCategory(id);
-            if (result)
-            {
-                return Ok();
-            }
 
-            return BadRequest(); // is it though ?
+            try
+            {
+                var result = _database.DeleteCategory(id);
+                if (result)
+                {
+                    return Ok(new { message = "Category deleted successfully!" });
+                }
+
+                return BadRequest(new { message = "Couldnt delete category!" }); // is it though ?
+
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
         }
 
         [HttpPatch()]
         public IActionResult UpdateCategory(int id, string name)
         {
-            var result = _database.UpdateCategory(id,name);
-            if (result)
+            try
             {
-                return Ok();
-            }
+                var result = _database.UpdateCategory(id, name);
+                if (result)
+                {
+                    return Ok(new { message = "Category updated successfully!" });
+                }
+                return BadRequest(new { message = "Couldnt update category!" }); // is it though ?
 
-            return BadRequest(); // is it though ?
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
         }
     }
 }

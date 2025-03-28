@@ -5,7 +5,7 @@ import Tags from "./Tags"
 import './QuestionsPage.css';
 import SearchDiv from "./SearchDiv";
 import QuestionCard from "../../QuestionCard/QuestionCard";
-import { use } from "react";
+import { apiGet } from "../../../utils/api";
 
 export default function QuestionsPage({ questions, categories, setQuestions }) {
 
@@ -16,7 +16,6 @@ export default function QuestionsPage({ questions, categories, setQuestions }) {
 
 
     useEffect(() => {
-
         if (selectedCategory === 0 && searchResult.length === 0) {
             //setFilteredQuestions(questions)
             console.log("no category, search");
@@ -30,17 +29,10 @@ export default function QuestionsPage({ questions, categories, setQuestions }) {
     const fetchQuestions = async (query) => {
 
         try {
-            const response = await fetch(`/api/Question/search?query=${encodeURIComponent(query)}`, {
-                method: 'GET',
-                credentials: "include"
-            });
+            const data = await apiGet(`/Question/search?query=${encodeURIComponent(query)}`);
+            setSearchResult(data);
 
-            if (response.ok) {
-                const data = await response.json();
-                setSearchResult(data);
-                console.log("search data: ", data);
 
-            }
         } catch (error) {
             console.log("fetch failed:", error);
         }
@@ -48,7 +40,7 @@ export default function QuestionsPage({ questions, categories, setQuestions }) {
 
     return (
         <>
-            {user.isLoggedIn ?
+            {user ?
                 <div className="mainDiv">
 
                     <div className="categoriesDiv">
@@ -74,7 +66,7 @@ export default function QuestionsPage({ questions, categories, setQuestions }) {
                     </div>
                 </div>
                 :
-                <Navigate to={"/error"} />
+                <Navigate to={"/unauthorized"} />
             }
         </>
     )

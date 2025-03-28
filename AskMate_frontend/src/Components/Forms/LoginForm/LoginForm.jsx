@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import './LoginForm.css';
 
 
-export default function LoginForm({ navigate, loginUser }) {
+export default function LoginForm({ loginUser }) {
 
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
