@@ -5,6 +5,7 @@ import React, { useState } from "react";
 const Navbar = ({ handleLogOut }) => {
 
   const { user } = React.useContext(AuthContext);
+  console.log("user", user)
 
   const [isNavCollapsed, setIsNavCollapsed] = useState(true);
 
@@ -37,19 +38,19 @@ const Navbar = ({ handleLogOut }) => {
               <li className="nav-item">
                 <Link className="nav-link" to="/ask" onClick={closeNav}>Ask</Link>
               </li>
-              {user.isLoggedIn && (
+              {user && (
                 <li className="nav-item">
                   <Link className="nav-link" to={`/users/${user.username}`} onClick={closeNav}>Profile</Link>
                 </li>
               )}
-              {user.isAdmin && (
+              {user?.role == "Admin" && (
                 <li className="nav-item">
                   <Link className="nav-link" to="/users" onClick={closeNav}>Users(Admin panel)</Link>
                 </li>)}
             </ul>
             <ul className="navbar-nav ms-auto">
               <li className="nav-item">
-                {user.isLoggedIn ? (
+                {user ? (
                   <button className="btn btn-danger" onClick={(e) => { handleLogOut(e); closeNav(); }}>
                     Log Out
                   </button>

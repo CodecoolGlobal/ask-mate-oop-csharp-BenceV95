@@ -12,7 +12,7 @@ export default function LoginForm({ loginUser }) {
     const handleSubmit = async (e) => {
         e.preventDefault();
         const response = await loginUser(username, password); // Call loginUser with form data        
-        setResponse(response.message);
+        setResponse("Successfully logged in!");
     };
 
 
