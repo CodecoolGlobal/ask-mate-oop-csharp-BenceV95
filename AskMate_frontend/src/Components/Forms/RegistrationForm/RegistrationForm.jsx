@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import './RegistrationForm.css';
 import { apiPost } from "../../../utils/api";
 
@@ -20,18 +20,22 @@ export default function RegistrationForm({ navigate }) {
         setResponseMessage("");
 
         try {
+            //return the id
             const response = await apiPost('/User', { username, email, password });
-
+           
             setResponseMessage('Registration successful!\nLog in below');
             setReg(true);
 
         } catch (error) {
             console.log(error);
             setReg(false);
-            setLoading(false);
             setError(true);
             setResponseMessage(error.message);
-        };
+        }
+        finally
+        {
+            setLoading(false);
+        }
     }
 
     return (

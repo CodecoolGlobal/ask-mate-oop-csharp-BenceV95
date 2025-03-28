@@ -11,5 +11,6 @@ namespace AskMate.Repos.Votes
         public void ChangeVote(int voteId);
         public void DeleteVote(int voteId);
 
+        float CalculateUserAnswersUsefulnessRatio(string userId);
     }
 }

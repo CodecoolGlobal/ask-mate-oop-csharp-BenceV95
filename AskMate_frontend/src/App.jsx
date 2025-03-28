@@ -29,33 +29,16 @@ function App() {
   const [users, setUsers] = useState([]);
   const [categories, setCategories] = useState([]);
 
-  const navigate = useNavigate();
-
-  console.log("users:", users);
-
-  async function loginUser(username, password) {
-    try {
-      //comes back with user meta data
-      const response = await apiPost("/User/login", { username, password });
-      console.log("resp", response);
-      sessionStorage.setItem("user", JSON.stringify(response));
-      setUser(response);
-      navigate("/");
-    } catch (error) {
-      return error;
-    }
-  }
+  const navigate = useNavigate();  
 
   async function logOutUser() {
     try {
       const response = await apiPost("/User/logout");
       sessionStorage.removeItem("user");
-      navigate("/"); // this doesnt seem to work unfortunatelly
       setUser(null);
-      setResponseMessage(response);
+      navigate("/");
     } catch (error) {
       console.log("error", error);
-      setResponseMessage("error during logout");
     }
   }
 
@@ -63,11 +46,12 @@ function App() {
   useEffect(() => {
     const loadData = async () => {
       try {
-        const questions = await apiGet("/Question");
-        const fetchedUsers = await apiGet("/User/allUsers");
+        // endpoint options: "/Question/filter?categoryId={int}&limit={0<l<1000}"
+        const questions = await apiGet("/Question/filter");
+        //const fetchedUsers = await apiGet("/User/allUsers");
         const categories = await apiGet("/categories");
         setCategories(categories);
-        setUsers(fetchedUsers);
+        //setUsers(fetchedUsers);
         setQuestions(questions);
       } catch (err) {
         console.log(err.message);
@@ -84,8 +68,6 @@ function App() {
     logOutUser();
   }
 
-  console.log("usersinApp", users);
-
   return (
     <>
       <Navbar handleLogOut={handleLogOut} />
@@ -95,7 +77,7 @@ function App() {
           <Route path="/" element={<MainPage />} />
           <Route
             path="/login"
-            element={<LoginForm navigate={navigate} loginUser={loginUser} />}
+            element={<LoginForm navigate={navigate}/>}
           />
           <Route
             path="/register"
@@ -136,7 +118,7 @@ function App() {
             }
           />
           <Route path="/profile" element={<Profile />} />
-          
+
           <Route path="*" element={<Missing />} />
         </Routes>
       </main>

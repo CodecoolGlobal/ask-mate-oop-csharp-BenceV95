@@ -43,7 +43,7 @@ const Navbar = ({ handleLogOut }) => {
                   <Link className="nav-link" to={`/users/${user.username}`} onClick={closeNav}>Profile</Link>
                 </li>
               )}
-              {user?.role == "Admin" && (
+              {user?.role == "admin" && (
                 <li className="nav-item">
                   <Link className="nav-link" to="/users" onClick={closeNav}>Users(Admin panel)</Link>
                 </li>)}

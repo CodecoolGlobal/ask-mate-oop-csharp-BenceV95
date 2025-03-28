@@ -23,11 +23,15 @@ public class QuestionController : ControllerBase
     }
 
     [AllowAnonymous] // remove this after testing !
-    [HttpGet("byCategoryWithLimit")]
+    [HttpGet("filter")]
     public IActionResult GetQuestions(int? categoryId, int limit = 10)
     {
         try
         {
+            if (limit < 1 || limit > 999)
+            {
+                throw new ArgumentException("Limit must be at least 1 and not over 1000");
+            }
             var questions = _database.GetQuestions(categoryId, limit);
             return Ok(questions);
         }

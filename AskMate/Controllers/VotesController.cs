@@ -2,6 +2,7 @@
 using AskMate.Repos;
 using AskMate.Repos.Votes;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace AskMate.Controllers
 {
@@ -72,6 +73,20 @@ namespace AskMate.Controllers
             }
         }
 
+        [HttpGet("/GetUsersAnswersUsefulnessRatio")]
+        public IActionResult GetUsersAnswersUsefulnessRatio()
+        {
+            try
+            {
+                var username = User.Identity.Name; // Get the logged-in user's name
+                var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
 
+                return Ok(_votesRepo.CalculateUserAnswersUsefulnessRatio(userId));
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new { Message = e.Message });
+            }
+        }
     }
 }

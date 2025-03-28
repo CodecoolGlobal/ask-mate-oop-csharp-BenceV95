@@ -26,48 +26,19 @@ import { Link, Navigate } from "react-router-dom";
 // - think abou where to set a delete button both on questions and answers (on the list, or on the dedicated page?)
 
 
-export default function UserPage({ users, categories, questions }) {
+export default function UserPage({ categories, questions }) {
     const [answers, setAnswers] = useState(null);
     const { user } = React.useContext(AuthContext)
     
-    const [selectedUser, setSelectedUser] = useState({});
     const [userVotes, setUserVotes] = useState(null);
-
-    function findUser(username) {
-        const user = users.find((user) => user.username === username);
-        return user ? user : {} //kinda weird: users takes some to load i guess, so when i try to find the right user, it gives back undefined, so i have to return something else it throws an error. But if i return an empty object, it works just fine
-    }
-
-
-    useEffect(() => { 
-        setSelectedUser(findUser(user?.username))
-    }, [users])
-
 
  
     useEffect(() => {
-        if(selectedUser)
+        if(user)
         {
             getAllUserAnswers().then(answers => setAnswers(answers));
         }
-    }, [selectedUser]) 
-
-
-
-    // for now it will filter on the frontend 
-
-
-
-    //TODO: finish the design! (the labels should start at the same "line", also the input fields should be the same size, start and end at the same width)
-
-    //on the backend there is  a method to delete users, but if the user posted questions, answers then he/she cannot be deleted! fix this: if u delete an user, the question/answer should remain, but be marked as post by: "deleted user" or something
-
-
-
-    function selectUsersQuestions(questions) {
-        return questions?.filter(question => question.userId === selectedUser.id);
-    }
-
+    }, [user]) 
 
     async function getAllUserAnswers() {
         try {
@@ -96,14 +67,9 @@ export default function UserPage({ users, categories, questions }) {
     }, [answers])
 
 
-
-    function navigateToPrfile(){
-        rout
-    }
-
     return (
         <>
-        {user?.role == "Admin" ? (
+        {user?.role == "admin" ? (
             <div className="userPageMainDiv">
             <Link to={"/profile"}>
             <button className="btn btn-warning">Edit Profile</button>

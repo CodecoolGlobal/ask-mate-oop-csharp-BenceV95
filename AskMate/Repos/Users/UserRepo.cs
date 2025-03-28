@@ -28,6 +28,7 @@ namespace AskMate.Repos
 
                 var command = new NpgsqlCommand("SELECT * FROM users WHERE username = :nameOrEmail OR email_address = :nameOrEmail", connection);
                 command.Parameters.AddWithValue(":nameOrEmail", nameOrEmail);
+
                 using var reader = command.ExecuteReader();
                 {
                     while (reader.Read())
@@ -36,7 +37,8 @@ namespace AskMate.Repos
                         {
                             Id = reader.GetString(reader.GetOrdinal("id")),
                             Username = reader.GetString(reader.GetOrdinal("username")),
-                            Email = reader.GetString(reader.GetOrdinal("email_address"))
+                            Email = reader.GetString(reader.GetOrdinal("email_address")),
+                            Role = reader.GetBoolean(reader.GetOrdinal("isadmin")) ? "admin" : "user"
                         };
                     }
                 }
@@ -223,7 +225,10 @@ namespace AskMate.Repos
             var hashedPW = Utils.HashPasword(password, out byte[] salt);
 
             using var command = new NpgsqlCommand(
-                "INSERT INTO users (id, username, email_address, reg_time, password, salt) VALUES (:id, :username, :email_address, :reg_time, :password, :salt) RETURNING id", connection);
+                @"INSERT INTO users
+                (id, username, email_address, reg_time, password, salt)
+                VALUES (:id, :username, :email_address, :reg_time, :password, :salt)
+                RETURNING id", connection);
 
             command.Parameters.AddWithValue(":id", generatedID);
             command.Parameters.AddWithValue(":username", username);
@@ -259,7 +264,9 @@ namespace AskMate.Repos
 
             connection.Open();
 
-            using var adapter = new NpgsqlDataAdapter("SELECT * FROM users WHERE username = :usernameOrEmail OR email_address = :usernameOrEmail ", connection);
+            using var adapter = new NpgsqlDataAdapter(
+                @"SELECT * FROM users
+                                WHERE username = :usernameOrEmail OR email_address = :usernameOrEmail ", connection);
 
             adapter.SelectCommand?.Parameters.AddWithValue(":usernameOrEmail", usernameOrEmail);
 
@@ -275,7 +282,9 @@ namespace AskMate.Repos
                 var storedSalt = (byte[])row["salt"];
                 var userID = (string)row["id"];
                 var isAdmin = (bool)row["isAdmin"];
-                user = new() { Id = userID, Role = isAdmin ? "admin" : "user" };
+                var username = (string)row["username"];
+                var email = (string)row["email_address"];
+                user = new() { Id = userID, Role = isAdmin ? "admin" : "user", Username = username, Email = email};
 
                 return Utils.VerifyPassword(password, storedHash, storedSalt);
             }

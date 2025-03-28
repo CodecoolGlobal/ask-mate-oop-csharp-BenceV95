@@ -180,7 +180,7 @@ namespace AskMate.Repos
         // gets questions based on category with an optional limit which is by default 10
         public List<Question> GetQuestions(int? categoryId, int limit)
         {
-            Console.WriteLine($"categoryId: {categoryId} , limit: {limit}");
+
             using var connection = new NpgsqlConnection(_connectionString);
             connection.Open();
             string command = $"SELECT * FROM questions ORDER BY post_date DESC LIMIT {limit}";

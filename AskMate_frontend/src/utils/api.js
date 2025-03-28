@@ -49,8 +49,8 @@ export async function apiPost(endpoint, data) {
     });
 
     if (!response.ok) {
-         const ad = await response.json()
-        console.log("error msg", ad.message);
+        const ad = await response.json()
+        //console.log("error msg", ad.message);
         throw new Error(ad.message);
     }
 

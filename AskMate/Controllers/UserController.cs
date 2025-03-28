@@ -181,7 +181,7 @@ namespace AskMate.Controllers
                     // Create user claims
                     var claims = new List<Claim>
                      {
-                        new Claim(ClaimTypes.Name, user.Username),
+                        new Claim(ClaimTypes.Name, userFromDb.Username),
                         new Claim(ClaimTypes.Role, userFromDb.Role),
                         new Claim(ClaimTypes.NameIdentifier, userFromDb.Id),
                         //new Claim(ClaimTypes.Email, userFromDb.Email)
@@ -198,7 +198,7 @@ namespace AskMate.Controllers
                         ExpiresUtc = DateTime.UtcNow.AddMinutes(30)
                     });
 
-                    return Ok(new { Username = user.Username, Email = userFromDb.Email, Role = userFromDb.Role, Id = userFromDb.Id }); //should make dedicated class in future
+                    return Ok(new { Username = userFromDb.Username, Email = userFromDb.Email, Role = userFromDb.Role, Id = userFromDb.Id }); //should make dedicated class in future
                 }
 
                 return Unauthorized(new { message = "Invalid username or password" });
