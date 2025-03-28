@@ -177,5 +177,39 @@ namespace AskMate.Repos
             return question;
         }
 
+        // gets questions based on category with an optional limit which is by default 10
+        public List<Question> GetQuestions(int? categoryId, int limit)
+        {
+            Console.WriteLine($"categoryId: {categoryId} , limit: {limit}");
+            using var connection = new NpgsqlConnection(_connectionString);
+            connection.Open();
+            string command = $"SELECT * FROM questions ORDER BY post_date DESC LIMIT {limit}";
+            if (categoryId != null)
+            {
+                command = $"SELECT * FROM questions WHERE categories = {categoryId} ORDER BY post_date DESC LIMIT {limit}";
+            }
+            using var adapter = new NpgsqlDataAdapter(command, connection);
+
+            var dataSet = new DataSet();
+            adapter.Fill(dataSet);
+            var table = dataSet.Tables[0];
+
+            var queryResult = new List<Question>();
+            foreach (DataRow row in table.Rows)
+            {
+                queryResult.Add(new Question()
+                    {
+                        ID = (string)row["id"],
+                        UserId = (string)row["user_id"],
+                        Title = (string)row["title"],
+                        Body = (string)row["body"],
+                        PostDate = (DateTime)row["post_date"],
+                        Categories = (int)row["categories"],
+                        RelatedAnswerCount = GetNumberOfRelatedAnswersByQuestionId((string)row["id"])
+                    }
+                );
+            }
+            return queryResult;
+        }
     }
 }

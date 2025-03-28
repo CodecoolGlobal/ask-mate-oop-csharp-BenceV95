@@ -63,7 +63,7 @@ namespace AskMate.Controllers
             {
                 var result = _database.CreateUser(request.Username, request.Email, request.Password);
 
-                return Ok(result);
+                return Ok(new {message = result });
 
             }
             catch (Exception ex)

@@ -32,9 +32,6 @@ function App() {
 
   const navigate = useNavigate();
 
-  function setResponseMessage(message) {
-    console.log(message);
-  }
   console.log("users:", users)
 
   async function loginUser(username, password) {
@@ -47,8 +44,7 @@ function App() {
       navigate("/")
 
     } catch (error) {
-      console.error('Error:', error);
-      setResponseMessage('An error occurred while logging in.');
+       return error;
     };
   }
 

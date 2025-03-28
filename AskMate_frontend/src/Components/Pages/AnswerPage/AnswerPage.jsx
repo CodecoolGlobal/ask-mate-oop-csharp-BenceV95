@@ -5,16 +5,19 @@ import "./AnswerPage.css";
 import { AuthContext } from '../../AuthContext/AuthContext';
 import Answers from "./Answers";
 import { apiGet, apiPost } from "../../../utils/api";
+import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
-const AnswerPage = ({ fetchData, categories, users }) => {
+const AnswerPage = ({ fetchData, categories, users, questions, setQuestions }) => {
     const { user } = useContext(AuthContext);
-
+    let navigate = useNavigate();
     const { id } = useParams(); // Destructure the `id` from the URL
     const [questionData, setQuestionData] = useState(null);
     const [answerBody, setAnswerBody] = useState("");
     const [answers, setAnswers] = useState([]);
     const [fetchAgain, setFetchAgain] = useState(false);
     const [isQuestionClosed, setIsQuestionClosed] = useState(false);
+    const [isQuestionDeleting, setIsQuestionDeleting] = useState(false);
 
     useEffect(() => {
         const fetchQuestion = async () => {
@@ -95,17 +98,83 @@ const AnswerPage = ({ fetchData, categories, users }) => {
         return user ? user.username : "Anonym";
     }
 
+    const deleteQuestion = async (id) => {
+        setIsQuestionDeleting(true);
+        try {
+            const response = await fetch(`/api/Answer/all/${id}`, {
+                method: 'DELETE',
+                credentials: "include"
+            });
+
+            if (response.ok) {
+                try {
+
+                    const response = await fetch(`/api/Question/${id}`, {
+                        method: 'DELETE',
+                        credentials: "include"
+                    });
+
+                    if (!response.ok) {
+                        throw new Error("Network response was not ok!");
+                    }
+                } catch (error) {
+                    console.log(error)
+                }
+            }
+            
+            const questionsCopy = [...questions];
+            const deletedQuestionFilteredOut = questionsCopy.filter(q => q.id != id);
+            setQuestions(deletedQuestionFilteredOut);
+
+            setIsQuestionDeleting(false);
+            navigate("/",{replace:true, forceRefresh:true});
+            alert("Question deleted successfully");
+        } catch (error) {
+            console.log("delete failed:", error);
+        }
+    }
+
     return (
         <>
             {questionData != null ?
                 <div className="mainAnswerDiv">
+                    {
+                        questionData.userId === user.id && (
+                            <div className="container border border-2 border-white rounded p-2">
+                                <h1>Question Actions</h1>
+                                <div className="d-flex gap-2 flex-row justify-content-around">
+                                    <button className="btn btn-warning" onClick={() => alert("Not implemented yet")}>Edit Question</button>
+                                    {isQuestionDeleting ?
+                                        (<button className="btn btn-danger" disabled>
+                                            <span className="spinner-border spinner-border-sm" aria-hidden="true"></span>
+                                            <span role="status">Loading...</span>
+                                        </button>)
+                                        :
+                                        <button
+                                            className="btn btn-danger"
+                                            id={questionData.id}
+                                            onClick={(e) => deleteQuestion(e.target.id)}
+                                        >Delete Question</button>
+                                    }
+                                </div>
+                            </div>
+                        )
+                    }
 
-                    <div className="questionDetailsDiv">
-                        {isQuestionClosed && (<h1>[Question Closed]</h1>)}
-                        <span>{getUsernameById(questionData.userId)}'s Question:</span>
+
+                    <div className="container border border-2 border-white rounded">
+
+                        <div className="d-flex justify-content-between border-2 border-white border-bottom">
+                            <span>👑 {getUsernameById(questionData.userId)}'s Question</span>
+                            <span>Category: {findCategoryNameById(questionData.categories)}</span>
+                        </div>
+                        {isQuestionClosed && (<h1 style={{ color: "#28a745" }}>[Question Closed]</h1>)}
                         <h1>{questionData.title}</h1>
-                        <h3>{questionData.body}</h3>
-                        <h4>Category: {findCategoryNameById(questionData.categories)}</h4>
+                        <p>{questionData.body}</p>
+                        <div className="d-flex justify-content-between border-2 border-white border-top">
+                            <span>{convertDate(questionData.postDate)}</span>
+                            <span>Answers: {answers.length}</span>
+                        </div>
                     </div>
 
                     <form onSubmit={(e) => handleSubmit(e)} className="answerForm">

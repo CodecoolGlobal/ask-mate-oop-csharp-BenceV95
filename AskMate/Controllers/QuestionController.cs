@@ -9,6 +9,7 @@ using AskMate.Models.Questions;
 
 namespace AskMate.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("[controller]")]
 public class QuestionController : ControllerBase
@@ -21,7 +22,22 @@ public class QuestionController : ControllerBase
         _database = database;
     }
 
-    [Authorize]
+    [AllowAnonymous] // remove this after testing !
+    [HttpGet("byCategoryWithLimit")]
+    public IActionResult GetQuestions(int? categoryId, int limit = 10)
+    {
+        try
+        {
+            var questions = _database.GetQuestions(categoryId, limit);
+            return Ok(questions);
+        }
+        catch (Exception e)
+        {
+            return BadRequest(new {Message = e.Message});
+        }
+    }
+
+    
     [HttpGet()]
     public IActionResult GetAllQuestion()
     {
@@ -37,7 +53,7 @@ public class QuestionController : ControllerBase
     }
 
 
-    [Authorize]
+    
     [HttpGet("{id}")]
     public async Task<IActionResult> GetQuestion(string id)
     {
@@ -53,7 +69,7 @@ public class QuestionController : ControllerBase
         }
     }
 
-    [Authorize]
+    
     [HttpPost()]
     public IActionResult CreateQuestion([FromBody] Question question)
     {
@@ -71,7 +87,7 @@ public class QuestionController : ControllerBase
         }
     }
 
-    [Authorize]
+    
     [HttpDelete("{id}")]
     public IActionResult DeleteQuestion(string id)
     {
@@ -87,7 +103,7 @@ public class QuestionController : ControllerBase
         }
     }
 
-    [Authorize]
+    
     [HttpGet("search")]
     public IActionResult Search([FromQuery] string query)
     {
