@@ -1,59 +1,66 @@
-import LoginForm from "../Forms/LoginForm/LoginForm";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../AuthContext/AuthContext";
-import React from "react";
-import { Button } from "bootstrap";
+import React, { useState } from "react";
 
 const Navbar = ({ handleLogOut }) => {
 
-  const { user } = React.useContext(AuthContext)
+  const { user } = React.useContext(AuthContext);
 
+  const [isNavCollapsed, setIsNavCollapsed] = useState(true);
 
-  console.log("inNavbar", user)
+  const handleNavCollapse = () => setIsNavCollapsed(!isNavCollapsed);
+  const closeNav = () => setIsNavCollapsed(true);
+
+  //console.log("inNavbar", user)
 
   return (
     <>
-      <nav className="navbar mb-2 navbar-expand-sm bg-primary text-white">
+      <nav className="navbar navbar-expand-sm bg-primary text-white">
         <div className="container-fluid">
-          <a className="navbar-brand" href="/">AskApe</a>
-          <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <Link className="navbar-brand" to="/">AskApe</Link>
+          <button
+            className="navbar-toggler"
+            type="button"
+            onClick={handleNavCollapse}
+            aria-controls="navbarSupportedContent"
+            aria-expanded={!isNavCollapsed}
+            aria-label="Toggle navigation"
+          >
             <span className="navbar-toggler-icon"></span>
           </button>
-          <div className="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul className="navbar-nav">
+          <div className={`collapse navbar-collapse ${isNavCollapsed ? "" : "show"}`} id="navbarSupportedContent">
+            <ul className="navbar-nav me-auto">
               <li className="nav-item">
-                <a className="nav-link" href="/questions">Questions</a>
+                <Link className="nav-link" to="/questions" onClick={closeNav}>Questions</Link>
               </li>
               <li className="nav-item">
-                <a className="nav-link" href="/ask">Ask</a>
+                <Link className="nav-link" to="/ask" onClick={closeNav}>Ask</Link>
               </li>
-              {user.isAdmin && <li className="nav-item">
-                <a className="nav-link" href="/users">Users</a>
-              </li>}
+              {user.isLoggedIn && (
+                <li className="nav-item">
+                  <Link className="nav-link" to={`/users/${user.username}`} onClick={closeNav}>Profile</Link>
+                </li>
+              )}
+              {user.isAdmin && (
+                <li className="nav-item">
+                  <Link className="nav-link" to="/users" onClick={closeNav}>Users(Admin panel)</Link>
+                </li>)}
+            </ul>
+            <ul className="navbar-nav ms-auto">
               <li className="nav-item">
-                <a className="nav-link" href={`/users/${user.username}`}>{user.username}</a>
+                {user.isLoggedIn ? (
+                  <button className="btn btn-danger" onClick={(e) => { handleLogOut(e); closeNav(); }}>
+                    Log Out
+                  </button>
+                ) : (
+                  <Link className="btn btn-success" to="/login" onClick={closeNav}>
+                    Login
+                  </Link>
+                )}
               </li>
             </ul>
+
           </div>
-        </div>
-        <div className="container-fluid justify-content-end">
-          {
-            user.isLoggedIn ?
-              <button
-                className="btn btn-danger"
-                onClick={(e) => handleLogOut(e)}
-              >
-                Log Out
-              </button>
-              :
-              <Link
-                className="btn btn-success"
-                to={"/login"}
-                href="#"
-              >
-                Login
-              </Link>
-          }
         </div>
       </nav>
     </>

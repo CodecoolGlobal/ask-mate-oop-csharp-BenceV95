@@ -1,18 +1,8 @@
-.register {
-    display: flex;
-    flex-direction: column;
-    justify-self: center;
-    align-self: center;
-    border: solid white 2px;
-    border-radius: 10px;
-    padding: 1rem;
-    max-width: 34dvw;
-    width: fit-content;
-    gap: 0.1rem;
-    margin-top: calc(30dvh);
+.register-container {
+    max-width: 576px; /* Adjust the max-width as needed */
+    margin: 0 auto; /* Center the container */
 }
 
-input {
-    border-radius: 5px;
-    text-align: center;
+.register-container input:disabled{ 
+    background-color: #646464;
 }

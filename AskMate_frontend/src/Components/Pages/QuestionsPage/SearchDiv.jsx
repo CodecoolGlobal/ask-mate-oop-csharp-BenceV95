@@ -25,7 +25,9 @@ export default function SearchDiv({ onSearch }) {
                 type="text"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                placeholder="Search..." />
+                placeholder="Search..." 
+                required 
+            />
             <button className="btn btn-success m-1" type="submit">Search</button>
         </form>
     )

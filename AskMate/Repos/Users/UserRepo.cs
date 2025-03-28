@@ -18,7 +18,7 @@ namespace AskMate.Repos
         }
 
 
-        public User GetUserByNameOrEmail(string nameOrEmail)
+        public User? GetUserByNameOrEmail(string nameOrEmail)
         {
             User user = null;
 
@@ -45,7 +45,6 @@ namespace AskMate.Repos
             return user;
         }
 
-
         public void UpdateUser(string id, UserUpdateRequest updateRequest)
         {
             using var connection = new NpgsqlConnection(_connectionString);
@@ -60,8 +59,6 @@ namespace AskMate.Repos
 
             }
         }
-
-
 
         //using tuple
         public (List<User> users, int totalCount) GetUsersPaginated(int pageNumber, int limit)
@@ -104,9 +101,6 @@ namespace AskMate.Repos
             }
             return (users, totalCount);
         }
-
-
-
 
         public List<User> GetAllUsers()
         {
@@ -206,7 +200,18 @@ namespace AskMate.Repos
         // this creates a new user in the database with given username, email and password. The pw is hashed, salted
         public object? CreateUser(string username, string email, string password)
         {
-            // TODO: if user registers with the same details then need to return info that user with that username/email is already registered !
+            
+            var checkForUserAlreadyRegisteredByUsername = GetUserByNameOrEmail(username);
+            if (checkForUserAlreadyRegisteredByUsername != null)
+            {
+                throw new Exception("Username is already taken !");
+            }
+
+            var checkForUserAlreadyRegisteredByEmail = GetUserByNameOrEmail(email);
+            if (checkForUserAlreadyRegisteredByEmail != null)
+            {
+                throw new Exception("Email is already in use !");
+            }
 
             using var connection = new NpgsqlConnection(_connectionString);
 

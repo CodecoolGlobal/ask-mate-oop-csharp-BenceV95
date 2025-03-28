@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from "react"
 import { AuthContext } from "../../AuthContext/AuthContext"
-import { Navigate } from "react-router-dom"
+import { Navigate, Link } from "react-router-dom"
 import Tags from "./Tags"
 import './QuestionsPage.css';
 import SearchDiv from "./SearchDiv";
@@ -10,22 +10,21 @@ import { use } from "react";
 export default function QuestionsPage({ questions, categories, setQuestions }) {
 
     const { user } = useContext(AuthContext)
-    const [selectedCategory, setSelectedCategory] = useState(0);
-    const [filteredQuestions, setFilteredQuestions] = useState([]);
-    const [searchResult, setSearchResult] = useState([]);
 
+    const [searchResult, setSearchResult] = useState([]);
+    const [selectedCategory, setSelectedCategory] = useState(0);
 
 
     useEffect(() => {
-        if (selectedCategory === 0 && searchResult.length === 0) {
-            setFilteredQuestions(questions)
-        } else {
-            //const filteredByTag = filterQuestionsByTag(selectedCategory);            
-            //setFilteredQuestions(filteredByTag)
-            setFilteredQuestions(searchResult);
-            console.log("search updated");
 
+        if (selectedCategory === 0 && searchResult.length === 0) {
+            //setFilteredQuestions(questions)
+            console.log("no category, search");
+            
+        } else {            
+            console.log("search updated ", selectedCategory);
         }
+
     }, [questions, selectedCategory, searchResult]);
 
     const fetchQuestions = async (query) => {
@@ -47,21 +46,6 @@ export default function QuestionsPage({ questions, categories, setQuestions }) {
         }
     }
 
-
-
-    const filterQuestionsByTag = (id) => {
-        if (id === 0) {
-            return questions;
-        }
-        const filtered = questions.filter((question) => question.categories === id);
-        console.log(filtered);
-        return filtered;
-    }
-    /* 
-    The plan is to use media query breakpoints
-    so that the website looks appealing and has great ratios
-    for all screens. ask a mentor for help.
-    */
     return (
         <>
             {user.isLoggedIn ?
@@ -70,18 +54,22 @@ export default function QuestionsPage({ questions, categories, setQuestions }) {
                     <div className="categoriesDiv">
                         <Tags
                             categories={categories}
-                            selector={setSelectedCategory}
-                            filter={filterQuestionsByTag}
+                            selector={setSelectedCategory}                            
                         />
                     </div>
                     <div className="questionsDiv">
-                        {filteredQuestions.length > 0 ? filteredQuestions.map(question => {
-                            return <QuestionCard withButtons={true} user={user} categories={categories} question={question}></QuestionCard>
-                        }) : "No Question in this category yet!"}
+                        {questions.map((question,i) => {
+                            return <QuestionCard
+                                key={i} // so it stops complaining even though it is set under the component...
+                                user={user}
+                                categories={categories}
+                                question={question}
+                            />
+                        })}
                     </div>
 
                     <div className="askAQuestionDiv">
-                        <a className="btn btn-warning" href="/ask">Ask a Question</a>
+                        <Link className="btn btn-warning" to="/ask">Ask a Question</Link>
                         <SearchDiv onSearch={fetchQuestions} />
                     </div>
                 </div>
