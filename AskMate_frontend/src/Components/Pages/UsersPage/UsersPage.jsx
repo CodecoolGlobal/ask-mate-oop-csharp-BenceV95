@@ -12,10 +12,10 @@ export default function UsersPage() {
 
     return (
         <>
-            {user.isAdmin ?
+            {user?.role == "Admin" ?
                 <><SearchUser setSelectedUser={setSelectedUser} />
                     {selectedUser === null ? <PaginatedUsers /> : <UserCard user={selectedUser}/>}
-                </> : <Navigate to={"/error"} />}
+                </> : <Navigate to={"/unauthorized"} />}
         </>
     )
 }

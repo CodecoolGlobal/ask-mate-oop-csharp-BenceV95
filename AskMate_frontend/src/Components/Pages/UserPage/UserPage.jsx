@@ -8,7 +8,7 @@ import React from "react";
 import { AuthContext } from "../../AuthContext/AuthContext";
 import { apiGet, apiPost } from "../../../utils/api";
 import RatioBar from "../AnswerPage/RatioBar";
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 
 
 
@@ -40,7 +40,7 @@ export default function UserPage({ users, categories, questions }) {
 
 
     useEffect(() => { 
-        setSelectedUser(findUser(user.username))
+        setSelectedUser(findUser(user?.username))
     }, [users])
 
 
@@ -102,7 +102,9 @@ export default function UserPage({ users, categories, questions }) {
     }
 
     return (
-        <div className="userPageMainDiv">
+        <>
+        {user?.role == "Admin" ? (
+            <div className="userPageMainDiv">
             <Link to={"/profile"}>
             <button className="btn btn-warning">Edit Profile</button>
             </Link>
@@ -134,6 +136,12 @@ export default function UserPage({ users, categories, questions }) {
             </div>
                     {userVotes && <RatioBar voteData={userVotes} displayNumberOfVotes={true} /> }        
         </div>
+        ) : (
+            <Navigate to={"/unauthorized"} />
+        )}
+        
+        
+        </>
     )
 
 }
