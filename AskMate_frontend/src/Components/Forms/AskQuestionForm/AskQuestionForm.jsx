@@ -1,15 +1,15 @@
 
-import './AskQuestionForm.css';
+//import './AskQuestionForm.css';
 import React, { useState, useContext } from 'react';
 import { AuthContext } from '../../AuthContext/AuthContext';
-import { Navigate } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
 import { apiGet, apiPost } from '../../../utils/api';
 
 const AskQuestionForm = ({ categories }) => {
 
 
   const { user } = useContext(AuthContext)
-  console.log("user", user);
+  const navigate = useNavigate();
 
   // ask question second
   const [selectedCategory, setSelectedCategory] = useState(0);
@@ -67,6 +67,7 @@ const AskQuestionForm = ({ categories }) => {
       setSelectedCategory(0);
       setShowNewlyPostedQuestion(true)
 
+      navigate(`/questions/${questiondId}`);
     } catch (error) {
       console.log(error);
       setResponseMessage(error.message);
@@ -126,7 +127,7 @@ const AskQuestionForm = ({ categories }) => {
                   <h3>Search Results</h3>
                   {searchResult.length === 0 ? (
                     <div>
-                      <p>Seems like no question has been found.</p>
+                      <p>Seems like you have a unique question which has not been asked until now!</p>
                     </div>
                   ) : (
                     searchResult.map((result) => (

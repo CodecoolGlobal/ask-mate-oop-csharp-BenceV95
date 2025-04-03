@@ -4,14 +4,12 @@ using AskMate.Repos.Categories;
 using AskMate.Repos.Questions;
 using AskMate.Repos.Users;
 using AskMate.Repos.Votes;
+using Npgsql;
 
 var builder = WebApplication.CreateBuilder(args);
 
-
-string CONNECTIONSTRING = Environment.GetEnvironmentVariable("CONNECTION_STRING");
-
-builder.Services.AddSingleton<string>(sp => CONNECTIONSTRING + "ask_mate;"+ "Pooling=true;"); // db_name + pooling
-
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+builder.Services.AddSingleton<string>(sp => connectionString);
 
 RegisterServices();
 AddOptionsToRegisteredServices();
