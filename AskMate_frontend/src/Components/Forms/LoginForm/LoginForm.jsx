@@ -8,67 +8,110 @@ export default function LoginForm({ navigate }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [response, setResponse] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [loggedIn, setLoggedIn] = useState(false);
 
-  const {setUser} = useContext(AuthContext);
+  const { user, setUser } = useContext(AuthContext);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
+    setLoggedIn(false);
 
     try {
-        const response = await apiPost("User/login", { username, password });
-        console.log("resp", response);
-        sessionStorage.setItem("user", JSON.stringify(response));
-        setUser(response);
-        navigate("/");
+      const response = await apiPost("User/login", { username, password });
+      sessionStorage.setItem("user", JSON.stringify(response));
+      setUser(response);
+      setLoggedIn(true);
+      setResponse("Succesfully logged in !");
+
     } catch (error) {
-        setResponse(error.message);        
+      setResponse(error.message);
+    }
+    finally {
+      setLoading(false);
+      if (loggedIn) {
+        setTimeout(() => {
+          navigate("/");
+        }, 1000);
+      }
     }
   };
 
   return (
-    <div className="custom-container border border-white rounded p-3">
-      <form onSubmit={handleSubmit}>
-        <div className="mb-3">
-          <label htmlFor="Email" className="form-label">
-            Email address / Username
-          </label>
-          <input
-            type="text"
-            className="form-control"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            placeholder="Username / Email"
-            required
-            minLength={3}
-          />
-        </div>
-        <div className="mb-3">
-          <label htmlFor="Password" className="form-label">
-            Password
-          </label>
-          <input
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="Password"
-            type="password"
-            className="form-control"
-            required
-            minLength={6}
-            maxLength={24}
-          />
-        </div>
-        <button type="submit" className="btn btn-success">
-          Login
-        </button>
-      </form>
-      <div className="container mt-3">
-        <p style={{ color: "red" }}>{response}</p>
-      </div>
-      <div className="container mt-5">
-        <Link to="/register" className="btn btn-primary">
-          Don't have an account?
-        </Link>
-      </div>
-    </div>
+    <>
+      {
+        user ?
+          (navigate("/")) :
+          (
+            <div className="custom-container border border-white rounded p-3">
+              <form onSubmit={handleSubmit}>
+                <div className="mb-3">
+                  <label htmlFor="Email" className="form-label">
+                    Email address / Username
+                  </label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                    placeholder="Username / Email"
+                    required
+                    minLength={3}
+                    disabled={loading || loggedIn}
+                  />
+                </div>
+                <div className="mb-3">
+                  <label htmlFor="Password" className="form-label">
+                    Password
+                  </label>
+                  <input
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="Password"
+                    type="password"
+                    className="form-control"
+                    required
+                    minLength={6}
+                    maxLength={24}
+                    disabled={loading || loggedIn}
+                  />
+                </div>
+                <button
+                  type="submit"
+                  className="btn btn-success"
+                  disabled={loading || loggedIn}
+                >
+                  {
+                    <>
+                      {
+                        loading ? (
+                          <>
+                            <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+                            <span role="status">Logging in...</span>
+                          </>
+                        ) : (
+                          <>
+                            Login
+                          </>)
+                      }
+                    </>
+                  }
+
+                </button>
+              </form>
+              <div className="container mt-3">
+                <p style={loggedIn ? { color: "green" } : { color: "red" }}>{response}</p>
+              </div>
+              <div className="container mt-5">
+                <Link to="/register" className="btn btn-primary">
+                  Don't have an account?
+                </Link>
+              </div>
+            </div>
+          )
+      }
+    </>
+
   );
 }

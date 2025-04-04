@@ -21,6 +21,7 @@ import About from "./Components/Pages/About/About";
 import PrivacyPolicy from "./Components/Pages/Privacy/PrivacyPolicy";
 import Contact from "./Components/Pages/Contact/Contact";
 import Profile from "./Components/Pages/Profile/Profile";
+import Tos from "./Components/Pages/Tos/Tos";
 
 function App() {
   const { user, setUser } = useContext(AuthContext);
@@ -29,7 +30,7 @@ function App() {
   const [users, setUsers] = useState([]);
   const [categories, setCategories] = useState([]);
 
-  const navigate = useNavigate();  
+  const navigate = useNavigate();
 
   async function logOutUser() {
     try {
@@ -77,7 +78,7 @@ function App() {
           <Route path="/" element={<MainPage />} />
           <Route
             path="/login"
-            element={<LoginForm navigate={navigate}/>}
+            element={<LoginForm navigate={navigate} />}
           />
           <Route
             path="/register"
@@ -86,7 +87,9 @@ function App() {
           <Route path="/unauthorized" element={<ErrorPage />} />
           <Route path="/about" element={<About />} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-          <Route path="contact" element={<Contact />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/tos" element={<Tos />} />
+
           {/* Protected */}
           <Route
             path="/questions"

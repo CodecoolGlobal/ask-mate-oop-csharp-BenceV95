@@ -2,7 +2,7 @@
 //import './AskQuestionForm.css';
 import React, { useState, useContext } from 'react';
 import { AuthContext } from '../../AuthContext/AuthContext';
-import { Navigate, useNavigate } from 'react-router-dom';
+import { Link, Navigate, useNavigate } from 'react-router-dom';
 import { apiGet, apiPost } from '../../../utils/api';
 
 const AskQuestionForm = ({ categories }) => {
@@ -67,7 +67,7 @@ const AskQuestionForm = ({ categories }) => {
       setSelectedCategory(0);
       setShowNewlyPostedQuestion(true)
 
-      navigate(`/questions/${questiondId}`);
+      navigate(`/questions/${data.message}`);
     } catch (error) {
       console.log(error);
       setResponseMessage(error.message);
@@ -138,12 +138,12 @@ const AskQuestionForm = ({ categories }) => {
                       >
                         <h3>{result.title}</h3>
                         <p>{result.body}</p>
-                        <a
-                          href={`/questions/${result.id}`}
+                        <Link
+                          to={`/questions/${result.id}`}
                           className="btn btn-primary"
                         >
                           View Question
-                        </a>
+                        </Link>
                       </div>
                     ))
                   )}
@@ -210,12 +210,12 @@ const AskQuestionForm = ({ categories }) => {
               {responseMessage && (
                 <div className="container mt-5">
                   <p className="responseMessage">{responseMessage}</p>
-                  <a
-                    href={`/questions/${questiondId}`}
+                  <Link
+                    to={`/questions/${questiondId}`}
                     className="btn btn-primary"
                   >
                     View Your Question
-                  </a>
+                  </Link>
                 </div>
               )}
             </div>
