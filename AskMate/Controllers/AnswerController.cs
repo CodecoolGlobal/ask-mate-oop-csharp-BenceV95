@@ -103,7 +103,7 @@ namespace AskMate.Controllers
 
                 var loggedInUserID = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-                return Ok(_database.CreateNewAnswer(answer, loggedInUserID));
+                return Ok(new {Message = _database.CreateNewAnswer(answer, loggedInUserID)});
 
             }
             catch (Exception ex)

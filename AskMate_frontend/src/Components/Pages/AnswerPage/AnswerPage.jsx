@@ -4,11 +4,11 @@ import ErrorPage from "../ErrorPage/UnauthorizedPage";
 import "./AnswerPage.css";
 import { AuthContext } from '../../AuthContext/AuthContext';
 import Answers from "./Answers";
-import { apiGet, apiPost } from "../../../utils/api";
+import { apiGet, apiPost, apiDelete } from "../../../utils/api";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 
-const AnswerPage = ({ fetchData, categories, users, questions, setQuestions }) => {
+const AnswerPage = ({ categories }) => {
     const { user } = useContext(AuthContext);
     let navigate = useNavigate();
     const { id } = useParams(); // Destructure the `id` from the URL
@@ -46,22 +46,22 @@ const AnswerPage = ({ fetchData, categories, users, questions, setQuestions }) =
 
     const findCategoryNameById = (id) => {
         const result = categories.find(category => category.id == id);
-        return !result ? "not found" : result.name //for some reason, this solved the problem with category name not being displayed, but unsure why
+        return result ? result.name : "uncategorized";
     }
 
     async function postAnswer() {
         try {
-            const response = await apiPost("/Answer", {
+            const r = await apiPost("/Answer", {
                 id: "",
                 userId: "",
                 questionID: id,
                 body: answerBody,
                 isAccepted: false
-            })
-
+            });
+            console.log(`New answers's ID: ${r.message}`);
 
         } catch (error) {
-            console.log("Error: ", error);
+            alert(error);
         }
     }
 
@@ -94,43 +94,37 @@ const AnswerPage = ({ fetchData, categories, users, questions, setQuestions }) =
     }
 
     function getUsernameById(id) {
-        const user = users.find((user) => user.id === id);
-        return user ? user.username : "Anonym";
+        return "Anonym";
     }
 
     const deleteQuestion = async (id) => {
         setIsQuestionDeleting(true);
+
         try {
+            // is this supposed to delete all answers for a single question, as it doesnt do this currently
             const response = await fetch(`/api/Answer/all/${id}`, {
                 method: 'DELETE',
                 credentials: "include"
             });
 
             if (response.ok) {
-                try {
 
-                    const response = await fetch(`/api/Question/${id}`, {
-                        method: 'DELETE',
-                        credentials: "include"
-                    });
+                const response = await fetch(`/api/Question/${id}`, {
+                    method: 'DELETE',
+                    credentials: "include"
+                });
 
-                    if (!response.ok) {
-                        throw new Error("Network response was not ok!");
-                    }
-                } catch (error) {
-                    console.log(error)
+                if (!response.ok) {
+                    throw new Error("Network response was not ok!");
                 }
+
             }
-            
-            const questionsCopy = [...questions];
-            const deletedQuestionFilteredOut = questionsCopy.filter(q => q.id != id);
-            setQuestions(deletedQuestionFilteredOut);
 
             setIsQuestionDeleting(false);
-            navigate("/",{replace:true, forceRefresh:true});
             alert("Question deleted successfully");
+            navigate("/", { replace: true, forceRefresh: true });
         } catch (error) {
-            console.log("delete failed:", error);
+            alert(error);
         }
     }
 

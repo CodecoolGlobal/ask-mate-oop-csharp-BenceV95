@@ -19,8 +19,8 @@ export default function QuestionsPage({ questions, categories, setQuestions }) {
         if (selectedCategory === 0 && searchResult.length === 0) {
             //setFilteredQuestions(questions)
             console.log("no category, search");
-            
-        } else {            
+
+        } else {
             console.log("search updated ", selectedCategory);
         }
 
@@ -46,11 +46,14 @@ export default function QuestionsPage({ questions, categories, setQuestions }) {
                     <div className="categoriesDiv">
                         <Tags
                             categories={categories}
-                            selector={setSelectedCategory}                            
+                            selector={setSelectedCategory}
                         />
                     </div>
+
+                    {/* <SearchDiv onSearch={fetchQuestions} /> */}
+
                     <div className="questionsDiv">
-                        {questions.map((question,i) => {
+                        {questions.map((question, i) => {
                             return <QuestionCard
                                 key={i} // so it stops complaining even though it is set under the component...
                                 user={user}
@@ -60,10 +63,6 @@ export default function QuestionsPage({ questions, categories, setQuestions }) {
                         })}
                     </div>
 
-                    <div className="askAQuestionDiv">
-                        <Link className="btn btn-warning" to="/ask">Ask a Question</Link>
-                        <SearchDiv onSearch={fetchQuestions} />
-                    </div>
                 </div>
                 :
                 <Navigate to={"/unauthorized"} />

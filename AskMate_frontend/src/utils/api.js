@@ -38,7 +38,6 @@ export async function apiPut(endpoint, data) {
 
 export async function apiPost(endpoint, data) {
 
-
     const response = await fetch(`/api/${endpoint}`, {
         method: "POST",
         headers: {
