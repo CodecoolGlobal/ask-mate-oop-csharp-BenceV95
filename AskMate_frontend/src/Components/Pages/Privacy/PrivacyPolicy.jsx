@@ -1,12 +1,12 @@
 import { Link } from "react-router-dom";
-import "./PrivacyPolicy.css"
+//import "./PrivacyPolicy.css"
 import React from 'react';
 
 export default function PrivacyPolicy() {
   return (
     <div className="privacy-policy-container">
       <h1 className="privacy-policy-title">Privacy Policy</h1>
- 
+
       <section className="privacy-policy-section">
         <h2>What We Collect</h2>
         <p>
@@ -71,7 +71,7 @@ export default function PrivacyPolicy() {
         <p>
           If you have any questions about this privacy policy or how we handle your data, feel free to contact us at {<a href="/contact">Contact</a>}.
         </p>
-      </section> 
+      </section>
     </div>
   );
 }
