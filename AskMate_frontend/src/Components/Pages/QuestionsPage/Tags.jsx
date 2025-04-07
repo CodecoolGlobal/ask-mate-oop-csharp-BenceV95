@@ -1,18 +1,6 @@
 import React, { useState } from "react";
 
-export default function Tags({ categories, selector }) {
-  const [activeButton, setActiveButton] = useState(null);
-
-  const handleButtonClick = (id) => {
-    if (activeButton === id) {
-      setActiveButton(null);
-      selector(0);
-      return;
-    }
-    setActiveButton(id); // Set the clicked button as active
-    selector(id);
-  };
-
+export default function Tags({ categories, activeButton, onCategorySelect }) {
   return (
     <>
       {categories.map((category) => {
@@ -24,7 +12,7 @@ export default function Tags({ categories, selector }) {
                   ? "btn btn-success"
                   : "btn btn-secondary"
               }
-              onClick={() => handleButtonClick(category.id)}
+              onClick={() => onCategorySelect(category.id)}
             >
               {category.name}
             </button>

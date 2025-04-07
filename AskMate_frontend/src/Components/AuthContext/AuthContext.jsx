@@ -16,7 +16,7 @@ export function AuthProvider({ children }) {
         async function fetchLoginStatus() {            
             //const userInStorage = JSON.parse(sessionStorage.getItem("user"));
             const data = await apiGet(`User/session`);
-            console.log("session data: ",data);
+            console.log("fresh session data: ",data);
             
             if(data.isLoggedIn == true){
                 sessionStorage.setItem("user", JSON.stringify(data));
@@ -29,9 +29,11 @@ export function AuthProvider({ children }) {
             }
             
         }
-        setIsLoading(true);
+        //setIsLoading(true);
+        const interval = setInterval(fetchLoginStatus, 60000);
+        return () => clearInterval(interval);
         fetchLoginStatus();
-        setIsLoading(false);
+        //setIsLoading(false);
     }, []);
 
     if (isLoading) {
