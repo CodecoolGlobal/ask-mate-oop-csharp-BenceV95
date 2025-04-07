@@ -24,9 +24,8 @@ export default function QuestionsPage({ categories }) {
   }, []);
 
   const fetchQuestions = async (searchString, categoryId, limit) => {
-
     setLoading(true);
-    
+
     try {
       let data;
       if (searchString != "") {
@@ -54,11 +53,12 @@ export default function QuestionsPage({ categories }) {
           <LoadingPage />
         ) : (
           <div className="mainDiv">
-            <div className="categoriesDiv">
-              <Tags categories={categories} selector={setSelectedCategory} />
+            <div className="d-flex flex-column gap-3">
+              <div className="categoriesDiv">
+                <Tags categories={categories} selector={setSelectedCategory} />
+              </div>
+              <SearchDiv onSearch={fetchQuestions} />
             </div>
-
-            {/* <SearchDiv onSearch={fetchQuestions} /> */}
 
             <div className="questionsDiv">
               {questions.map((question, i) => {

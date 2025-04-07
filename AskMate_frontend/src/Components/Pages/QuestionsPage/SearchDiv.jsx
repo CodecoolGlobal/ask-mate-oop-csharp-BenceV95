@@ -1,29 +1,36 @@
-import "./SearchDiv.css";
+//import "./SearchDiv.css";
 import { useState } from "react";
 
 export default function SearchDiv({ onSearch }) {
+  const [query, setQuery] = useState("");
 
-    const [query, setQuery] = useState("");
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (query.trim()) {
+      onSearch(query,0,10);
+      console.log("query", query);
+      
+    }
+  };
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        if (query.trim()) {
-            onSearch(query);
-        }
-    };
-
-    return (
-        <form className="searchDiv" onSubmit={handleSubmit}>
-            <p>Search In Questions</p>
-            <br />
-            <input
-                type="text"
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                placeholder="Search..."
-                required
-            />
-            <button className="btn btn-success m-1" type="submit">Search</button>
-        </form>
-    )
+  return (
+    <form onSubmit={handleSubmit}>
+      <div className="input-group">
+        <input
+          type="text"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder="Search..."
+          required
+          className="form-control"
+        />
+        <button className="btn btn-success" type="submit">
+          Search
+        </button>
+        <button className="btn btn-danger" type="button" onClick={() => onSearch("",0,10)}>
+          Reset
+        </button>
+      </div>
+    </form>
+  );
 }
