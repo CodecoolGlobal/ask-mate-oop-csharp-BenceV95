@@ -37,7 +37,7 @@ const AskQuestionForm = ({ categories }) => {
   const fetchQuestions = async (query) => {
 
     try {
-      const data = await apiGet(`/Question/search?query=${encodeURIComponent(query)}`);
+      const data = await apiGet(`Question/search?query=${encodeURIComponent(query)}`);
       setSearchResult(data);
 
     } catch (error) {
@@ -51,7 +51,7 @@ const AskQuestionForm = ({ categories }) => {
     try {
       if (selectedCategory === 0) { throw new Error("Category must be set!") }
 
-      const data = await apiPost('/Question', {
+      const data = await apiPost('Question', {
         id: "", // modify backend so it doesnt expect unnecesary data (id, userdId etc...)
         userId: "",
         title: title,

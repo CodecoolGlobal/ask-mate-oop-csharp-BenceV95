@@ -26,8 +26,8 @@ import Tos from "./Components/Pages/Tos/Tos";
 function App() {
   const { user, setUser } = useContext(AuthContext);
 
-  const [questions, setQuestions] = useState([]);
-  const [users, setUsers] = useState([]);
+  //const [questions, setQuestions] = useState([]);
+  //const [users, setUsers] = useState([]);
   const [categories, setCategories] = useState([]);
 
   const navigate = useNavigate();
@@ -45,24 +45,25 @@ function App() {
 
   //fetch all necessary data
   useEffect(() => {
+    
     const loadData = async () => {
       try {
         // endpoint options: "/Question/filter?categoryId={int}&limit={0<l<1000}"
-        const questions = await apiGet("/Question/filter");
+        //const questions = await apiGet("/Question/filter");
         //const fetchedUsers = await apiGet("/User/allUsers");
         const categories = await apiGet("/categories");
-        setCategories(categories);
+        setCategories(categories);        
         //setUsers(fetchedUsers);
-        setQuestions(questions);
+        //setQuestions(questions);
       } catch (err) {
         console.log(err.message);
       }
     };
 
-    if (user) {
+    if (user && categories.length === 0) {
       loadData();
     }
-  }, []);
+  }, [user]);
 
   function handleLogOut(e) {
     e.preventDefault();
@@ -76,10 +77,7 @@ function App() {
         <Routes>
           {/* unprotected */}
           <Route path="/" element={<MainPage />} />
-          <Route
-            path="/login"
-            element={<LoginForm navigate={navigate} />}
-          />
+          <Route path="/login" element={<LoginForm navigate={navigate} />} />
           <Route
             path="/register"
             element={<RegistrationForm navigate={navigate} />}
@@ -89,40 +87,27 @@ function App() {
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/tos" element={<Tos />} />
+          <Route path="*" element={<Missing />} />
 
           {/* Protected */}
           <Route
             path="/questions"
-            element={
-              <QuestionsPage
-                questions={questions}
-                categories={categories}
-                setQuestions={setQuestions}
-              />
-            }
+            element={<QuestionsPage categories={categories} />}
           />
-          <Route path="/users" element={<UsersPage users={users} />} />
+          <Route path="/users" element={<UsersPage />} />
           <Route
             path="/ask"
             element={<AskQuestionForm categories={categories} />}
           />
           <Route
             path="/questions/:id"
-            element={<AnswerPage categories={categories} users={users} />}
+            element={<AnswerPage categories={categories} />}
           />
           <Route
             path="/users/:username"
-            element={
-              <UserPage
-                questions={questions}
-                categories={categories}
-                users={users}
-              />
-            }
+            element={<UserPage categories={categories} />}
           />
-          <Route path="/profile" element={<Profile />} />
-
-          <Route path="*" element={<Missing />} />
+          <Route path="/profile" element={<Profile />} />          
         </Routes>
       </main>
       <Footer />

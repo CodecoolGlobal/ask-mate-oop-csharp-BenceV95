@@ -32,6 +32,9 @@ public class QuestionController : ControllerBase
             {
                 throw new ArgumentException("Limit must be at least 1 and not over 1000");
             }
+
+            if (categoryId == 0) categoryId = null;
+
             var questions = _database.GetQuestions(categoryId, limit);
             return Ok(questions);
         }

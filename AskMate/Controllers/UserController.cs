@@ -122,7 +122,7 @@ namespace AskMate.Controllers
                 {
                     return Ok(new { IsLoggedIn = true, Username = username, Id = userId, Role = role });
                 }
-                return Unauthorized(new { message = "User is not logged in!" });
+                return Unauthorized(new { IsLoggedIn = false, Username = username, Id = userId, Role = role });
 
             }
             catch (Exception ex)
