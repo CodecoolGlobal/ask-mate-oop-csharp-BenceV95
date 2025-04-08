@@ -24,24 +24,14 @@ import Profile from "./Components/Pages/Profile/Profile";
 import Tos from "./Components/Pages/Tos/Tos";
 
 function App() {
-  const { user, setUser } = useContext(AuthContext);
+  const { user } = useContext(AuthContext);
 
   //const [questions, setQuestions] = useState([]);
   //const [users, setUsers] = useState([]);
   const [categories, setCategories] = useState([]);
 
   const navigate = useNavigate();
-
-  async function logOutUser() {
-    try {
-      const response = await apiPost("/User/logout");
-      sessionStorage.removeItem("user");
-      setUser(null);
-      navigate("/");
-    } catch (error) {
-      console.log("error", error);
-    }
-  }
+ 
 
   //fetch all necessary data
   useEffect(() => {
@@ -65,14 +55,10 @@ function App() {
     }
   }, [user]);
 
-  function handleLogOut(e) {
-    e.preventDefault();
-    logOutUser();
-  }
 
   return (
     <>
-      <Navbar handleLogOut={handleLogOut} />
+      <Navbar />
       <main>
         <Routes>
           {/* unprotected */}

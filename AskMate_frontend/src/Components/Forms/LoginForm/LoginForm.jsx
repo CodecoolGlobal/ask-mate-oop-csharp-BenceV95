@@ -9,21 +9,17 @@ export default function LoginForm({ navigate }) {
   const [password, setPassword] = useState("");
   const [response, setResponse] = useState("");
   const [loading, setLoading] = useState(false);
-  const [loggedIn, setLoggedIn] = useState(false);
 
-  const { user, setUser } = useContext(AuthContext);
+  const { user, loginContext } = useContext(AuthContext);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setLoggedIn(false);
 
     try {
       const response = await apiPost("User/login", { username, password });
-      sessionStorage.setItem("user", JSON.stringify(response));
-      setUser(response);
+      loginContext(response);
       setResponse("Succesfully logged in !");
-      setLoggedIn(true);
     } catch (error) {
       setResponse(error.message);
     } finally {
@@ -32,21 +28,21 @@ export default function LoginForm({ navigate }) {
   };
 
   useEffect(() => {
-    
-    if (loggedIn) {      
+    if (user != null) {
       navigate("/");
     }
-
-  }, [loggedIn]);
+  }, [user]);
 
   return (
     <>
-      {user && !loggedIn ? (
+      {user ? (
         <div>
           <h1>
             You are already logged in as {user.username} !
             <br />
-            <Link to="/" className="btn btn-primary">Return Home</Link>
+            <Link to="/" className="btn btn-primary">
+              Return Home
+            </Link>
           </h1>
         </div>
       ) : (
@@ -64,7 +60,7 @@ export default function LoginForm({ navigate }) {
                 placeholder="Username / Email"
                 required
                 minLength={3}
-                disabled={loading || loggedIn}
+                disabled={loading || user}
               />
             </div>
             <div className="mb-3">
@@ -80,13 +76,13 @@ export default function LoginForm({ navigate }) {
                 required
                 minLength={6}
                 maxLength={24}
-                disabled={loading || loggedIn}
+                disabled={loading || user}
               />
             </div>
             <button
               type="submit"
               className="btn btn-success"
-              disabled={loading || loggedIn}
+              disabled={loading || user}
             >
               {
                 <>
@@ -106,7 +102,7 @@ export default function LoginForm({ navigate }) {
             </button>
           </form>
           <div className="container mt-3">
-            <p style={loggedIn ? { color: "green" } : { color: "red" }}>
+            <p style={user ? { color: "green" } : { color: "red" }}>
               {response}
             </p>
           </div>

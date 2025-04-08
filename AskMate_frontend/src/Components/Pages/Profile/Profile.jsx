@@ -1,16 +1,40 @@
 //import "./Profile.css";
-import React from "react";
+import React, { useState } from "react";
 import { AuthContext } from "../../AuthContext/AuthContext";
 import { Navigate, useNavigate } from "react-router-dom";
-import { apiDelete, apiPost } from "../../../utils/api";
+import { apiDelete, apiPost, apiPut } from "../../../utils/api";
 
 export default function Profile() {
   const { user } = React.useContext(AuthContext);
   const navigate = useNavigate();
 
-  const handleUpdate = (e) => {
+  const [formData, setFormData] = useState({
+    username: user?.username,
+    email: user?.email,
+    password: ""
+  });
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleUpdate = async (e) => {
     e.preventDefault();
-    alert("WIP");
+    try {
+
+      const updateData = formData;
+
+      const response = await apiPut(`user/update/${user.id}`, updateData);
+      alert("Profile updated successfully!");
+      window.location.reload(true);
+    } catch (error) {
+      console.error(error);
+      alert("Failed to update profile: " + error.message);
+    }
   };
 
   const handleDelete = async (e) => {
@@ -29,7 +53,7 @@ export default function Profile() {
   return (
     <>
       {user ? (
-        <div className="border border-2 p-3 rounded">
+        <div className="border border-2 p-3 rounded w-50">
           <form>
             <div className="mb-3">
               <label htmlFor="username" className="form-label">
@@ -41,6 +65,8 @@ export default function Profile() {
                 name="username"
                 id="username"
                 className="form-control"
+                onChange={handleInputChange}
+                value={formData.username}
               />
             </div>
             <div className="mb-3">
@@ -51,6 +77,8 @@ export default function Profile() {
                 name="email"
                 id="email"
                 className="form-control"
+                onChange={handleInputChange}
+                value={formData.email}
               />
             </div>
             <div className="mb-3">
@@ -60,10 +88,12 @@ export default function Profile() {
                 name="newpw"
                 id="newpw"
                 className="form-control"
-                placeholder="new password"
+                placeholder="password change is work in progress"
+                onChange={handleInputChange}
+                value={formData.password}
               />
             </div>
-            <div className="mb-3 d-flex flex-column gap-3">
+            <div className="mt-3 mb-3 d-flex flex-column gap-3">
               <button
                 className="btn btn-success"
                 type="submit"

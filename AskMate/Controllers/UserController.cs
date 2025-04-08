@@ -122,11 +122,12 @@ namespace AskMate.Controllers
                 var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
                 var role = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
                 var email = User.Claims.FirstOrDefault(e => e.Type == ClaimTypes.Email)?.Value;
+                var isLoggedIn = User.Identity?.IsAuthenticated;
                 if (userId != null)
                 {
-                    return Ok(new { IsLoggedIn = true, Username = username, Id = userId, Role = role, Email = email });
+                    return Ok(new { IsLoggedIn = isLoggedIn, Username = username, Id = userId, Role = role, Email = email });
                 }
-                return Unauthorized(new { IsLoggedIn = false, Username = username, Id = userId, Role = role, Email = email});
+                return Unauthorized(new { IsLoggedIn = isLoggedIn, Username = username, Id = userId, Role = role, Email = email});
 
             }
             catch (Exception ex)
@@ -212,7 +213,13 @@ namespace AskMate.Controllers
                         ExpiresUtc = DateTime.UtcNow.AddMinutes(60)
                     });
 
-                    return Ok(new { Username = userFromDb.Username, Email = userFromDb.Email, Role = userFromDb.Role, Id = userFromDb.Id }); //should make dedicated class in future
+                    return Ok(new
+                    {
+                        Username = userFromDb.Username,
+                        Email = userFromDb.Email,
+                        Role = userFromDb.Role,
+                        Id = userFromDb.Id
+                    }); //should make dedicated class in future
                 }
 
                 return Unauthorized(new { message = "Invalid username or password" });

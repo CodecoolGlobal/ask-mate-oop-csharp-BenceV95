@@ -30,7 +30,7 @@ export default function QuestionsPage({ categories }) {
     const handleCategorySwitch = async () => {
       if (user && selectedCategory == 0) {
         console.log("fetching all questions");
-        await fetchQuestions("", 0, 10);
+        await fetchQuestions("", 0, 100);
       }
       if (user && selectedCategory != 0) {
         console.log("fetching questions from category: " + selectedCategory);

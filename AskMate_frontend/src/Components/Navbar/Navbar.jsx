@@ -2,16 +2,14 @@ import { Link } from "react-router-dom";
 import { AuthContext } from "../AuthContext/AuthContext";
 import React, { useState } from "react";
 
-const Navbar = ({ handleLogOut }) => {
+const Navbar = () => {
 
-  const { user } = React.useContext(AuthContext);
+  const { user, logoutContext } = React.useContext(AuthContext);
 
   const [isNavCollapsed, setIsNavCollapsed] = useState(true);
 
   const handleNavCollapse = () => setIsNavCollapsed(!isNavCollapsed);
   const closeNav = () => setIsNavCollapsed(true);
-
-  //console.log("inNavbar", user)
 
   return (
     <>
@@ -49,7 +47,7 @@ const Navbar = ({ handleLogOut }) => {
             <ul className="navbar-nav ms-auto">
               <li className="nav-item">
                 {user ? (
-                  <button className="btn btn-danger" onClick={(e) => { handleLogOut(e); closeNav(); }}>
+                  <button className="btn btn-danger" onClick={(e) => { logoutContext(); closeNav(); }}>
                     Log Out
                   </button>
                 ) : (

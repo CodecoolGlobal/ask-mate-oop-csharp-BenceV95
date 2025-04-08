@@ -56,7 +56,11 @@ namespace AskMate.Repos
             using var connection = new NpgsqlConnection(_connectionString);
             {
                 connection.Open();
-                var command = new NpgsqlCommand("UPDATE users SET username = :newUsername, email_address = :newEmailAddress WHERE id = :userId", connection);
+                var command = new NpgsqlCommand(@"
+                    UPDATE users
+                    SET username = :newUsername,
+                    email_address = :newEmailAddress
+                    WHERE id = :userId", connection);
                 command.Parameters.AddWithValue(":newUsername", updateRequest.Username);
                 command.Parameters.AddWithValue(":newEmailAddress", updateRequest.Email);
                 command.Parameters.AddWithValue(":userId", id);

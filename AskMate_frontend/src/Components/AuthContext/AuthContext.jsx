@@ -1,18 +1,29 @@
 import { useEffect, useState } from "react";
 import React from "react";
 import LoadingPage from "../Pages/LoadingPage/LoadingPage";
-import { apiGet } from "../../utils/api";
+import { apiGet, apiPost } from "../../utils/api";
 
-export const AuthContext = React.createContext();
+export const AuthContext = React.createContext(null);
 
 export function AuthProvider({ children }) {
   const [isLoading, setIsLoading] = useState(false);
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState(() => {
+    const savedUser = sessionStorage.getItem("user");
+    return savedUser ? JSON.parse(savedUser) : null;
+  });
 
   //check the session when the component first mounts
   useEffect(() => {
+    setIsLoading(true);
+    if (user) {
+      sessionStorage.setItem("user", JSON.stringify(user));
+    } else {
+      sessionStorage.removeItem("user");
+    }
+    setIsLoading(false);
+    /* 
     async function fetchLoginStatus() {
-      //const userInStorage = JSON.parse(sessionStorage.getItem("user"));
+
       const data = await apiGet(`User/session`);
       console.log("fresh session data: ", data);
 
@@ -33,17 +44,36 @@ export function AuthProvider({ children }) {
         setUser(null);
       }
     }
+
     setIsLoading(true);
     fetchLoginStatus();
     setIsLoading(false);
-  }, []);
+ */
+  }, [user]);
+
+  const loginContext = (userData) => {
+    setUser(userData);
+  };
+
+  const logoutContext = async () => {
+    try {
+      const response = await apiPost("/User/logout");
+      sessionStorage.removeItem("user");
+      setUser(null);
+      navigate("/");
+    } catch (error) {
+      console.log("error", error);
+    }
+  };
 
   if (isLoading) {
     return <LoadingPage />;
   }
 
   return (
-    <AuthContext.Provider value={{ user, setUser }}>
+    <AuthContext.Provider
+      value={{ user, setUser, logoutContext, loginContext }}
+    >
       {children}
     </AuthContext.Provider>
   );
