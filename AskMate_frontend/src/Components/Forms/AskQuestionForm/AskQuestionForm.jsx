@@ -1,14 +1,11 @@
-
-//import './AskQuestionForm.css';
-import React, { useState, useContext } from 'react';
-import { AuthContext } from '../../AuthContext/AuthContext';
-import { Link, Navigate, useNavigate } from 'react-router-dom';
-import { apiGet, apiPost } from '../../../utils/api';
+import './AskQuestionForm.css';
+import React, { useState, useContext } from "react";
+import { AuthContext } from "../../AuthContext/AuthContext";
+import { Link, Navigate, useNavigate } from "react-router-dom";
+import { apiGet, apiPost } from "../../../utils/api";
 
 const AskQuestionForm = ({ categories }) => {
-
-
-  const { user } = useContext(AuthContext)
+  const { user } = useContext(AuthContext);
   const navigate = useNavigate();
 
   // ask question second
@@ -22,8 +19,7 @@ const AskQuestionForm = ({ categories }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [searching, setSearching] = useState(false);
   const [searched, setSearched] = useState(false);
-  const [questiondId, setQuestionId] = useState("");
-  const [showNewlyPostedQuestion, setShowNewlyPostedQuestion] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -35,56 +31,52 @@ const AskQuestionForm = ({ categories }) => {
   };
 
   const fetchQuestions = async (query) => {
-
     try {
-      const data = await apiGet(`Question/search?query=${encodeURIComponent(query)}`);
+      const data = await apiGet(
+        `Question/search?query=${encodeURIComponent(query)}`
+      );
       setSearchResult(data);
-
     } catch (error) {
       console.log("fetch failed:", error);
     }
-  }
+  };
 
   async function SubmitQuestion(e) {
     e.preventDefault();
-    // validate entries !!!!
+    setLoading(true);
     try {
-      if (selectedCategory === 0) { throw new Error("Category must be set!") }
+      if (selectedCategory === 0) {
+        throw new Error("Category must be set!");
+      }
+      if (title.trim() == "" || body.trim() == "") {
+        throw new Error("Title and Body must have content !");
+      }
 
-      const data = await apiPost('Question', {
+      const data = await apiPost("Question", {
         id: "", // modify backend so it doesnt expect unnecesary data (id, userdId etc...)
         userId: "",
         title: title,
         body: body,
         categories: selectedCategory,
       });
-
-      setQuestionId(data.message);
-
-      setResponseMessage("Question Posted");
-      setTitle("");
-      setBody("");
-      setSelectedCategory(0);
-      setShowNewlyPostedQuestion(true)
-
+      setLoading(false);
       navigate(`/questions/${data.message}`);
     } catch (error) {
       console.log(error);
+      setLoading(false);
       setResponseMessage(error.message);
     }
-
   }
-
 
   return (
     <>
       {user ? (
-        <div className="container d-flex flex-column gap-3">
+        <div className="d-flex flex-column gap-3 searchDiv">
           {!searching ? (
             <>
               <form
                 onSubmit={handleSubmit}
-                className="container-sm border border-2 border-white rounded p-3 d-flex flex-column gap-3"
+                className="searchInputDiv border border-2 border-white rounded p-3 d-flex flex-column gap-3"
               >
                 <textarea
                   className="form-control"
@@ -94,7 +86,7 @@ const AskQuestionForm = ({ categories }) => {
                   name="search"
                   required
                   disabled={searching}
-                  style={{ height: "100px" }}
+                  style={{ minHeight: "100px" }}
                 />
                 <div className="d-flex justify-content-around">
                   {searching ? (
@@ -123,11 +115,14 @@ const AskQuestionForm = ({ categories }) => {
               </form>
 
               {searched && (
-                <div className="d-flex flex-column border border-2 border-white rounded p-3 gap-3">
+                <div className="d-flex flex-column border border-2 border-white rounded p-3 gap-3 searchResults">
                   <h3>Search Results</h3>
                   {searchResult.length === 0 ? (
                     <div>
-                      <p>Seems like you have a unique question which has not been asked until now!</p>
+                      <p>
+                        Seems like you have a unique question which has not been
+                        asked until now!
+                      </p>
                     </div>
                   ) : (
                     searchResult.map((result) => (
@@ -151,7 +146,7 @@ const AskQuestionForm = ({ categories }) => {
               )}
             </>
           ) : (
-            <div className="container-sm border border-2 border-white rounded p-3">
+            <div className="border border-2 border-white rounded p-3">
               <form className="ask" onSubmit={SubmitQuestion}>
                 <div className="mb-3">
                   <label htmlFor="title" className="form-label">
@@ -165,6 +160,7 @@ const AskQuestionForm = ({ categories }) => {
                     onChange={(e) => setTitle(e.target.value)}
                     value={title}
                     required
+                    disabled={loading}
                   />
                 </div>
                 <div className="mb-3">
@@ -178,6 +174,7 @@ const AskQuestionForm = ({ categories }) => {
                     value={body}
                     required
                     className="form-control"
+                    disabled={loading}
                   />
                 </div>
                 <div className="mb-3">
@@ -190,6 +187,7 @@ const AskQuestionForm = ({ categories }) => {
                     value={selectedCategory}
                     onChange={(e) => setSelectedCategory(e.target.value)}
                     required
+                    disabled={loading}
                   >
                     <option value={0} disabled>
                       Set category
@@ -203,19 +201,29 @@ const AskQuestionForm = ({ categories }) => {
                     })}
                   </select>
                 </div>
-                <button className="btn btn-success" type="submit">
-                  Ask
+                <button
+                  className="btn btn-success"
+                  type="submit"
+                  disabled={loading}
+                >
+                  {loading ? (
+                    <>
+                      <span
+                        className="spinner-border spinner-border-sm"
+                        aria-hidden="true"
+                      ></span>
+                      <span role="status">Loading...</span>
+                    </>
+                  ) : (
+                    <>Ask</>
+                  )}
                 </button>
               </form>
               {responseMessage && (
-                <div className="container mt-5">
-                  <p className="responseMessage">{responseMessage}</p>
-                  <Link
-                    to={`/questions/${questiondId}`}
-                    className="btn btn-primary"
-                  >
-                    View Your Question
-                  </Link>
+                <div className="mt-5">
+                  <p style={{ color: "#dc3545", fontSize: "2rem" }}>
+                    {responseMessage}
+                  </p>
                 </div>
               )}
             </div>
@@ -229,4 +237,3 @@ const AskQuestionForm = ({ categories }) => {
 };
 
 export default AskQuestionForm;
-

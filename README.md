@@ -1,23 +1,27 @@
 #  AskApe
 
+<a href="https://askape.benceveres.com" target="_blank">Check out the deployed version here</a>
+
 ##  About The Project
 
 We are developing a Q&A platform similar to Gyakori Kérdések, where registered users can ask and answer questions, filter them by category, and vote on answers to determine their usefulness.
 
 ###  Core Features
 - **User Authentication** (Login, Registration, Logout, Session Management)
-- **Question Management** (Ask, Edit, Delete Questions)
-- **Answer System** (Post, Edit, Delete Answers)
+- **Question Management** (Ask, Delete Questions)
+- **Answer System** (Post, Delete Answers)
 - **Voting System** (Upvote/Downvote Answers)
 - **Categories & Filtering** (Sort and Filter Questions by Category)
 - **Search Functionality** (Find Questions and Answers Easily)
 - **User Profiles** (View User Contributions, Vote stats)
-- **Moderation Tools** (Ability for admins to moderate answers/questions)
-
 
 
 ### Work in Progress
-
+- [ ] Edit your Question, Answer
+- [ ] Admin panel and it's front end implementations
+- [ ] Nicer and more responsive design
+- [ ] Public user profile for contributions
+- [ ] Ads
 
 ###  Tech Stack  
 
@@ -45,6 +49,9 @@ git clone https://github.com/CodecoolGlobal/ask-mate-oop-csharp-BenceV95.git
 
 ### 3️⃣ Start the application
 # Running a Full-Stack Web App (ASP.NET + Frontend)
+### Set up Postrgres:
+  - Inside appsettings.json you can modify the connection string for your own needs.
+  - Run the tables_creating.sql to set up your database schema.
 
 ### **Step 1: Restore Dependencies (Optional, but Recommended)**
 ```sh
@@ -73,7 +80,7 @@ cd AskMate_frontend
 
 ### **Step 2: Install Dependencies**
 ```sh
-npm install --legacy-peer-dep
+npm install
 ```
 
 ### **Step 3: Start the Frontend**
@@ -90,7 +97,8 @@ By default, the frontend runs on http://localhost:5173
 - **Looking Up Questions:** Users can browse and search for previously asked questions.
 - **Asking Questions:** Users can post their own questions for others to answer.
 - **Voting on Questions and Answers:** Users can upvote or downvote questions and answers posted by others to indicate their helpfulness.
-- **Editing/Deleting Questions and Answers:** Users can edit or delete their own questions and answers at any time.
+- **Deleting Questions and Answers:** Users can delete their own questions and answers at any time.
+- **Profile settings can be changed** Users can modify their username, email and password.
 
 
 

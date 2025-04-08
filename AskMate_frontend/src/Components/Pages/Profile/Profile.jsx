@@ -1,12 +1,22 @@
 //import "./Profile.css";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { AuthContext } from "../../AuthContext/AuthContext";
 import { Navigate, useNavigate } from "react-router-dom";
-import { apiDelete, apiPost, apiPut } from "../../../utils/api";
+import { apiDelete, apiGet, apiPost, apiPut } from "../../../utils/api";
 
 export default function Profile() {
   const { user, setUser } = React.useContext(AuthContext);
+  const [ratio, setRatio] = useState(0);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const GetUsersAnswersUsefulnessRatio = async () => {
+      const a = await apiGet("GetUsersAnswersUsefulnessRatio");
+      
+      setRatio(`${a.toFixed(2)*100}%`);
+    }
+    GetUsersAnswersUsefulnessRatio()
+  }, [])
 
   const [formData, setFormData] = useState({
     username: user?.username,
@@ -51,10 +61,15 @@ export default function Profile() {
     }
   };
 
+  
+
   return (
     <>
       {user ? (
         <div className="border border-2 p-3 rounded w-50">
+          <div className="mb-3 border-bottom pb-1">
+          Your Answers Usefulness Ratio: {ratio}
+          </div>
           <form>
             <div className="mb-3">
               <label htmlFor="username" className="form-label">

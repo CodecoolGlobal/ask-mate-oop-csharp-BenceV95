@@ -103,7 +103,7 @@ namespace AskMate.Repos.Votes
             }
         }
 
-        public float CalculateUserAnswersUsefulnessRatio(string userId)
+        public decimal CalculateUserAnswersUsefulnessRatio(string userId)
         {
             using var connection = new NpgsqlConnection(_connectionString);
             connection.Open();
@@ -112,13 +112,13 @@ namespace AskMate.Repos.Votes
                 NULLIF(COUNT(NULLIF(v.is_useful, false)), 0) / CAST(COUNT(v.is_useful) AS FLOAT)
                 FROM public.answers a
                 JOIN votes v ON v.answer_id = a.id
-                WHERE a.user_id = ':userId';";
+                WHERE a.user_id = @userId;";
 
             using var command = new NpgsqlCommand(query, connection);
-            command.Parameters.AddWithValue(":userId", userId);
+            command.Parameters.AddWithValue("@userId", userId);
 
             var result = command.ExecuteScalar();
-            return result == DBNull.Value ? 0 : (float)result;
+            return result == DBNull.Value || result == null ? 0 : Convert.ToDecimal(result);
         }
     }
 }
