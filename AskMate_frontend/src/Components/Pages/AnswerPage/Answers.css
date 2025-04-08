@@ -27,7 +27,7 @@
     color: white;
     border: #0D6EFD solid 2px;
     border-radius: 10px;
-    width: 75%;
+    width: 100%;
     overflow-wrap: break-word;
     height: fit-content;
     padding: 0.5rem;
@@ -38,7 +38,7 @@
     color: white;
     border: #0D6EFD solid 2px;
     border-radius: 10px;
-    width: 75%;
+    width: 100%;
     overflow-wrap: break-word;
     height: fit-content;
     padding: 0.5rem;

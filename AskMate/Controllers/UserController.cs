@@ -121,11 +121,12 @@ namespace AskMate.Controllers
                 var username = User.Identity.Name; // Get the logged-in user's name
                 var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
                 var role = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
-                if (userId != null) // i dont think this is necessary since the endpoint is decorated with [Auth]
+                var email = User.Claims.FirstOrDefault(e => e.Type == ClaimTypes.Email)?.Value;
+                if (userId != null)
                 {
-                    return Ok(new { IsLoggedIn = true, Username = username, Id = userId, Role = role });
+                    return Ok(new { IsLoggedIn = true, Username = username, Id = userId, Role = role, Email = email });
                 }
-                return Unauthorized(new { IsLoggedIn = false, Username = username, Id = userId, Role = role });
+                return Unauthorized(new { IsLoggedIn = false, Username = username, Id = userId, Role = role, Email = email});
 
             }
             catch (Exception ex)
@@ -160,9 +161,20 @@ namespace AskMate.Controllers
         {
             try
             {
+                var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+                if (userId != id)
+                {
+                    return Unauthorized(new { Message = "You may only delete your own account !" });
+                }
+
                 _database.DeleteUser(id);
+
                 return Ok(new { message = "User successfully deleted!" });
 
+            }
+            catch (ArgumentException ex)
+            {
+                return NotFound(new { message = ex.Message });
             }
             catch (Exception ex)
             {
@@ -186,7 +198,7 @@ namespace AskMate.Controllers
                         new Claim(ClaimTypes.Name, userFromDb.Username),
                         new Claim(ClaimTypes.Role, userFromDb.Role),
                         new Claim(ClaimTypes.NameIdentifier, userFromDb.Id),
-                        //new Claim(ClaimTypes.Email, userFromDb.Email)
+                        new Claim(ClaimTypes.Email, userFromDb.Email)
                     };
 
                     // Create identity and principal

@@ -253,11 +253,18 @@ namespace AskMate.Repos
             using var connection = new NpgsqlConnection(_connectionString);
             connection.Open();
 
-            using var adapter = new NpgsqlDataAdapter("DELETE FROM ONLY users WHERE id = :id ", connection);
-            adapter.SelectCommand?.Parameters.AddWithValue(":id", id);
+            using var command = new NpgsqlCommand("DELETE FROM ONLY users WHERE id = @id", connection);
+            command.Parameters.AddWithValue("@id", id);
 
-            adapter.SelectCommand?.ExecuteNonQuery();
+            var rowsAffected = command.ExecuteNonQuery();
+            Console.WriteLine("Rows affected: " + rowsAffected);
+
+            if (rowsAffected == 0)
+            {
+                throw new ArgumentException("User not found");
+            }
         }
+
 
 
         //authenticate
@@ -289,7 +296,6 @@ namespace AskMate.Repos
                 var username = (string)row["username"];
                 var email = (string)row["email_address"];
                 user = new() { Id = userID, Role = isAdmin ? "admin" : "user", Username = username, Email = email};
-
                 return Utils.VerifyPassword(password, storedHash, storedSalt);
             }
 

@@ -89,7 +89,7 @@ function App() {
           <Route path="/tos" element={<Tos />} />
           <Route path="*" element={<Missing />} />
 
-          {/* Protected */}
+          {/* Protected */}          
           <Route
             path="/questions"
             element={<QuestionsPage categories={categories} />}

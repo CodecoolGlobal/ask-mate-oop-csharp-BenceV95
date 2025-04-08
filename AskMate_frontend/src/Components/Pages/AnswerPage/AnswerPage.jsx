@@ -188,7 +188,7 @@ const AnswerPage = ({ categories }) => {
             </div>
           )}
 
-          <div className="container border border-2 border-white rounded">
+          <div className="border border-2 border-white rounded p-3">
             <div className="d-flex justify-content-between border-2 border-white border-bottom">
               <span>👑 {getUsernameById(questionData.userId)}'s Question</span>
               <span>

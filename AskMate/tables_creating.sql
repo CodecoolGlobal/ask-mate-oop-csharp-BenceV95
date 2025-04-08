@@ -26,7 +26,7 @@ CREATE TABLE questions (
     title VARCHAR(255) NOT NULL,
     post_date TIMESTAMP NOT NULL,
     categories INT NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES users(id),
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
     FOREIGN KEY (categories) REFERENCES categories(id)
 );
 
@@ -37,8 +37,8 @@ CREATE TABLE answers (
 	body TEXT NOT NULL,
     post_date TIMESTAMP NOT NULL,
     is_accepted BOOLEAN DEFAULT false,
-    FOREIGN KEY (user_id) REFERENCES users(id),
-    FOREIGN KEY (question_id) REFERENCES questions(id)
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (question_id) REFERENCES questions(id) ON DELETE CASCADE
 );
 
 CREATE TABLE votes (
