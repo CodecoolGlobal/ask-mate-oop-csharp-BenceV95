@@ -1,0 +1,5 @@
+.custom-container {
+    width: 400px;
+    max-width: 576px; /* Adjust the max-width as needed */
+    margin: 0 auto; /* Center the container */
+}

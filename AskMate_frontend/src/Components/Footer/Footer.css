@@ -1,0 +1,12 @@
+.footerDiv{
+    display: flex;
+    flex-direction: column;
+    border-top: solid rgba(var(--bs-primary-rgb)) 2px;
+    width: 100%;
+}
+
+.footerDiv nav {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}

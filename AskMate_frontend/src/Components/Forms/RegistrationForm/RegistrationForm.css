@@ -1,0 +1,8 @@
+.register-container {
+    max-width: 576px; /* Adjust the max-width as needed */
+    margin: 0 auto; /* Center the container */
+}
+
+.register-container input:disabled{ 
+    background-color: #646464;
+}
