@@ -27,7 +27,7 @@ export default function SearchDiv({ onSearch }) {
         <button className="btn btn-success" type="submit">
           Search
         </button>
-        <button className="btn btn-danger" type="button" onClick={() => onSearch("",0,10)}>
+        <button className="btn btn-danger" type="button" onClick={() => onSearch("",0,100)}>
           Reset
         </button>
       </div>

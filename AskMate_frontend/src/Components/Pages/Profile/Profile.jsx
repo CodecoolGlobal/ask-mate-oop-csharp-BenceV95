@@ -5,7 +5,7 @@ import { Navigate, useNavigate } from "react-router-dom";
 import { apiDelete, apiPost, apiPut } from "../../../utils/api";
 
 export default function Profile() {
-  const { user } = React.useContext(AuthContext);
+  const { user, setUser } = React.useContext(AuthContext);
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
@@ -30,6 +30,7 @@ export default function Profile() {
 
       const response = await apiPut(`user/update/${user.id}`, updateData);
       alert("Profile updated successfully!");
+      setUser({...user, username : updateData.username, email : updateData.email})
       window.location.reload(true);
     } catch (error) {
       console.error(error);
@@ -85,10 +86,10 @@ export default function Profile() {
               <label htmlFor="newpw">New Password</label>
               <input
                 type="password"
-                name="newpw"
-                id="newpw"
+                name="password"
+                id="password"
                 className="form-control"
-                placeholder="password change is work in progress"
+                placeholder="New Password"
                 onChange={handleInputChange}
                 value={formData.password}
               />

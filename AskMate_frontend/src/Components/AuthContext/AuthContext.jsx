@@ -6,6 +6,7 @@ import { apiGet, apiPost } from "../../utils/api";
 export const AuthContext = React.createContext(null);
 
 export function AuthProvider({ children }) {
+
   const [isLoading, setIsLoading] = useState(false);
   const [user, setUser] = useState(() => {
     const savedUser = sessionStorage.getItem("user");
@@ -21,34 +22,7 @@ export function AuthProvider({ children }) {
       sessionStorage.removeItem("user");
     }
     setIsLoading(false);
-    /* 
-    async function fetchLoginStatus() {
 
-      const data = await apiGet(`User/session`);
-      console.log("fresh session data: ", data);
-
-      if (data.isLoggedIn == true) {
-        console.log("Is the user logged in? ", data.isLoggedIn);
-        if (JSON.parse(sessionStorage.getItem("user")).id === data.id) {
-          console.log("User is already logged in, no need to update state.");
-          if (user == null) {
-            setUser(data);
-          }
-          return;
-        }
-        console.log("User is not logged in, updating state.");
-        sessionStorage.setItem("user", JSON.stringify(data));
-        setUser(data);
-      } else {
-        sessionStorage.removeItem("user");
-        setUser(null);
-      }
-    }
-
-    setIsLoading(true);
-    fetchLoginStatus();
-    setIsLoading(false);
- */
   }, [user]);
 
   const loginContext = (userData) => {
@@ -60,7 +34,7 @@ export function AuthProvider({ children }) {
       const response = await apiPost("/User/logout");
       sessionStorage.removeItem("user");
       setUser(null);
-      navigate("/");
+      window.location.href = "/";
     } catch (error) {
       console.log("error", error);
     }

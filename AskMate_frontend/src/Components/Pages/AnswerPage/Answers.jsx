@@ -3,6 +3,7 @@ import RatioBar from "./RatioBar";
 import { useEffect, useState } from "react";
 
 import "./Answers.css";
+import { apiPost } from "../../../utils/api";
 
 export default function AnswerPage({
   answers,
@@ -52,20 +53,8 @@ export default function AnswerPage({
     const id = e.target.id;
     console.log(id);
     try {
-      const response = await fetch(`/api/Answer/Accept/${id}`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-      });
-
-      if (!response.ok) {
-        throw new Error(response.message);
-      }
-
-      const data = await response.json();
-      console.log(data);
+      const response = await apiPost(`Answer/Accept/${id}`,{});
+      window.location.reload();
     } catch (error) {
       console.log(error);
     }

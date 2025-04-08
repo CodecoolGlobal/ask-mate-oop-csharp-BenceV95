@@ -53,22 +53,40 @@ namespace AskMate.Repos
 
         public void UpdateUser(string id, UserUpdateRequest updateRequest)
         {
-            using var connection = new NpgsqlConnection(_connectionString);
+            bool updatePassword = !string.IsNullOrWhiteSpace(updateRequest.Password);
+            string? hashedPW = null;
+            byte[]? salt = null;
+
+            if (updatePassword)
             {
-                connection.Open();
-                var command = new NpgsqlCommand(@"
-                    UPDATE users
-                    SET username = :newUsername,
-                    email_address = :newEmailAddress
-                    WHERE id = :userId", connection);
-                command.Parameters.AddWithValue(":newUsername", updateRequest.Username);
-                command.Parameters.AddWithValue(":newEmailAddress", updateRequest.Email);
-                command.Parameters.AddWithValue(":userId", id);
-
-                command.ExecuteNonQuery();
-
+                hashedPW = Utils.HashPassword(updateRequest.Password, out salt);
             }
+
+            string cmd = @"
+                UPDATE users
+                SET username = @newUsername,
+                email_address = @newEmailAddress" + 
+                         (updatePassword ? ", password = @password, salt = @salt" : "") + @"
+                WHERE id = @userId";
+
+            using var connection = new NpgsqlConnection(_connectionString);
+            connection.Open();
+
+            using var command = new NpgsqlCommand(cmd, connection);
+            command.Parameters.AddWithValue("@newUsername", updateRequest.Username);
+            command.Parameters.AddWithValue("@newEmailAddress", updateRequest.Email);
+            command.Parameters.AddWithValue("@userId", id);
+
+            if (updatePassword)
+            {
+                command.Parameters.AddWithValue("@password", hashedPW);
+                command.Parameters.AddWithValue("@salt", salt);
+            }
+
+            command.ExecuteNonQuery();
         }
+
+
 
         //using tuple
         public (List<User> users, int totalCount) GetUsersPaginated(int pageNumber, int limit)
@@ -210,7 +228,7 @@ namespace AskMate.Repos
         // this creates a new user in the database with given username, email and password. The pw is hashed, salted
         public object? CreateUser(string username, string email, string password)
         {
-            
+
             var checkForUserAlreadyRegisteredByUsername = GetUserByNameOrEmail(username);
             if (checkForUserAlreadyRegisteredByUsername != null)
             {
@@ -230,7 +248,7 @@ namespace AskMate.Repos
             var generatedID = Guid.NewGuid().ToString();
 
 
-            var hashedPW = Utils.HashPasword(password, out byte[] salt);
+            var hashedPW = Utils.HashPassword(password, out byte[] salt);
 
             using var command = new NpgsqlCommand(
                 @"INSERT INTO users
@@ -299,7 +317,7 @@ namespace AskMate.Repos
                 var isAdmin = (bool)row["isAdmin"];
                 var username = (string)row["username"];
                 var email = (string)row["email_address"];
-                user = new() { Id = userID, Role = isAdmin ? "admin" : "user", Username = username, Email = email};
+                user = new() { Id = userID, Role = isAdmin ? "admin" : "user", Username = username, Email = email };
                 return Utils.VerifyPassword(password, storedHash, storedSalt);
             }
 
