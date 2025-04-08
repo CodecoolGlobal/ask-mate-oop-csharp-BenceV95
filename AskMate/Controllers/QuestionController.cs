@@ -22,7 +22,7 @@ public class QuestionController : ControllerBase
         _database = database;
     }
 
-    [AllowAnonymous] // remove this after testing !
+    
     [HttpGet("filter")]
     public IActionResult GetQuestions(int? categoryId, int limit = 10)
     {
@@ -127,7 +127,7 @@ public class QuestionController : ControllerBase
 
             if (searched == null)
             {
-                return NotFound(new { message = "Couldnt find any question!" });
+                return NotFound(new { message = "Couldn't find any question!" });
             }
 
             return Ok(searched);

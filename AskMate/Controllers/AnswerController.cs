@@ -6,6 +6,7 @@ using System.Security.Claims;
 
 namespace AskMate.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("[controller]")]
     public class AnswerController : ControllerBase
@@ -16,23 +17,21 @@ namespace AskMate.Controllers
             _database = database;
         }
 
-        [Authorize]
+        
         [HttpGet("{id}")]
         public IActionResult GetAnswers(string id)
         {
             try
             {
                 return Ok(new { message = _database.GetAnswer(id) });
-
             }
             catch (Exception ex)
             {
                 return BadRequest(new { message = ex.Message });
             }
-
         }
 
-        [Authorize]
+        
         [HttpDelete("all/{id}")]
         public IActionResult DeleteAnswerByQuestionId(string id)
         {
@@ -48,7 +47,7 @@ namespace AskMate.Controllers
             }
         }
 
-        [Authorize]
+        
         [HttpGet("all/{id}")]
         public IActionResult GetAllAnswersByQuestionId(string id)
         {
@@ -68,8 +67,7 @@ namespace AskMate.Controllers
             }
         }
 
-
-        [Authorize]
+        
         [HttpGet("all/byUserId/{userId}")]
         public IActionResult GetAllAnswersByUserId(string userId)
         {
@@ -85,12 +83,10 @@ namespace AskMate.Controllers
             }
         }
 
-
-        [Authorize]
+        
         [HttpPost()]
         public IActionResult CreateAnswer(Answer answer)
         {
-
             try
             {
                 // user may create an answer if a question is not closed by having an accepted answer or if there are no answers yet.
@@ -112,7 +108,7 @@ namespace AskMate.Controllers
             }
         }
 
-        [Authorize]
+        
         [HttpDelete("{id}")]
         public IActionResult DeleteAnswer(string id)
         {
@@ -128,7 +124,7 @@ namespace AskMate.Controllers
             }
         }
 
-        [Authorize]
+        
         [HttpPatch("{id}")]
         public IActionResult UpdateAnswer(Answer answer)
         {
@@ -144,7 +140,7 @@ namespace AskMate.Controllers
             }
         }
 
-        [Authorize]
+        
         [HttpPost("Accept/{id}")]
         public IActionResult AcceptAnswer(string id)
         {

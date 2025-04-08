@@ -3,9 +3,11 @@ using AskMate.Repos;
 using AskMate.Repos.Votes;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 
 namespace AskMate.Controllers
 {
+    [Authorize]
     [ApiController]
     public class VotesController : ControllerBase
     {

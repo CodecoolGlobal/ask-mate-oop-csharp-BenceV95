@@ -10,6 +10,7 @@ using AskMate.Models.Users;
 
 namespace AskMate.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("[controller]")]
     public class UserController : ControllerBase
@@ -36,12 +37,16 @@ namespace AskMate.Controllers
             }
         }
 
-        [HttpGet]
+        [HttpGet("GetUserByNameOrEmail")]
         public IActionResult GetUserByNameOrEmail(string nameOrEmail)
         {
             try
             {
                 var user = _database.GetUserByNameOrEmail(nameOrEmail);
+                if (user == null)
+                {
+                    return NotFound(new {Message = "User not found !"});
+                }
                 return Ok(user);
             }
             catch (Exception ex)
@@ -56,6 +61,7 @@ namespace AskMate.Controllers
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
+        [AllowAnonymous]
         [HttpPost()]
         public IActionResult CreateUser([FromBody] UserRequest request)
         {
@@ -71,6 +77,7 @@ namespace AskMate.Controllers
                 return BadRequest(new { message = ex.Message });
             }
         }
+
 
         [HttpGet("allUsers")]
         public IActionResult GetUsers()
@@ -105,11 +112,7 @@ namespace AskMate.Controllers
             };
         }
 
-
-
-
-        //session check
-        [Authorize]
+        [AllowAnonymous]
         [HttpGet("session")]
         public IActionResult ValidateSession()
         {
@@ -131,8 +134,7 @@ namespace AskMate.Controllers
             }
         }
 
-
-        [Authorize]
+        
         [HttpGet("/{id}/Points")]
         public IActionResult PointSystem(string id)
         {
@@ -152,14 +154,14 @@ namespace AskMate.Controllers
             }
         }
 
-        [Authorize]
+        
         [HttpDelete("/users/{id}")]
         public IActionResult DeleteUser(string id)
         {
             try
             {
                 _database.DeleteUser(id);
-                return Ok(new { message = "User succesfully deleted!" });
+                return Ok(new { message = "User successfully deleted!" });
 
             }
             catch (Exception ex)
@@ -169,7 +171,7 @@ namespace AskMate.Controllers
             }
         }
 
-
+        [AllowAnonymous]
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginRequest user)
         {
@@ -195,7 +197,7 @@ namespace AskMate.Controllers
                     await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal, new AuthenticationProperties
                     {
                         IsPersistent = true, // Keep the cookie even after closing the browser
-                        ExpiresUtc = DateTime.UtcNow.AddMinutes(30)
+                        ExpiresUtc = DateTime.UtcNow.AddMinutes(60)
                     });
 
                     return Ok(new { Username = userFromDb.Username, Email = userFromDb.Email, Role = userFromDb.Role, Id = userFromDb.Id }); //should make dedicated class in future
@@ -210,13 +212,14 @@ namespace AskMate.Controllers
             }
         }
 
+        [AllowAnonymous]
         [HttpPost("logout")]
         public async Task<IActionResult> Logout()
         {
             try
             {
                 await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-                return Ok(new { Message = "User succsefully logged out!" });
+                return Ok(new { Message = "User successfully logged out!" });
 
             }
             catch (Exception ex)

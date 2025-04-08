@@ -1,9 +1,11 @@
 ﻿using AskMate.Models.Categories;
 using AskMate.Repos.Categories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AskMate.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("[controller]")]
     public class CategoriesController : ControllerBase
@@ -25,7 +27,7 @@ namespace AskMate.Controllers
                     return Ok(new { message = "Category created successfully!" });
                 }
 
-                return BadRequest(new { message = "Couldnt create category!" }); // is it though ?
+                return BadRequest(new { message = "Couldn't create category!" });
 
             }
             catch (Exception ex)
@@ -34,6 +36,7 @@ namespace AskMate.Controllers
             }
         }
 
+        [AllowAnonymous]
         [HttpGet()]
         public IActionResult GetAllCategories()
         {
@@ -66,7 +69,7 @@ namespace AskMate.Controllers
                     return Ok(new { message = "Category deleted successfully!" });
                 }
 
-                return BadRequest(new { message = "Couldnt delete category!" }); // is it though ?
+                return BadRequest(new { message = "Couldn't delete category!" });
 
             }
             catch (Exception ex)
@@ -85,7 +88,7 @@ namespace AskMate.Controllers
                 {
                     return Ok(new { message = "Category updated successfully!" });
                 }
-                return BadRequest(new { message = "Couldnt update category!" }); // is it though ?
+                return BadRequest(new { message = "Couldn't update category!" });
 
             }
             catch (Exception ex)

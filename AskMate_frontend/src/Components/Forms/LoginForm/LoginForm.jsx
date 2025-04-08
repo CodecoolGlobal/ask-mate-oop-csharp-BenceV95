@@ -32,15 +32,11 @@ export default function LoginForm({ navigate }) {
   };
 
   useEffect(() => {
-    if (loggedIn) {
-      console.log("User is logged in. Will navigate in 1s.");
-      const timer = setTimeout(() => {
-        console.log("Navigating now...");
-        navigate("/");
-      }, 1000);
-
-      return () => clearTimeout(timer);
+    
+    if (loggedIn) {      
+      navigate("/");
     }
+
   }, [loggedIn]);
 
   return (

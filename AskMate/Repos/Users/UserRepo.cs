@@ -20,13 +20,17 @@ namespace AskMate.Repos
 
         public User? GetUserByNameOrEmail(string nameOrEmail)
         {
-            User user = null;
+            User? user = null;
 
             using var connection = new NpgsqlConnection(_connectionString);
             {
                 connection.Open();
 
-                var command = new NpgsqlCommand("SELECT * FROM users WHERE username = :nameOrEmail OR email_address = :nameOrEmail", connection);
+                var command = new NpgsqlCommand(@"
+                    SELECT * FROM users
+                    WHERE username = :nameOrEmail
+                    OR email_address = :nameOrEmail
+                    OR id = :nameOrEmail", connection);
                 command.Parameters.AddWithValue(":nameOrEmail", nameOrEmail);
 
                 using var reader = command.ExecuteReader();

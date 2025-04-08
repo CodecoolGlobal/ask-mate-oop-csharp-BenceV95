@@ -24,7 +24,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseRouting();
-//add authetication
+
 app.UseAuthentication();
 
 
@@ -70,7 +70,7 @@ void AddOptionsToRegisteredServices()
             options.Cookie.Name = "UserAuthCookie";              // Name of the cookie
             options.Cookie.HttpOnly = true;                       // Protect from JavaScript access
             options.Cookie.SameSite = SameSiteMode.Strict;          // Allow cross-origin cookies
-            options.Cookie.SecurePolicy = CookieSecurePolicy.None; // Use 'Always' if you have HTTPS
+            options.Cookie.SecurePolicy = CookieSecurePolicy.Always; // Use 'Always' if you have HTTPS
             options.ExpireTimeSpan = TimeSpan.FromHours(1);       // Expiration time
             options.SlidingExpiration = true;                     // Extend expiration on activity
             options.Events.OnRedirectToLogin = context =>

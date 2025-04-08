@@ -19,9 +19,13 @@ export function AuthProvider({ children }) {
             console.log("fresh session data: ",data);
             
             if(data.isLoggedIn == true){
+                console.log("Is the user logged in? ", data.isLoggedIn);
+                if (sessionStorage.getItem("user").id === data.id) {
+                    console.log("User is already logged in, no need to update state.");
+                    return;                    
+                }
                 sessionStorage.setItem("user", JSON.stringify(data));
                 setUser(data);
-                console.log("Is the user logged in? ", data.isLoggedIn);
                                 
             } else {
                 sessionStorage.removeItem("user");
@@ -30,8 +34,6 @@ export function AuthProvider({ children }) {
             
         }
         //setIsLoading(true);
-        const interval = setInterval(fetchLoginStatus, 60000);
-        return () => clearInterval(interval);
         fetchLoginStatus();
         //setIsLoading(false);
     }, []);

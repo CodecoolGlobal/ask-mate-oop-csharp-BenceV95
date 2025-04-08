@@ -58,14 +58,17 @@ export async function apiPost(endpoint, data) {
 
 export async function apiDelete(endpoint) {
 
-
     const response = await fetch(`/api/${endpoint}`, {
         method: "DELETE",
         credentials: "include"
     });
-
+    
     if (!response.ok) {
         throw new Error("API request failed");
     }
 
+    if (response.headers.get("Content-Type")?.includes("application/json")) {
+        return await response.json();
+    }
+      
 }
